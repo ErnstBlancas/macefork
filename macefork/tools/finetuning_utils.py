@@ -2,7 +2,7 @@ from typing import Optional
 
 import torch
 
-from mace.tools.utils import AtomicNumberTable
+from macefork.tools.utils import AtomicNumberTable
 
 
 def _copy_radial_weights(

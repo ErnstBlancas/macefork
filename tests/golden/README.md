@@ -11,8 +11,8 @@ harness.py            the shared machinery: fixtures, snapshot schema,
 calculator_keys.py    what this repo's calculators call each channel, and
                       where every evaluation reads its inputs
 model_keys.py         what the model forwards call each channel
-eval_keys.py          what mace_eval_configs writes onto its structures
-surface_scan.py       derives all of the above out of mace/ by AST, so the
+eval_keys.py          what macefork_eval_configs writes onto its structures
+surface_scan.py       derives all of the above out of macefork/ by AST, so the
                       guard checks the schema against the package rather
                       than against a remembered list
 fixtures/             committed .xyz structures + manifest.json
@@ -93,11 +93,11 @@ out not to be the whole story:
 * the **calculator**, an ase `Calculator`'s `results` dict;
 * the **model**, a `forward` return dict, reached through `golden_outputs`.
   The first version of the alias map was derived from
-  `mace/calculators/mace.py` alone: all 31 calculator keys resolved and 13 of
+  `macefork/calculators/mace.py` alone: all 31 calculator keys resolved and 13 of
   the 43 model-forward keys resolved to nothing. That gap is load-bearing —
   `edge_forces` and `hessian` are returned by every energy model and by no
   calculator;
-* the **eval CLI**, which returns nothing at all: `mace_eval_configs` writes
+* the **eval CLI**, which returns nothing at all: `macefork_eval_configs` writes
   its results back onto the structures, into `info` or `arrays` under a
   caller-chosen prefix, and then writes extxyz. It emits 13 names, of which
   `BO_contributions`, `node_energies` and `descriptors` resolved to nothing —
@@ -111,7 +111,7 @@ regex: it follows how each surface is actually written.
 |---|---|---|
 | calculator | every `class X(Calculator)` in `mace/` | `self.results[k]`, the aliased local (both assignment directions), `.update()` with a literal or a named dict, a whole-dict assignment, and the suffixed committee keys — whose bases come from the `results_store_ensemble` set literal the source guards them with, not from a copy of its members |
 | model | every file defining a `forward` that returns a dict | `return {...}`, `out = {...}; return out`, and `out[k] = ...` on a dict from a nested call |
-| eval CLI | `mace/cli/eval_configs.py` | `atoms.{info,arrays}[args.info_prefix + "name"]`, prefix stripped |
+| eval CLI | `macefork/cli/eval_configs.py` | `atoms.{info,arrays}[args.info_prefix + "name"]`, prefix stripped |
 
 Two details of that table are the whole reason it exists. The model file list
 is **discovered**, because the version that named `modules/models.py` and
@@ -142,7 +142,7 @@ Naming the surface buys two things a flat map cannot express:
   Whether that is lossless is a measurement, not an assumption — Voigt-6
   cannot carry an asymmetric tensor. It holds because
   `get_atomic_virials_stresses` symmetrises explicitly
-  (`mace/modules/utils.py:382`); measured on the `tiny_scaleshift` anchor over
+  (`macefork/modules/utils.py:382`); measured on the `tiny_scaleshift` anchor over
   all six fixtures in float64, the asymmetry, the Voigt round trip and the
   difference between the two routes are all exactly `0.0`. A test re-measures
   it rather than trusting this paragraph.
@@ -233,7 +233,7 @@ something.
 ## The fixtures
 
 Six structures, each the only one reaching a distinct regime of the
-neighbour-list layer (`mace/data/neighborhood.py`), which is what decides the
+neighbour-list layer (`macefork/data/neighborhood.py`), which is what decides the
 cell a stress is divided by:
 
 | fixture | pbc | regime |
@@ -274,13 +274,13 @@ species, ZBL repulsion on, ~1.07 MB each.
   `build_mace_anchor.py` under a fixed seed and committed as initialised.
   It is *not* trained and *cannot* come from the CLI: `--model MACE` returns a
   `ScaleShiftMACE` with `atomic_inter_scale=args.std` and the shift zeroed
-  (`mace/tools/model_script_utils.py:279-296`), so a CLI recipe would silently
+  (`macefork/tools/model_script_utils.py:279-296`), so a CLI recipe would silently
   anchor the wrong class. A seeded untrained network exercises the plain-`MACE`
   energy assembly exactly as a trained one would.
 
 **Why both carry ZBL.** The pair term enters the two classes differently:
 plain `MACE` appends it to `energies` next to `e0` and never scales it
-(`mace/modules/models.py:359-361`), while `ScaleShiftMACE` seeds its readout
+(`macefork/modules/models.py:359-361`), while `ScaleShiftMACE` seeds its readout
 sum with `[pair_node_energy]` (`:539`) and puts the whole sum through
 `scale_shift` (`:579`). On the short-dimer fixture, removing the term moves
 the total by 1.000000× the raw pair sum in the plain anchor and by 0.478465×

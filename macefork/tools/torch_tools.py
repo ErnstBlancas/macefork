@@ -174,7 +174,7 @@ def restores_default_dtype(func: Callable) -> Callable:
     The converters set the default from the source model's parameters so the
     submodules they build land at the right precision, and they are library
     functions rather than only CLI entry points: `MACECalculator.__init__` calls
-    `run_e3nn_to_cueq` (mace/calculators/mace.py:362), and `run_train` converts
+    `run_e3nn_to_cueq` (macefork/calculators/mace.py:362), and `run_train` converts
     mid-run at a dtype it has already chosen for itself. Leaving the default
     changed hands the caller a different process than it had, so every later
     tensor built without an explicit dtype silently follows the converted model.

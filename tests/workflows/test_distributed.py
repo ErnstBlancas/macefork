@@ -1,6 +1,6 @@
 """DDP smoke test: 2-process CPU training (gloo backend).
 
-First CI coverage of mace/tools/distributed_tools.py: an actual multi-process
+First CI coverage of macefork/tools/distributed_tools.py: an actual multi-process
 run of run_train --distributed --launcher torchrun. The two ranks are spawned
 directly with a static rendezvous on 127.0.0.1 (instead of the torchrun
 launcher) so the test does not depend on the host's DNS/hostname resolution.

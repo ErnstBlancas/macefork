@@ -3,7 +3,7 @@
 E0s are the largest numbers in a MACE energy by two or three orders of
 magnitude, and they enter in exactly one place: `AtomicEnergiesBlock` looks
 them up with a one-hot matmul and the result is the first term of the readout
-sum (`mace/modules/models.py:359` for plain MACE, `:581` for the scale-shift
+sum (`macefork/modules/models.py:359` for plain MACE, `:581` for the scale-shift
 class, where the E0 term is added *outside* the scale and the shift, which
 were applied one line earlier). Everything
 upstream of that lookup -- the four ways a user can supply E0s, and the
@@ -32,8 +32,8 @@ import torch
 from ase import Atoms
 from ase.io import write
 
-from mace import data
-from mace.data.utils import (
+from macefork import data
+from macefork.data.utils import (
     Configuration,
     KeySpecification,
     compute_average_E0s,
@@ -41,8 +41,8 @@ from mace.data.utils import (
     estimate_e0s_from_foundation,
     load_from_xyz,
 )
-from mace.tools import torch_geometric, torch_tools, utils
-from mace.tools.scripts_utils import get_atomic_energies
+from macefork.tools import torch_geometric, torch_tools, utils
+from macefork.tools.scripts_utils import get_atomic_energies
 from tests.golden import harness
 from tests.golden.anchors import anchor_graph, load_anchor, load_training_structures
 
@@ -105,7 +105,7 @@ def _molecule(symbols, energy):
 def test_isolated_atom_configs_become_exact_e0s(tmp_path):
     """The first and most direct route: one config per element, tagged.
 
-    Both conditions are required (`mace/data/utils.py:325-327`): exactly one
+    Both conditions are required (`macefork/data/utils.py:325-327`): exactly one
     atom *and* `config_type == "IsolatedAtom"`. A two-atom config carrying
     the tag is training data, not an E0.
     """
@@ -496,12 +496,12 @@ def _configure(extra_argv):
     """Parse a real command line and build the model it asks for.
 
     `configure_model` is only ever called from `run_train.run()`, which sets
-    the five `compute_*` flags itself before calling (mace/cli/run_train.py:
+    the five `compute_*` flags itself before calling (macefork/cli/run_train.py:
     618-620); they are reproduced here rather than faked, so the arguments
     under test are the parsed ones.
     """
-    from mace.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415
-    from mace.tools.model_script_utils import configure_model  # noqa: PLC0415
+    from macefork.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415
+    from macefork.tools.model_script_utils import configure_model  # noqa: PLC0415
 
     structures = load_training_structures(limit=4)
     atomic_energies = np.array([-0.1, -0.2, -0.3])
@@ -541,7 +541,7 @@ def test_mean_and_std_together_override_the_dataset_statistics():
 def test_mean_without_std_is_accepted_and_then_discarded():
     """Both are recomputed unless *both* are given.
 
-    The guard is `if args.mean is None or args.std is None` (mace/tools/
+    The guard is `if args.mean is None or args.std is None` (macefork/tools/
     model_script_utils.py:78), so a run that sets only one of them silently
     gets the dataset statistics for both. Measured here: `--mean 1.5` gives a
     shift of 0.175, which is the fitted value.
@@ -604,7 +604,7 @@ def test_the_mean_and_std_scaling_is_the_per_atom_interaction_energy():
     `unbiased=True`, which differs from the population value by a factor
     sqrt(n/(n-1)) and is the kind of detail a port gets wrong silently).
     """
-    from mace.modules.utils import (  # noqa: PLC0415
+    from macefork.modules.utils import (  # noqa: PLC0415
         compute_mean_std_atomic_inter_energy,
     )
 
@@ -632,7 +632,7 @@ def test_the_rms_forces_scaling_is_the_root_mean_square_force_component():
     Two different physical quantities in one pair, which is why `--mean` and
     `--std` have the help strings they do.
     """
-    from mace.modules.utils import compute_mean_rms_energy_forces  # noqa: PLC0415
+    from macefork.modules.utils import compute_mean_rms_energy_forces  # noqa: PLC0415
 
     structures = load_training_structures(limit=6)
     e0s = np.array([-0.1, -0.2, -0.3])
@@ -653,7 +653,7 @@ def test_a_zero_spread_becomes_a_scale_of_one_with_a_warning(caplog):
     dividing by it would be fatal. `_check_non_zero` replaces it with 1.0 and
     logs -- so a one-config debug run trains unscaled and looks normal.
     """
-    from mace.modules.utils import (  # noqa: PLC0415
+    from macefork.modules.utils import (  # noqa: PLC0415
         compute_mean_std_atomic_inter_energy,
     )
 
@@ -676,7 +676,7 @@ def test_the_average_neighbour_count_skips_atoms_that_have_no_neighbours():
     the average unchanged instead of pulling it down, which is a difference a
     port that counts per node rather than per edge would get wrong.
     """
-    from mace.modules.utils import compute_avg_num_neighbors  # noqa: PLC0415
+    from macefork.modules.utils import compute_avg_num_neighbors  # noqa: PLC0415
 
     structures = load_training_structures(limit=3)
     lonely = Atoms("H", positions=[[0.0, 0.0, 0.0]], cell=np.eye(3) * 50.0, pbc=True)
@@ -691,7 +691,7 @@ def test_the_average_neighbour_count_skips_atoms_that_have_no_neighbours():
 
 
 def test_compute_statistics_returns_three_numbers_and_the_third_is_not_a_std():
-    """What `mace_prepare_data` writes into statistics.json, and its one lie.
+    """What `macefork_prepare_data` writes into statistics.json, and its one lie.
 
     The signature says `Tuple[float, float, float, float]` and the function
     returns **three** values; `preprocess_data.py:43` unpacks them as
@@ -701,7 +701,7 @@ def test_compute_statistics_returns_three_numbers_and_the_third_is_not_a_std():
     rms_forces_scaling` (the default) uses, so the number is the right one
     for the default path and misnamed everywhere it is read.
     """
-    from mace.modules.utils import (  # noqa: PLC0415
+    from macefork.modules.utils import (  # noqa: PLC0415
         compute_avg_num_neighbors,
         compute_mean_rms_energy_forces,
         compute_mean_std_atomic_inter_energy,
@@ -737,7 +737,7 @@ def test_the_dipole_scaling_entry_cannot_be_used_the_way_the_other_two_are():
     """`scaling_classes["rms_dipoles_scaling"]` does not have the same shape.
 
     The other two entries return `(mean, std)` and `configure_model` unpacks
-    the call site as such (mace/tools/model_script_utils.py:81). This one
+    the call site as such (macefork/tools/model_script_utils.py:81). This one
     returns a single float, so that unpacking raises TypeError. It is not
     reachable from `--scaling`, whose choices are the other three, so the
     entry is only usable through a YAML config -- where it fails. Pinned as
@@ -745,8 +745,8 @@ def test_the_dipole_scaling_entry_cannot_be_used_the_way_the_other_two_are():
     config file does, and a port that copies the registry faithfully
     inherits a dead entry it should know about.
     """
-    from mace.modules import scaling_classes  # noqa: PLC0415
-    from mace.modules.utils import compute_rms_dipoles  # noqa: PLC0415
+    from macefork.modules import scaling_classes  # noqa: PLC0415
+    from macefork.modules.utils import compute_rms_dipoles  # noqa: PLC0415
 
     structures = load_training_structures(limit=4)
     for index, atoms in enumerate(structures):
@@ -768,7 +768,7 @@ def test_the_zero_spread_guard_only_works_on_arrays():
     hands it a Python float, so the guard that exists to prevent a division
     by zero is itself a TypeError in exactly the case it was written for.
     """
-    from mace.modules.utils import _check_non_zero  # noqa: PLC0415
+    from macefork.modules.utils import _check_non_zero  # noqa: PLC0415
 
     assert _check_non_zero(np.array([0.0, 2.0])).tolist() == [1.0, 2.0]
     assert _check_non_zero(3.5) == 3.5
@@ -785,8 +785,8 @@ def test_the_per_batch_statistics_helpers_agree_with_the_loader_versions():
     this does: fed the whole dataset as one batch, the private helper's
     per-graph energies reduce to exactly what the public function returns.
     """
-    from mace.modules.blocks import AtomicEnergiesBlock  # noqa: PLC0415
-    from mace.modules.utils import (  # noqa: PLC0415
+    from macefork.modules.blocks import AtomicEnergiesBlock  # noqa: PLC0415
+    from macefork.modules.utils import (  # noqa: PLC0415
         _compute_mean_rms_energy_forces,
         _compute_mean_std_atomic_inter_energy,
         compute_mean_std_atomic_inter_energy,

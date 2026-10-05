@@ -1,6 +1,6 @@
 import torch
 
-from mace.tools import torch_geometric
+from macefork.tools import torch_geometric
 
 
 def _zeros_with_size0(tensor: torch.Tensor, size0: int) -> torch.Tensor:

@@ -19,7 +19,7 @@ from ase.atoms import Atoms
 
 from tests.helpers import REPO_ROOT
 
-run_train = REPO_ROOT / "mace" / "cli" / "run_train.py"
+run_train = REPO_ROOT / "macefork" / "cli" / "run_train.py"
 
 
 # ---------------------------------------------------------------------------

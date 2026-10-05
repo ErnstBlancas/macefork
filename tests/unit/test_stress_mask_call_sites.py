@@ -52,7 +52,7 @@ def _local_names(tree: ast.Module) -> dict[str, str]:
 
 
 def _call_sites():
-    for path in sorted((REPO_ROOT / "mace").rglob("*.py")):
+    for path in sorted((REPO_ROOT / "macefork").rglob("*.py")):
         if "torch_geometric" in str(path):  # vendored
             continue
         tree = ast.parse(path.read_text())

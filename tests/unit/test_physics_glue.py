@@ -9,7 +9,7 @@ asserted by a test in this file rather than assumed:
 * **virials** = -stress * V = -dE/d(strain), in eV.
 
 All three come out of one function, `compute_forces_virials`
-(mace/modules/utils.py:52-80): it takes the raw autograd gradients of the
+(macefork/modules/utils.py:52-80): it takes the raw autograd gradients of the
 energy with respect to the positions and to the injected strain, divides the
 strain gradient by |det(cell)| to form the stress, and negates *both* raw
 gradients on the way out. So the returned stress is the only one of the three
@@ -36,14 +36,14 @@ import numpy as np
 import pytest
 import torch
 
-from mace.modules.utils import (
+from macefork.modules.utils import (
     compute_forces,
     compute_forces_virials,
     get_edge_vectors_and_lengths,
     get_symmetric_displacement,
     prepare_graph,
 )
-from mace.tools import torch_tools
+from macefork.tools import torch_tools
 from tests.golden import harness
 from tests.golden.anchors import ANCHORS, anchor_graph, load_anchor
 
@@ -120,7 +120,7 @@ def test_the_reported_force_is_the_gradient_of_the_energy_the_model_returns(fixt
     """`d(total_energy)/dx` is bit-for-bit the force, in both classes.
 
     ScaleShiftMACE differentiates the *interaction* energy
-    (mace/modules/models.py:585) while plain MACE differentiates the total
+    (macefork/modules/models.py:585) while plain MACE differentiates the total
     (`:403`), and the two are only interchangeable because the E0 branch has
     no autograd path to the positions at all. That is a property of the
     model, not an identity, so it is measured: if a future E0 term ever
@@ -130,7 +130,7 @@ def test_the_reported_force_is_the_gradient_of_the_energy_the_model_returns(fixt
     **Bit-for-bit is a claim about the seed.** Differentiating `energy.sum()`
     seeds the shared backward with a stride-0 `expand` of a scalar instead of
     the materialized `grad_outputs=ones` that `compute_forces` passes
-    (mace/modules/utils.py:36-46), and the broadcast path that takes lands on
+    (macefork/modules/utils.py:36-46), and the broadcast path that takes lands on
     different last bits: measured on Viper-CPU (EPYC Genoa, torch 2.13+rocm7.1,
     MKL) the two disagree by 7.3e-17 for ScaleShiftMACE and 5.6e-17 for MACE,
     about a third of an ulp, while on macOS/Accelerate both are exactly zero.
@@ -364,7 +364,7 @@ def test_get_symmetric_displacement_invents_a_cell_when_there_is_none():
 
 
 def test_a_blown_up_stress_component_is_silently_zeroed():
-    """`torch.where(|stress| < 1e10, stress, 0)` (mace/modules/utils.py:74).
+    """`torch.where(|stress| < 1e10, stress, 0)` (macefork/modules/utils.py:74).
 
     A stress that overflows the threshold is replaced by zero, not clipped
     and not propagated, and nothing is logged. Characterization, emphatically
@@ -447,7 +447,7 @@ def test_prepare_graph_rewrites_the_callers_positions_and_shifts(fixtures):
 
     `prepare_graph` sets `requires_grad_` on the caller's positions tensor
     and, in the stress branch, replaces `data["positions"]` and
-    `data["shifts"]` with the strained ones (mace/modules/utils.py:783).
+    `data["shifts"]` with the strained ones (macefork/modules/utils.py:783).
     The edge vectors are then built from the *replacement*, so a port that
     treats the input dict as read-only computes the unstrained vectors and
     gets a zero stress with no error anywhere.

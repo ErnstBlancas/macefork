@@ -19,7 +19,7 @@ subsumes the other:
   up inside the Ewald sum as the field that induces the dipoles), while
   ``eps_infty``, ``keep_neutral`` and ``electric_field_unit`` never do: they
   scale a Born-charge force correction the *calculator* adds after the forward
-  has returned (``mace/calculators/mace.py:815-864``). Evaluating the forward
+  has returned (``macefork/calculators/mace.py:815-864``). Evaluating the forward
   alone would pin none of that.
 """
 
@@ -57,7 +57,7 @@ FIELD_SETTINGS: Dict[str, Any] = {
 
 #: The two fixtures the field reference is taken on, and why it is not all
 #: six: with ``eps_infty`` set, the calculator divides by ``atoms.get_volume()``
-#: (``mace/calculators/mace.py:833``), and ase refuses a volume for anything
+#: (``macefork/calculators/mace.py:833``), and ase refuses a volume for anything
 #: whose cell is not full rank -- the two aperiodic structures, the dimer, and
 #: the slab whose vacuum row is all zeros all raise
 #: ``ValueError: You have N lattice vectors: volume not defined`` before any
@@ -101,8 +101,8 @@ def graph_for(model: torch.nn.Module, atoms, external_field=None) -> Dict[str, A
     the calculator route impossible. ``tests/golden/test_tiny_anchors.py``
     measured that at about 2e-8 relative.
     """
-    from mace import data  # noqa: PLC0415
-    from mace.tools import torch_geometric, torch_tools, utils  # noqa: PLC0415
+    from macefork import data  # noqa: PLC0415
+    from macefork.tools import torch_geometric, torch_tools, utils  # noqa: PLC0415
 
     z_table = utils.AtomicNumberTable([int(z) for z in model.atomic_numbers])
     with torch_tools.default_dtype("float64"):
@@ -124,7 +124,7 @@ def graph_for(model: torch.nn.Module, atoms, external_field=None) -> Dict[str, A
     }
     if external_field is not None:
         # Written into the batch exactly as the calculator writes it
-        # (mace/calculators/mace.py:685-690), after the graph is built.
+        # (macefork/calculators/mace.py:685-690), after the graph is built.
         graph["external_field"] = torch.tensor(external_field, dtype=torch.float64)
     return graph
 
@@ -145,7 +145,7 @@ class ModelSurface:
         self.external_field = external_field
 
     def golden_outputs(self, atoms) -> Dict[str, Any]:
-        from mace.tools import torch_tools  # noqa: PLC0415
+        from macefork.tools import torch_tools  # noqa: PLC0415
 
         periodic = harness.is_periodic(atoms)
         with torch_tools.default_dtype("float64"):
@@ -182,7 +182,7 @@ class ModelSurface:
 
 def field_calculator(model: torch.nn.Module, settings: Optional[Mapping] = None):
     """A ``MACECalculator`` carrying the external-field surface."""
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     settings = dict(FIELD_SETTINGS if settings is None else settings)
     return MACECalculator(
@@ -202,7 +202,7 @@ def bec_force_correction(
 ) -> np.ndarray:
     """The field force the calculator adds, recomputed independently.
 
-    A transcription of ``mace/calculators/mace.py:815-864`` for the isotropic
+    A transcription of ``macefork/calculators/mace.py:815-864`` for the isotropic
     case, so a test can assert the documented formula rather than assert that
     the calculator agrees with itself. Kept here next to ``FIELD_SETTINGS``
     because the two have to describe the same evaluation.

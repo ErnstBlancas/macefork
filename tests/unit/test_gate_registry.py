@@ -16,8 +16,8 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.tools import torch_geometric
+from macefork import data, modules, tools
+from macefork.tools import torch_geometric
 
 TABLE = tools.AtomicNumberTable([1, 8])
 ATOMIC_ENERGIES = np.array([1.0, 3.0], dtype=float)

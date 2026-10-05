@@ -1,7 +1,7 @@
 """An independent, brute-force neighbour list, and the vocabulary to compare
 one neighbour list against another.
 
-``mace/data/neighborhood.py`` delegates the search to matscipy, so a test that
+``macefork/data/neighborhood.py`` delegates the search to matscipy, so a test that
 only checks matscipy against itself checks nothing. This module enumerates
 periodic images in plain numpy at O(N^2 x images) and is deliberately slow,
 obvious and framework-free: it is the reference the shipped list is measured

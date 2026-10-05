@@ -2,7 +2,7 @@
 
 `configure_model` keeps an allowlist of three blocks for the first layer, and
 rewrites anything else to `RealAgnosticInteractionBlock` without saying so
-(mace/tools/model_script_utils.py:282-289). So `--interaction_first` can name a
+(macefork/tools/model_script_utils.py:282-289). So `--interaction_first` can name a
 registered, valid block, be accepted by the parser, and train a different
 architecture than the one asked for, with nothing in the log to show it.
 
@@ -21,9 +21,9 @@ accepted.
 import numpy as np
 import pytest
 
-from mace import data
-from mace.data.utils import KeySpecification, config_from_atoms
-from mace.tools import torch_geometric, torch_tools
+from macefork import data
+from macefork.data.utils import KeySpecification, config_from_atoms
+from macefork.tools import torch_geometric, torch_tools
 
 from tests.unit.test_e0s_characterization import (  # reuse the real parse-and-build path
     BASE_ARGV,
@@ -38,8 +38,8 @@ ALLOWED = [
 ]
 def build(interaction_first):
     """Parse a real command line and return (model, args) as run_train would."""
-    from mace.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
-    from mace.tools.model_script_utils import configure_model  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools.model_script_utils import configure_model  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
     structures = load_training_structures(limit=4)
     atomic_energies = np.array([-0.1, -0.2, -0.3])
@@ -93,7 +93,7 @@ def test_the_allowlist_has_exactly_these_three_entries():
     rewrite that restored the older two would train a different architecture for
     anyone who had adopted it.
     """
-    from mace.tools import model_script_utils  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools import model_script_utils  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
     import ast  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
     import inspect  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 

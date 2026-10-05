@@ -1,6 +1,6 @@
 """The LAMMPS export produces the committed numbers. Contract tier, no binary.
 
-``mace_create_lammps_model`` turns a checkpoint into the artefact a LAMMPS
+``macefork_create_lammps_model`` turns a checkpoint into the artefact a LAMMPS
 pair style loads. The plain TorchScript format is on its way out, but what
 replaces it has to produce the same physics, so the numbers are frozen here
 and the replacement is measured against this file rather than against a
@@ -29,7 +29,7 @@ from tests.integrations.lammps.export_golden import (
     replay,
 )
 
-CREATE_LAMMPS_MODEL = REPO_ROOT / "mace" / "cli" / "create_lammps_model.py"
+CREATE_LAMMPS_MODEL = REPO_ROOT / "macefork" / "cli" / "create_lammps_model.py"
 ANCHOR = harness.MODELS_DIR / "tiny_scaleshift.model"
 LIBTORCH_GOLDEN = harness.REFERENCES_DIR / "lammps_export_libtorch_fp64.json"
 MLIAP_GOLDEN = harness.REFERENCES_DIR / "lammps_export_mliap_interface.json"
@@ -224,7 +224,7 @@ def test_the_package_import_stays_inside_the_regeneration_path():
     stray = [
         f"line {line}: {module}"
         for module, line in names(tree)
-        if (module.startswith("mace") or module.startswith("tests.integrations"))
+        if (module.startswith("macefork") or module.startswith("tests.integrations"))
         and line not in inside
     ]
     assert not stray, (

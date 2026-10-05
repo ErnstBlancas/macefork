@@ -16,7 +16,7 @@ from tests.neighbour_oracle import (
 )
 import torch
 
-from mace.data import (
+from macefork.data import (
     AtomicData,
     Configuration,
     HDF5Dataset,
@@ -24,8 +24,8 @@ from mace.data import (
     get_neighborhood,
     save_configurations_as_HDF5,
 )
-from mace.data.neighborhood import _aperiodic_search_directions
-from mace.tools import AtomicNumberTable, torch_geometric
+from macefork.data.neighborhood import _aperiodic_search_directions
+from macefork.tools import AtomicNumberTable, torch_geometric
 
 mace_path = REPO_ROOT
 

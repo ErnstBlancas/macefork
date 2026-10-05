@@ -8,11 +8,11 @@ import torch
 from ase import Atoms
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.calculators.foundations_models import mace_polar
-from mace.cli.convert_cueq_e3nn import run as run_cueq_to_e3nn
-from mace.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
-from mace.tools import torch_geometric, utils
+from macefork import data, modules, tools
+from macefork.calculators.foundations_models import mace_polar
+from macefork.cli.convert_cueq_e3nn import run as run_cueq_to_e3nn
+from macefork.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
+from macefork.tools import torch_geometric, utils
 
 try:
     import graph_longrange  # noqa: F401

@@ -1009,6 +1009,61 @@ def build_default_arg_parser() -> argparse.ArgumentParser:
         default=2048,
     )
     parser.add_argument(
+        "--convergence_metric",
+        help="Validation metric used for convergence-based early stopping, in the units "
+        "of the metrics log (eV, eV/A, ...), e.g. rmse_e_per_atom, rmse_f, mae_e_per_atom, "
+        "mae_f, rmse_stress, loss. Only used if a convergence threshold is set",
+        type=str,
+        default="rmse_e_per_atom",
+    )
+    parser.add_argument(
+        "--convergence_window",
+        help="Number of most recent validation evaluations (every eval_interval epochs) "
+        "over which the convergence mean/std is computed",
+        type=int,
+        default=10,
+    )
+    parser.add_argument(
+        "--convergence_mean_threshold",
+        help="Stop training when the mean of convergence_metric over the window is below this value",
+        type=float,
+        default=None,
+    )
+    parser.add_argument(
+        "--convergence_std_threshold",
+        help="Stop training when the standard deviation of convergence_metric over the window "
+        "is below this value (both thresholds must be met if both are given)",
+        type=float,
+        default=None,
+    )
+    parser.add_argument(
+        "--stage_two_convergence_mean_threshold",
+        help="Start Stage Two early when the mean of convergence_metric over the window "
+        "is below this value (also triggered by the stop thresholds)",
+        type=float,
+        default=None,
+    )
+    parser.add_argument(
+        "--stage_two_convergence_std_threshold",
+        help="Start Stage Two early when the standard deviation of convergence_metric over "
+        "the window is below this value",
+        type=float,
+        default=None,
+    )
+    parser.add_argument(
+        "--stage_two_epochs",
+        help="Stop training after this many epochs of Stage Two (rounded up to the next "
+        "evaluation epoch)",
+        type=int,
+        default=None,
+    )
+    parser.add_argument(
+        "--convergence_head",
+        help="Validation head used for the convergence check (default: last head)",
+        type=str,
+        default=None,
+    )
+    parser.add_argument(
         "--foundation_model",
         help="Path to the foundation model for transfer learning",
         type=str,

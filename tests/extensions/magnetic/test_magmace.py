@@ -10,17 +10,17 @@ import torch
 from ase.atoms import Atoms
 from e3nn import o3
 
-from mace.calculators import MACECalculator, MagneticMACECalculator
-from mace.cli.eval_configs import run as mace_eval_configs_run
-from mace.cli.run_train import run as mace_run
-from mace.data import AtomicData, KeySpecification, config_from_atoms
-from mace.tools import torch_geometric, utils
-from mace.tools.arg_parser import build_default_arg_parser
-from mace.tools.torch_tools import default_dtype
+from macefork.calculators import MACECalculator, MagneticMACECalculator
+from macefork.cli.eval_configs import run as mace_eval_configs_run
+from macefork.cli.run_train import run as mace_run
+from macefork.data import AtomicData, KeySpecification, config_from_atoms
+from macefork.tools import torch_geometric, utils
+from macefork.tools.arg_parser import build_default_arg_parser
+from macefork.tools.torch_tools import default_dtype
 
-from mace.modules.extensions import MagneticScaleShiftMACE, MagneticSCFMACE
-from mace.modules import interaction_classes
-from mace.tools.scripts_utils import get_optimizer, get_params_options
+from macefork.modules.extensions import MagneticScaleShiftMACE, MagneticSCFMACE
+from macefork.modules import interaction_classes
+from macefork.tools.scripts_utils import get_optimizer, get_params_options
 
 # ----------------------------------------------------------
 # Environment flags
@@ -250,7 +250,7 @@ def test_run_magnetic_scf(tmp_path, magnetic_configs):
 # ----------------------------------------------------------
 def test_extract_config_magnetic_round_trip():
     """extract_config_mace_model should round-trip MagneticScaleShiftMACE."""
-    from mace.tools.scripts_utils import extract_config_mace_model
+    from macefork.tools.scripts_utils import extract_config_mace_model
 
     with default_dtype(torch.float32):
         model = MagneticScaleShiftMACE(
@@ -295,7 +295,7 @@ def test_inherit_magnetic_hyperparameters_from_foundation(monkeypatch):
     """inherit_magnetic_hyperparameters_from_foundation should copy m_max etc onto args."""
     from types import SimpleNamespace
 
-    from mace.tools.multihead_tools import (
+    from macefork.tools.multihead_tools import (
         inherit_magnetic_hyperparameters_from_foundation,
     )
 
@@ -313,7 +313,7 @@ def test_inherit_magnetic_hyperparameters_from_foundation(monkeypatch):
     }
 
     monkeypatch.setattr(
-        "mace.tools.multihead_tools.extract_config_mace_model",
+        "macefork.tools.multihead_tools.extract_config_mace_model",
         lambda model: foundation_config,
     )
 
@@ -335,14 +335,14 @@ def test_inherit_magnetic_hyperparameters_from_foundation(monkeypatch):
 # resolve_m_max
 # ----------------------------------------------------------
 def test_resolve_m_max_dict_form():
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     out = resolve_m_max(["{26: 1.8, 8: 0.5}"], [1, 6, 8, 26], default=1.0)
     assert out == [1.0, 1.0, 0.5, 1.8]
 
 
 def test_resolve_m_max_fast_path_float_list():
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     out = resolve_m_max([0.1, 0.2, 0.3, 0.4], [1, 6, 8, 26])
     assert out == [0.1, 0.2, 0.3, 0.4]
@@ -350,27 +350,27 @@ def test_resolve_m_max_fast_path_float_list():
 
 def test_resolve_m_max_legacy_string_tokens():
     """argparse(nargs='+', type=str) on the legacy form yields stringified floats."""
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     out = resolve_m_max(["0.1", "0.2", "0.3", "0.4"], [1, 6, 8, 26])
     assert out == [0.1, 0.2, 0.3, 0.4]
 
 
 def test_resolve_m_max_single_float_broadcast():
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     out = resolve_m_max(["1.5"], [1, 6, 8, 26])
     assert out == [1.5, 1.5, 1.5, 1.5]
 
 
 def test_resolve_m_max_none_passthrough():
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     assert resolve_m_max(None, [1, 6, 8, 26]) is None
 
 
 def test_resolve_m_max_wrong_length_raises():
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     with pytest.raises(ValueError, match="expected 4"):
         resolve_m_max([0.1, 0.2], [1, 6, 8, 26])
@@ -378,7 +378,7 @@ def test_resolve_m_max_wrong_length_raises():
 
 def test_resolve_m_max_extra_dict_keys_ignored():
     """A dict over-spec'd with elements not in the current z_table is OK: extras get ignored, present elements resolved."""
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     # Z=99 isn't in z_table; should be ignored, not raise.
     out = resolve_m_max(["{26: 1.8, 99: 1.0}"], [1, 6, 8, 26], default=1.0)
@@ -387,7 +387,7 @@ def test_resolve_m_max_extra_dict_keys_ignored():
 
 def test_resolve_m_max_numpy_atomic_numbers():
     """atomic_numbers can be np.int64 (as it comes from z_table)."""
-    from mace.tools.scripts_utils import resolve_m_max
+    from macefork.tools.scripts_utils import resolve_m_max
 
     zs = [np.int64(1), np.int64(6), np.int64(26)]
     out = resolve_m_max(["{26: 8.0}"], zs, default=4.0)
@@ -615,7 +615,7 @@ def test_magnetic_calculator_reports_missing_backend(
     monkeypatch, flag, available_attr, library
 ):
     """A missing backend is an ImportError, not a TypeError on a None converter."""
-    from mace.calculators import mace as mace_calc_mod
+    from macefork.calculators import mace as mace_calc_mod
 
     monkeypatch.setattr(mace_calc_mod, available_attr, False)
     with pytest.raises(ImportError, match=library):
@@ -632,7 +632,7 @@ def test_magnetic_calculator_converts_to_cueq_once(monkeypatch, tmp_path):
     The second call handed an already-converted model to a converter that
     expects the e3nn layout.
     """
-    from mace.calculators import mace as mace_calc_mod
+    from macefork.calculators import mace as mace_calc_mod
 
     with default_dtype(torch.float32):
         model_path = tmp_path / "magmace.model"
@@ -692,7 +692,7 @@ def test_magnetic_check_state_tracks_magmoms(magnetic_configs):
 
 
 def test_eval_configs_unwraps_scf_wrapped_models(tmp_path, magnetic_configs):
-    """mace_eval_configs must read model metadata off the inner module.
+    """macefork_eval_configs must read model metadata off the inner module.
 
     MagneticSCFMACE wraps the real model in `magmom_mace` and keeps none of
     heads / atomic_numbers / r_max on itself, so reading them off the loaded
@@ -800,7 +800,7 @@ def test_random_rotation_loader_over_real_atomic_data(magnetic_configs):
     pytest.importorskip(
         "torch_geometric", reason="loader path needs real torch_geometric"
     )
-    from mace.data.augmentation import create_random_rotation_loader
+    from macefork.data.augmentation import create_random_rotation_loader
 
     z_table = utils.AtomicNumberTable([26])
     keyspec = KeySpecification(

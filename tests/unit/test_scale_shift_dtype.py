@@ -1,7 +1,7 @@
 """One forward, two energies, two dtypes: the legacy split, pinned.
 
 `ScaleShiftMACE.forward` returns `total_energy` in the model's dtype and
-`node_energy` in float64 (`mace/modules/models.py:581-582`), because the
+`node_energy` in float64 (`macefork/modules/models.py:581-582`), because the
 per-atom quantity is assembled through `safe_double`. Plain `MACE` does not
 (`:399`). So a `--default_dtype float32` run emits a float32 total and a
 float64 per-atom decomposition **from the same call**, and no single dtype
@@ -11,7 +11,7 @@ precision configuration -- it is the per-quantity specification BKD-2's
 reduction dtype is written against.
 
 **The MPS carve-out.** `safe_double` returns the tensor unchanged on Apple's
-MPS backend, which has no float64 (`mace/modules/utils.py:22-31`). So the
+MPS backend, which has no float64 (`macefork/modules/utils.py:22-31`). So the
 `node_energy` dtype assertions below are CPU/CUDA statements: on MPS the same
 model returns float32 for both quantities, and that is the documented
 behaviour rather than a failure. Nothing here runs on MPS.
@@ -39,11 +39,11 @@ import numpy as np
 import pytest
 import torch
 
-from mace.modules import extensions, models
-from mace.modules.blocks import AtomicEnergiesBlock, ScaleShiftBlock
-from mace.modules.utils import safe_double
-from mace.tools import torch_tools
-from mace.tools.scatter import scatter_sum
+from macefork.modules import extensions, models
+from macefork.modules.blocks import AtomicEnergiesBlock, ScaleShiftBlock
+from macefork.modules.utils import safe_double
+from macefork.tools import torch_tools
+from macefork.tools.scatter import scatter_sum
 from tests.golden import harness
 from tests.golden.anchors import anchor_graph, anchor_path, load_anchor
 
@@ -321,7 +321,7 @@ def test_the_e0_buffer_is_rounded_once_at_construction():
 
 
 def test_the_forward_casts_the_buffer_to_the_inputs_dtype_in_both_directions():
-    """`.to(dtype=x.dtype)` on every call (mace/modules/blocks.py:379-381).
+    """`.to(dtype=x.dtype)` on every call (macefork/modules/blocks.py:379-381).
 
     The *input* dtype wins, not the buffer's. Two consequences, both pinned:
     a float32 buffer under a float64 forward is **widened, not re-rounded**
@@ -452,21 +452,21 @@ def test_the_rebuild_dtype_wins_on_a_cross_dtype_state_dict_load():
 
 
 def test_the_convert_device_cli_preserves_the_buffers(tmp_path, monkeypatch):
-    """`mace_convert_device` is torch.load -> .to(device) -> torch.save.
+    """`macefork_convert_device` is torch.load -> .to(device) -> torch.save.
 
     Exercised here for cpu -> cpu, which is the only hop this machine can
     make; what it pins is that the round trip through the CLI is value- and
     dtype-preserving, so a cross-device conversion that changes a buffer is
     changing it on the `.to()`, not on the serialisation.
     """
-    from mace.cli.convert_device import main  # noqa: PLC0415
+    from macefork.cli.convert_device import main  # noqa: PLC0415
 
     source = tmp_path / "anchor.model"
     source.write_bytes(Path(anchor_path("tiny_scaleshift")).read_bytes())
     output = tmp_path / "converted.model"
     monkeypatch.setattr(
         "sys.argv",
-        ["mace_convert_device", "-t", "cpu", "-o", str(output), str(source)],
+        ["macefork_convert_device", "-t", "cpu", "-o", str(output), str(source)],
     )
     main()
 

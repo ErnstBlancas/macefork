@@ -4,9 +4,9 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace.calculators.lammps_mliap_mace import LAMMPS_MLIAP_MACE
-from mace.modules import blocks
-from mace.modules.blocks import (
+from macefork.calculators.lammps_mliap_mace import LAMMPS_MLIAP_MACE
+from macefork.modules import blocks
+from macefork.modules.blocks import (
     RealAgnosticDensityResidualInteractionBlock,
     RealAgnosticResidualNonLinearInteractionBlock,
 )

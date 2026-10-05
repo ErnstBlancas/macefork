@@ -36,7 +36,7 @@ def _row(ident, disposition="KEEP", pinned="`tests/unit/test_compile.py`"):
     return Row(
         ident=ident,
         feature="`--thing`",
-        source="`mace/tools/arg_parser.py:1`",
+        source="`macefork/tools/arg_parser.py:1`",
         disposition=disposition,
         pinned_by=pinned,
         line=1,
@@ -45,10 +45,10 @@ def _row(ident, disposition="KEEP", pinned="`tests/unit/test_compile.py`"):
 
 def _source(**decls):
     return SourceSet(
-        "mace_run_train",
+        "macefork_run_train",
         "train.",
         "dests",
-        {k: Decl(k, v, "mace/tools/arg_parser.py:907") for k, v in decls.items()},
+        {k: Decl(k, v, "macefork/tools/arg_parser.py:907") for k, v in decls.items()},
     )
 
 
@@ -73,7 +73,7 @@ def test_a_dest_with_no_row_fails():
     # the message has to carry the site, or the fix needs a second lookup
     assert "beta1_schedulefree" in report[1]
     assert "--beta1_schedulefree" in report[1]
-    assert "mace/tools/arg_parser.py:907" in report[1]
+    assert "macefork/tools/arg_parser.py:907" in report[1]
 
 
 def test_a_row_with_no_disposition_fails():
@@ -477,7 +477,7 @@ def _gap_row(ident, feature="`--thing`", gap="⚠️ gap (nothing yet)"):
     return Row(
         ident=ident,
         feature=feature,
-        source="`mace/tools/arg_parser.py:1`",
+        source="`macefork/tools/arg_parser.py:1`",
         disposition="KEEP",
         pinned_by=gap,
         line=1,
@@ -564,11 +564,11 @@ def test_the_gate_does_not_run_the_audit():
 #: any of these files passed the gate in silence: the registries cover the string
 #: a user passes, not the class, and `model.`/`loss.` read two files each.
 CLASS_SET_SOURCES = {
-    "radial.": "mace/modules/radial.py",
-    "block.": "mace/modules/blocks.py",
-    "contraction.": "mace/modules/symmetric_contraction.py",
-    "transform.": "mace/data/augmentation.py",
-    "calc.class.": "mace/calculators/mace.py",
+    "radial.": "macefork/modules/radial.py",
+    "block.": "macefork/modules/blocks.py",
+    "contraction.": "macefork/modules/symmetric_contraction.py",
+    "transform.": "macefork/data/augmentation.py",
+    "calc.class.": "macefork/calculators/mace.py",
 }
 
 
@@ -593,7 +593,7 @@ def test_the_block_set_also_reads_the_gate_module():
     blocks = {s.prefix: s.decls for s in check_inventory.collect_sources()}["block."]
     lines = {decl.site.split(":")[0] for decl in blocks.values()}
 
-    assert "mace/modules/gate.py" in lines
+    assert "macefork/modules/gate.py" in lines
 
 
 def test_a_class_in_a_covered_file_with_no_row_fails():

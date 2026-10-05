@@ -4,13 +4,13 @@ It became a registered buffer with a declared `torch.Tensor` type so that
 TorchScript could see it. `_load_from_state_dict` covers checkpoints loaded as
 state dicts; these tests cover the other way MACE ships a model, which is a
 `torch.load` of the whole pickled module -- the ASE calculator, every
-`mace/cli` tool, and the pretrained artifacts inside the wheel. Unpickling
+`macefork/cli` tool, and the pretrained artifacts inside the wheel. Unpickling
 restores `__dict__` directly, so neither `__init__` nor `_load_from_state_dict`
 runs, and without `__setstate__` the instance keeps its plain Python float.
 
 That is invisible in eager mode, because a float promotes against whatever it
 divides. It is fatal under `torch.jit.script`, which is why
-`mace_create_lammps_model` is the test that matters here: exporting any
+`macefork_create_lammps_model` is the test that matters here: exporting any
 pre-buffer checkpoint died on
 
     Could not cast attribute 'avg_num_neighbors' to type Tensor
@@ -24,7 +24,7 @@ import torch
 import torch.nn.functional as F
 from e3nn import o3
 
-from mace import modules, tools
+from macefork import modules, tools
 
 #: not exactly representable in float32, so a float32/float64 mix-up shows up as
 #: a changed value rather than passing by luck (4.59375, the value the committed

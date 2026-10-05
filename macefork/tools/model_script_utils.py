@@ -5,13 +5,16 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace import modules
-from mace.modules.wrapper_ops import CuEquivarianceConfig
-from mace.tools.deprecation import warn
-from mace.tools.finetuning_utils import load_foundations_elements, load_foundations_mdp
-from mace.tools.scripts_utils import extract_config_mace_model, resolve_m_max
-from mace.tools.torch_tools import dtype_dict
-from mace.tools.utils import AtomicNumberTable
+from macefork import modules
+from macefork.modules.wrapper_ops import CuEquivarianceConfig
+from macefork.tools.deprecation import warn
+from macefork.tools.finetuning_utils import (
+    load_foundations_elements,
+    load_foundations_mdp,
+)
+from macefork.tools.scripts_utils import extract_config_mace_model, resolve_m_max
+from macefork.tools.torch_tools import dtype_dict
+from macefork.tools.utils import AtomicNumberTable
 
 
 def configure_model(
@@ -375,7 +378,7 @@ def _build_model(
     if args.model == "FoundationMACE":
         return modules.ScaleShiftMACE(**model_config_foundation)
     if args.model == "FoundationMACELES":
-        from mace.modules.extensions import MACELES
+        from macefork.modules.extensions import MACELES
 
         return MACELES(
             les_arguments=args.les_arguments,
@@ -439,7 +442,7 @@ def _build_model(
             MLP_irreps=o3.Irreps(args.MLP_irreps),
         )
     if args.model == "MACELES":
-        from mace.modules.extensions import MACELES
+        from macefork.modules.extensions import MACELES
 
         return MACELES(
             les_arguments=args.les_arguments,

@@ -6,12 +6,12 @@ from typing import Dict, List, Tuple, Union
 import torch
 from e3nn import o3
 
-from mace.modules.wrapper_ops import CuEquivarianceConfig
-from mace.tools import deprecation
-from mace.tools.cg import O3_e3nn
-from mace.tools.cg_cueq_tools import symmetric_contraction_proj
-from mace.tools.scripts_utils import extract_config_mace_model
-from mace.tools.torch_tools import restores_default_dtype
+from macefork.modules.wrapper_ops import CuEquivarianceConfig
+from macefork.tools import deprecation, legacy_pickle
+from macefork.tools.cg import O3_e3nn
+from macefork.tools.cg_cueq_tools import symmetric_contraction_proj
+from macefork.tools.scripts_utils import extract_config_mace_model
+from macefork.tools.torch_tools import restores_default_dtype
 
 try:
     import cuequivariance as cue
@@ -229,7 +229,9 @@ def run(
     # logging.warning(f"Loading model")
     # check if input_model is a path or a model
     if isinstance(input_model, str):
-        source_model = torch.load(input_model, map_location=device)
+        source_model = torch.load(
+            input_model, map_location=device, pickle_module=legacy_pickle
+        )
     else:
         source_model = input_model
     default_dtype = next(source_model.parameters()).dtype
@@ -280,7 +282,7 @@ def run(
 
 
 def main():
-    deprecation.warn("ep.mace_e3nn_cueq")
+    deprecation.warn("ep.macefork_e3nn_cueq")
     parser = argparse.ArgumentParser()
     parser.add_argument("input_model", help="Path to input MACE model")
     parser.add_argument(

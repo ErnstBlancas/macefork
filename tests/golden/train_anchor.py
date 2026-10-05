@@ -81,7 +81,7 @@ TRAIN_ARGS: Dict[str, object] = {
 
 def build_argv(work_dir: Path) -> List[str]:
     """The exact command, as an argv list, that produces the anchor."""
-    argv = [sys.executable, str(REPO_ROOT / "mace" / "cli" / "run_train.py")]
+    argv = [sys.executable, str(REPO_ROOT / "macefork" / "cli" / "run_train.py")]
     for key, value in TRAIN_ARGS.items():
         argv.append(f"--{key}" if value is None else f"--{key}={value}")
     for directory in ("model_dir", "checkpoints_dir", "results_dir", "log_dir"):
@@ -187,7 +187,7 @@ def train_anchor(model_path: Path) -> Path:
     # per-invocation temporary path, and leaving it in would make the sidecar
     # differ on every regeneration for no reason anyone could act on.
     printable = [
-        "python" if index == 0 else "mace/cli/run_train.py" if index == 1 else arg
+        "python" if index == 0 else "macefork/cli/run_train.py" if index == 1 else arg
         for index, arg in enumerate(argv)
     ]
     printable = [
@@ -208,11 +208,11 @@ def train_anchor(model_path: Path) -> Path:
             "python tests/golden/regenerate.py --target anchors "
             "--i-know-what-i-am-doing"
         ),
-        "built_by": "mace/cli/run_train.py (the CLI class for --model MACE)",
+        "built_by": "macefork/cli/run_train.py (the CLI class for --model MACE)",
         "note": (
             "--model MACE yields a ScaleShiftMACE with atomic_inter_scale "
             "set from the dataset std and the shift zeroed "
-            "(mace/tools/model_script_utils.py:279-296)."
+            "(macefork/tools/model_script_utils.py:279-296)."
         ),
         "seed": SEED,
         "dtype": "float64",
@@ -231,7 +231,7 @@ def train_anchor(model_path: Path) -> Path:
         "schema_version": 1,
         "description": (
             "Final train/valid error table of the ScaleShiftMACE anchor "
-            "training, as rendered by mace/tools/tables_utils.create_error_table, "
+            "training, as rendered by macefork/tools/tables_utils.create_error_table, "
             "plus the last evaluation record written by the metrics logger. "
             "Committed so a rewrite's training run can be compared against "
             "the legacy stack's own numbers on the same tiny set."

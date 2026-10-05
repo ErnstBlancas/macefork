@@ -9,15 +9,15 @@ from e3nn import o3
 from e3nn.util import jit
 from scipy.spatial.transform import Rotation as R
 
-from mace import data, modules, tools
+from macefork import data, modules, tools
 from tests.helpers import REPO_ROOT
-from mace.calculators import mace_mp, mace_off, mace_omol
-from mace.calculators.foundations_models import mace_polar, polar_model_paths
-from mace.tools import torch_geometric
-from mace.tools.finetuning_utils import load_foundations_elements
-from mace.tools.scripts_utils import extract_config_mace_model, remove_pt_head
-from mace.tools.torch_tools import default_dtype
-from mace.tools.utils import AtomicNumberTable
+from macefork.calculators import mace_mp, mace_off, mace_omol
+from macefork.calculators.foundations_models import mace_polar, polar_model_paths
+from macefork.tools import torch_geometric
+from macefork.tools.finetuning_utils import load_foundations_elements
+from macefork.tools.scripts_utils import extract_config_mace_model, remove_pt_head
+from macefork.tools.torch_tools import default_dtype
+from macefork.tools.utils import AtomicNumberTable
 
 try:
     import graph_longrange  # noqa: F401
@@ -28,7 +28,7 @@ except (ImportError, ModuleNotFoundError):
 
 MODEL_PATH = (
     REPO_ROOT
-    / "mace"
+    / "macefork"
     / "calculators"
     / "foundations_models"
     / "2023-12-03-mace-mp.model"

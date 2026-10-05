@@ -1,4 +1,4 @@
-"""Unit tests for mace/modules/loss.py.
+"""Unit tests for macefork/modules/loss.py.
 
 Every expected value is computed BY HAND in the test (concrete numbers for
 tiny batches), never by re-applying the module's formula. The canonical
@@ -16,7 +16,7 @@ import pytest
 import torch
 import torch.distributed as dist
 
-from mace.modules.loss import (
+from macefork.modules.loss import (
     DipolePolarLoss,
     DipoleSingleLoss,
     UniversalLoss,
@@ -515,7 +515,7 @@ def test_universal_loss_magforces_per_config_weight_multiplies_the_arguments():
     """Not the term: the *inputs* of the huber, which is not the same thing.
 
     `configs_magforces_weight` multiplies ref and pred before the huber
-    (mace/modules/loss.py:486-491), so the error it sees is scaled and the
+    (macefork/modules/loss.py:486-491), so the error it sees is scaled and the
     regime it lands in can change. With weight 2 the 0.5 deviation above
     becomes 1.0, which is exactly at delta: 0.5 * 1.0^2 = 0.5, meaned over 6
     -> 0.5 / 6, i.e. four times the unweighted value, not twice.
@@ -592,7 +592,7 @@ def test_universal_loss_per_config_energy_weight_is_not_a_linear_factor():
     """Doubling it tripled this loss. Measured, and pinned so a port keeps it.
 
     `configs_energy_weight` multiplies both sides *inside* the huber
-    (mace/modules/loss.py:464-469), so it rescales the error and can push it
+    (macefork/modules/loss.py:464-469), so it rescales the error and can push it
     from the quadratic branch into the linear one. Deviation 2.0 over 2
     atoms: at weight 1 the argument is 1.0 = delta -> 0.5; at weight 2 it is
     2.0 -> 1 * (2 - 0.5) = 1.5.
@@ -725,7 +725,7 @@ def test_mean_normed_error_forces_is_unweighted():
 
     `mean_normed_error_forces` takes the per-atom error norm and means it,
     with no `ref.weight` and no `ref.forces_weight` anywhere
-    (mace/modules/loss.py:138-142). Pinned because it is the single
+    (macefork/modules/loss.py:138-142). Pinned because it is the single
     exception, and a port that "regularises" it changes what
     `--loss l1l2energyforces` fits.
     """
@@ -740,7 +740,7 @@ def test_weighted_mean_squared_error_polarizability_reshapes_only_the_reference(
     """An asymmetry worth pinning: `.view(-1, 3, 3)` is applied to `ref` only.
 
     A reference stored flat as [n_graphs, 9] is accepted and reshaped
-    (mace/modules/loss.py:174); a prediction stored flat is not, and would
+    (macefork/modules/loss.py:174); a prediction stored flat is not, and would
     broadcast into nonsense instead of failing. Both sides are pinned.
     """
     ref = make_ref(
@@ -838,7 +838,7 @@ def test_every_cli_loss_name_reaches_its_class_with_its_weights(name, cls):
     there is silent, because the `else` branch hands back a default
     WeightedEnergyForcesLoss rather than refusing.
     """
-    from mace.tools.scripts_utils import get_loss_fn  # noqa: PLC0415
+    from macefork.tools.scripts_utils import get_loss_fn  # noqa: PLC0415
 
     args = _loss_args(name)
     loss = get_loss_fn(
@@ -862,7 +862,7 @@ def test_every_cli_loss_name_reaches_its_class_with_its_weights(name, cls):
 
 def test_an_unknown_cli_loss_name_falls_back_instead_of_failing():
     """Characterization, not endorsement: a typo silently trains `weighted`."""
-    from mace.tools.scripts_utils import get_loss_fn  # noqa: PLC0415
+    from macefork.tools.scripts_utils import get_loss_fn  # noqa: PLC0415
 
     loss = get_loss_fn(
         _loss_args("universl"), dipole_only=False, compute_dipole=False

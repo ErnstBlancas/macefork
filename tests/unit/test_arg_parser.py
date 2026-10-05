@@ -1,4 +1,4 @@
-"""Unit tests for mace/tools/arg_parser.py.
+"""Unit tests for macefork/tools/arg_parser.py.
 
 We test the *contract* of the parsers, not every one of the ~200 flags:
 
@@ -18,7 +18,7 @@ import argparse
 
 import pytest
 
-from mace.tools.arg_parser import (
+from macefork.tools.arg_parser import (
     build_default_arg_parser,
     build_preprocess_arg_parser,
     check_float_or_none,

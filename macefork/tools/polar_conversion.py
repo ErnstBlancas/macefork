@@ -45,7 +45,7 @@ def convert_polar_model(model, pbc_handling: str = "auto"):
 
     validate_pbc_handling(pbc_handling)
     # PolarMACE imports this helper for __setstate__; importing the class back
-    # here would make every mace.modules import cyclic. The block checks below
+    # here would make every macefork.modules import cyclic. The block checks below
     # still provide the concrete graph_longrange type contract.
     if not any(cls.__name__ == "PolarMACE" for cls in type(model).__mro__):
         raise TypeError("Expected a PolarMACE whole model, not a checkpoint state dict")

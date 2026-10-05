@@ -7,7 +7,7 @@ periodic structure) ``get_stress`` and scrapes ``results``.
 
 **That route does not exist for a model with no energy.** ``MACECalculator``
 built with ``model_type="DipoleMACE"`` or ``"DipolePolarizabilityMACE"``
-leaves no ``energy`` in ``results`` at all (``mace/calculators/mace.py:756``
+leaves no ``energy`` in ``results`` at all (``macefork/calculators/mace.py:756``
 onwards populates only what the forward returned), so the very first accessor
 raises ``PropertyNotImplementedError`` and the snapshot never happens. This is
 not a gap in the schema -- every key these families emit resolves to a channel
@@ -36,8 +36,8 @@ from typing import Any, Callable, Dict, Optional
 
 import torch
 
-from mace import data
-from mace.tools import torch_geometric, torch_tools, utils
+from macefork import data
+from macefork.tools import torch_geometric, torch_tools, utils
 from tests.golden import harness
 
 

@@ -5,7 +5,7 @@ tensors, so a float32 pair under a float64 model does not raise: promotion makes
 it a quietly less accurate number, and it is LAMMPS that consumes it.
 
 They used to be built at `torch.get_default_dtype()`, and the export happened to
-be correct only because `mace_create_lammps_model --format mliap` converts to the
+be correct only because `macefork_create_lammps_model --format mliap` converts to the
 cueq layout first and that converter set the default globally on its way through.
 Restoring the default in the converter -- which every other caller wants, since
 `MACECalculator` and `run_train` call it as a plain function -- removes that
@@ -15,7 +15,7 @@ accident, so the dtype has to come from the model instead.
 import pytest
 import torch
 
-from mace.calculators.lammps_mliap_mace import MACEEdgeForcesWrapper
+from macefork.calculators.lammps_mliap_mace import MACEEdgeForcesWrapper
 from tests.integrations.lammps._harness import StubMACE
 
 

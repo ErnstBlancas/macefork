@@ -1,4 +1,4 @@
-"""Unit tests for mace/data/utils.py (configuration parsing).
+"""Unit tests for macefork/data/utils.py (configuration parsing).
 
 Covers KeySpecification / update_keyspec_from_kwargs, config_from_atoms
 (custom info/arrays keys, missing keys, config_type / weights, pbc/cell),
@@ -13,8 +13,8 @@ import numpy as np
 import pytest
 from ase.atoms import Atoms
 
-from mace.data import utils as data_utils
-from mace.data.utils import (
+from macefork.data import utils as data_utils
+from macefork.data.utils import (
     KeySpecification,
     compute_average_E0s,
     config_from_atoms,
@@ -23,7 +23,7 @@ from mace.data.utils import (
     random_train_valid_split,
     update_keyspec_from_kwargs,
 )
-from mace.tools import AtomicNumberTable, DefaultKeys
+from macefork.tools import AtomicNumberTable, DefaultKeys
 from tests.helpers import make_fitting_configs
 
 
@@ -698,7 +698,7 @@ def test_keep_isolated_atoms_keeps_them_and_still_extracts(tmp_path):
 
 # ---------------------------------------------------------------------------
 # The remaining parsing-layer surface: prefixed split files, a headless
-# config, and the two HDF5 writers that mace.data exports and nothing in the
+# config, and the two HDF5 writers that macefork.data exports and nothing in the
 # suite had ever called.
 # ---------------------------------------------------------------------------
 
@@ -728,13 +728,13 @@ def test_config_types_treats_a_missing_head_as_the_empty_string():
 
 def test_save_dataset_as_hdf5_writes_one_group_per_graph(tmp_path):
     """`save_dataset_as_HDF5` / `save_AtomicData_to_HDF5` are exported from
-    `mace.data` and were reached by nothing in the suite. They write built
+    `macefork.data` and were reached by nothing in the suite. They write built
     graphs (not configurations), one group per graph, so the on-disk layout
     they define is pinned here before DATA-2 has to reproduce or replace it.
     """
     import h5py  # noqa: PLC0415  (only this test needs it)
 
-    from mace.data import AtomicData, save_dataset_as_HDF5
+    from macefork.data import AtomicData, save_dataset_as_HDF5
 
     z_table = AtomicNumberTable([1, 8])
     configs = [

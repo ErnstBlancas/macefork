@@ -7,11 +7,11 @@ import torch
 from ase.build import molecule
 from ase.calculators.singlepoint import SinglePointCalculator
 
-from mace.data.lmdb_dataset import LMDBDataset
-from mace.data.utils import KeySpecification, update_keyspec_from_kwargs
-from mace.tools import AtomicNumberTable, torch_geometric
-from mace.tools.fairchem_dataset.lmdb_dataset_tools import LMDBDatabase
-from mace.tools.run_train_utils import load_dataset_for_path
+from macefork.data.lmdb_dataset import LMDBDataset
+from macefork.data.utils import KeySpecification, update_keyspec_from_kwargs
+from macefork.tools import AtomicNumberTable, torch_geometric
+from macefork.tools.fairchem_dataset.lmdb_dataset_tools import LMDBDatabase
+from macefork.tools.run_train_utils import load_dataset_for_path
 
 
 def test_lmdb_dataset():

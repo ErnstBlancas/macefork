@@ -31,14 +31,14 @@ runs:
         WHEEL_PATH="$(ls $IN_WHEEL | head -1)"
         pip install -q "$WHEEL_PATH"
 
-        python -c "import mace; print('mace import OK')"
+        python -c "import macefork; print('macefork import OK')"
 
         # Every console entry point must at least resolve and print help: this
         # catches broken setup.cfg entry points, the most common packaging failure.
-        for ep in mace_run_train mace_eval_configs mace_prepare_data \
-                  mace_create_lammps_model mace_convert_device mace_select_head \
-                  mace_e3nn_cueq mace_cueq_to_e3nn mace_finetuning_select \
-                  mace_active_learning_md mace_plot_train mace_polar_density_cube; do
+        for ep in macefork_run_train macefork_eval_configs macefork_prepare_data \
+                  macefork_create_lammps_model macefork_convert_device macefork_select_head \
+                  macefork_e3nn_cueq macefork_cueq_to_e3nn macefork_finetuning_select \
+                  macefork_active_learning_md macefork_plot_train macefork_polar_density_cube; do
           if command -v "$ep" >/dev/null 2>&1; then
             "$ep" --help >/dev/null
             echo "entry point OK: $ep"
@@ -72,13 +72,13 @@ runs:
             configs.append(c)
         ase.io.write("smoke.xyz", configs)
         PY
-        mace_run_train --name=smoke --model=MACE --hidden_irreps=16x0e --r_max=3.5 \
+        macefork_run_train --name=smoke --model=MACE --hidden_irreps=16x0e --r_max=3.5 \
           --batch_size=5 --max_num_epochs=2 --device=cpu --seed=5 \
           --energy_key=REF_energy --forces_key=REF_forces --valid_fraction=0.2 \
           --checkpoints_dir=. --model_dir=. --train_file=smoke.xyz --loss=weighted
         test -f smoke.model
-        mace_eval_configs --configs=smoke.xyz --model=smoke.model --output=smoke_eval.xyz
+        macefork_eval_configs --configs=smoke.xyz --model=smoke.model --output=smoke_eval.xyz
         test -f smoke_eval.xyz
-        mace_create_lammps_model smoke.model
+        macefork_create_lammps_model smoke.model
         test -f smoke.model-lammps.pt
         echo "release smoke: OK"

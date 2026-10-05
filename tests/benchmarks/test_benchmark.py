@@ -8,9 +8,9 @@ import pytest
 import torch
 from ase import build
 
-from mace import data as mace_data
-from mace.calculators.foundations_models import mace_mp
-from mace.tools import AtomicNumberTable, torch_geometric, torch_tools
+from macefork import data as mace_data
+from macefork.calculators.foundations_models import mace_mp
+from macefork.tools import AtomicNumberTable, torch_geometric, torch_tools
 
 
 def is_mace_full_bench():

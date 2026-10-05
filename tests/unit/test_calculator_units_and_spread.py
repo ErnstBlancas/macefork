@@ -26,10 +26,10 @@ import torch.nn.functional as F
 from ase import Atoms
 from e3nn import o3
 
-from mace import modules
-import mace.calculators.mace as mace_calculator_module
-from mace.calculators import MACECalculator
-from mace.tools import AtomicNumberTable
+from macefork import modules
+import macefork.calculators.mace as mace_calculator_module
+from macefork.calculators import MACECalculator
+from macefork.tools import AtomicNumberTable
 
 TABLE = AtomicNumberTable([1, 8])
 

@@ -13,7 +13,7 @@ either fills a disk or throws away the history a restart needs.
 import pytest
 import torch
 
-from mace.tools.checkpoint import CheckpointIO
+from macefork.tools.checkpoint import CheckpointIO
 
 
 def state(value):

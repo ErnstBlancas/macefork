@@ -3,7 +3,7 @@
 The magnetic family is a full parallel model stack -- its own models, its own
 interaction and product blocks, its own derivative kernels
 (``compute_forces_magforces``, ``compute_forces_virials_magforces`` in
-``mace/modules/utils.py``), its own calculator and its own CLI surface -- and
+``macefork/modules/utils.py``), its own calculator and its own CLI surface -- and
 it arrived after the last release with no numerical reference anywhere. The
 behavioural suite in ``tests/extensions/magnetic`` is thorough about
 *properties* (equivariance, parity, parameter registration, dtype scoping),
@@ -24,14 +24,14 @@ reference depend on an optimiser trajectory. Two choices below are not free,
 though, and both would silently change every number in the reference:
 
 * ``use_reduced_cg=False``. The default is ``True`` and
-  ``mace/modules/wrapper_ops.py:428`` degrades it to ``False`` when
+  ``macefork/modules/wrapper_ops.py:428`` degrades it to ``False`` when
   cuequivariance is absent, so an anchor built with the default has different
   weights depending on what happens to be installed on the machine that built
   it. Same reasoning as the plain anchor.
 * ``use_magmom_one_body=True``. This is the switch behind
   ``--use_magmom_one_body``, and it adds a per-atom energy term that depends
   on |m| alone through a Chebyshev basis plus a per-species constant
-  correction (``mace/modules/extensions.py:1719-1737``, applied at
+  correction (``macefork/modules/extensions.py:1719-1737``, applied at
   ``:1866-1888``). Off, the term is not merely zero -- the parameters do not
   exist, and nothing in the reference would cover the path. On, the
   ``mag_fe_atom`` fixture pins it essentially on its own: with no edges,
@@ -39,7 +39,7 @@ though, and both would silently change every number in the reference:
 
 This anchor needs the ``magnetic`` extra (``sphericart``): the moment's
 spherical harmonics are computed by ``sphericart.torch.SolidHarmonics``
-(``mace/modules/extensions.py:1351-1363``), so both building and *loading*
+(``macefork/modules/extensions.py:1351-1363``), so both building and *loading*
 the checkpoint require it.
 """
 
@@ -53,8 +53,8 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace import modules
-from mace.modules.extensions import MagneticScaleShiftMACE
+from macefork import modules
+from macefork.modules.extensions import MagneticScaleShiftMACE
 
 MODELS_DIR = Path(__file__).resolve().parent / "models"
 MODEL_PATH = MODELS_DIR / "tiny_magnetic.model"
@@ -64,7 +64,7 @@ SEED = 20260810
 
 #: Iron and its ligand, in z-table order -- which is the order ``m_max`` is
 #: indexed in, since the lookup is by one-hot species position
-#: (``mace/modules/extensions.py:1815-1817``).
+#: (``macefork/modules/extensions.py:1815-1817``).
 ATOMIC_NUMBERS = [8, 26]
 
 #: Fixed, not fitted. This anchor is never trained, so its isolated-atom

@@ -17,7 +17,7 @@ from .torch_tools import (
     to_one_hot,
     voigt_to_matrix,
 )
-from .train import SWAContainer, evaluate, train
+from .train import ConvergenceMonitor, SWAContainer, evaluate, train
 from .utils import (
     AtomicNumberTable,
     MetricsLogger,
@@ -52,6 +52,7 @@ __all__ = [
     "train",
     "evaluate",
     "SWAContainer",
+    "ConvergenceMonitor",
     "CheckpointHandler",
     "CheckpointIO",
     "CheckpointState",

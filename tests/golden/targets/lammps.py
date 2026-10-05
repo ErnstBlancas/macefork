@@ -41,7 +41,7 @@ def run() -> None:
         work_path = Path(work)
         model_copy = work_path / anchor.name
         shutil.copy(anchor, model_copy)
-        create = REPO_ROOT / "mace" / "cli" / "create_lammps_model.py"
+        create = REPO_ROOT / "macefork" / "cli" / "create_lammps_model.py"
         for extra, suffix in ((["--format=mliap"], "-mliap_lammps.pt"), ([], "-lammps.pt")):
             subprocess.run(
                 [_sys.executable, str(create), *extra, str(model_copy)],
@@ -68,7 +68,7 @@ def run() -> None:
                 "source": f"tests/golden/models/{anchor.name}",
                 "recipe": "tests/golden/regenerate.py --target lammps",
                 "description": (
-                    "mace_create_lammps_model (libtorch format) on the "
+                    "macefork_create_lammps_model (libtorch format) on the "
                     "ScaleShiftMACE anchor, evaluated on an open cluster of "
                     f"{N_REPEAT}^3 replicas of the {FIXTURE} fixture with the "
                     "central replica as the LOCAL atoms."

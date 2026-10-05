@@ -23,7 +23,7 @@ import numpy as np
 import pytest
 import torch
 
-from mace.calculators.lammps_mliap_mace import (
+from macefork.calculators.lammps_mliap_mace import (
     LAMMPS_MLIAP_MACE,
     MACELammpsConfig,
     timer,

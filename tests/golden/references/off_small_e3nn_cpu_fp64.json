@@ -241,7 +241,7 @@
   },
   "provenance": {
     "description": "MACE-OFF23 small, organic chemistry (H C N O F P S Cl Br I), downloaded from the mace-off repository. ASL licensed.",
-    "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+    "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
     "fixture_names": [
       "dimer_short",
       "isolated_atom",
@@ -250,7 +250,7 @@
     "fixture_tags": [
       "molecular"
     ],
-    "recipe": "mace.calculators.foundations_models.mace_off(model='small', default_dtype='float64', device='cpu')",
+    "recipe": "macefork.calculators.foundations_models.mace_off(model='small', default_dtype='float64', device='cpu')",
     "sha256": "165cce4cfec5a34b9c64d4ebf95de15d71106bb584b7291c8470f0749977c46f",
     "source": "https://raw.githubusercontent.com/ACEsuit/mace-off/main/mace_off23/MACE-OFF23_small.model",
     "tolerance_row": "fp64_cpu_reference"

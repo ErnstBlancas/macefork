@@ -1,4 +1,4 @@
-"""Export CLI contract: mace_create_lammps_model produces loadable artifacts.
+"""Export CLI contract: macefork_create_lammps_model produces loadable artifacts.
 
 Contract tier — no LAMMPS binary. The libtorch format is plain TorchScript;
 the mliap format additionally converts the model to the cueq layout (hence the
@@ -13,7 +13,7 @@ import torch
 from tests.helpers import REPO_ROOT, run_mace_train
 from tests.integrations.lammps._harness import lammps_style_cluster
 
-CREATE_LAMMPS_MODEL = REPO_ROOT / "mace" / "cli" / "create_lammps_model.py"
+CREATE_LAMMPS_MODEL = REPO_ROOT / "macefork" / "cli" / "create_lammps_model.py"
 
 
 @pytest.fixture(name="model_copy")

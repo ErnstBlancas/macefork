@@ -93,7 +93,7 @@ def test_anchor_is_the_class_it_claims_to_be():
     model = _load()
     assert type(model).__name__ == "AtomicDipolesMACE"
     # Not an energy model, and the class asserts as much on construction
-    # (mace/modules/models.py:664). If this ever gains an atomic_energies_fn
+    # (macefork/modules/models.py:664). If this ever gains an atomic_energies_fn
     # the anchor was rebuilt as something else.
     assert not hasattr(model, "atomic_energies_fn")
     assert not hasattr(model, "scale_shift")
@@ -107,7 +107,7 @@ def test_the_committed_anchor_carries_the_plain_e3nn_basis():
     ``EquivariantProductBasisBlock`` gets its ``None`` default and
     ``SymmetricContractionWrapper`` evaluates ``use_reduced_cg and
     CUET_AVAILABLE`` to a falsy value either way
-    (mace/modules/wrapper_ops.py:428). The plain-MACE anchor has to pin the
+    (macefork/modules/wrapper_ops.py:428). The plain-MACE anchor has to pin the
     flag to False because its ``True`` default is silently degraded when
     cuequivariance is absent; here the reduced path is unreachable.
 
@@ -162,7 +162,7 @@ def test_the_committed_anchor_carries_the_plain_e3nn_basis():
 
     for product in committed.products:
         contraction = product.symmetric_contractions
-        assert type(contraction).__module__.startswith("mace."), (
+        assert type(contraction).__module__.startswith("macefork."), (
             "the committed anchor holds a cuequivariance contraction object, "
             "which cannot be unpickled on a machine without the package"
         )
@@ -173,7 +173,7 @@ def test_the_fixed_charge_baseline_is_live():
 
     ``AtomicDipolesMACE`` adds ``compute_fixed_charge_dipole(data["charges"],
     ...)`` to the scatter-summed atomic dipoles
-    (mace/modules/models.py:825-831). None of the committed fixtures carries a
+    (macefork/modules/models.py:825-831). None of the committed fixtures carries a
     reference-charge array, so ``AtomicData`` fills the batch with zeros and
     the baseline is identically zero in the reference -- a rewrite could drop
     the whole term and the golden would not notice. Asserting the fixtures
@@ -195,7 +195,7 @@ def test_the_fixed_charge_baseline_is_live():
         "is gone"
     )
 
-    from mace.tools import torch_tools  # noqa: PLC0415
+    from macefork.tools import torch_tools  # noqa: PLC0415
 
     with torch_tools.default_dtype("float64"):
         neutral = model(routes.graph_batch(model, atoms))["dipole"][0].detach()
@@ -209,7 +209,7 @@ def test_the_fixed_charge_baseline_is_live():
         moved = model(charged)["dipole"][0].detach()
 
     # sum_i q_i r_i is in e*Ang; this class divides by 1e-11 / c / e
-    # (mace/modules/utils.py:622), which is the e*Ang -> Debye conversion, so
+    # (macefork/modules/utils.py:622), which is the e*Ang -> Debye conversion, so
     # the baseline arrives in the unit the channel declares. The constants are
     # taken from scipy, which is where the model takes them, and not from
     # ase.units: the two disagree in the ninth significant figure (CODATA
@@ -238,7 +238,7 @@ def test_the_two_fixed_charge_baselines_do_not_share_a_unit():
     ``compute_fixed_charge_dipole``, which divides by ``1e-11 / c / e`` and so
     returns Debye. ``AtomicDielectricMACE`` -- the MACE-MDP class -- builds
     its own with ``compute_fixed_charge_dipole_polar``, where that division is
-    present but commented out (mace/modules/utils.py:634-636), so its baseline
+    present but commented out (macefork/modules/utils.py:634-636), so its baseline
     is e*Ang. The two graph dipoles are therefore *not* the same quantity even
     though both land in a channel the schema declares as Debye, and the ratio
     is exactly the conversion factor.
@@ -250,7 +250,7 @@ def test_the_two_fixed_charge_baselines_do_not_share_a_unit():
     """
     from scipy.constants import c, e  # noqa: PLC0415
 
-    from mace.modules.utils import (  # noqa: PLC0415
+    from macefork.modules.utils import (  # noqa: PLC0415
         compute_fixed_charge_dipole,
         compute_fixed_charge_dipole_polar,
     )
@@ -283,11 +283,11 @@ def test_the_calculator_route_reaches_the_same_dipole(fixtures):
 
     ``MACECalculator(model_type="DipoleMACE")`` puts only ``dipole`` in its
     results -- ``atomic_dipoles`` is not in ``results_map``
-    (mace/calculators/mace.py:719-738), so the per-atom term is reachable
+    (macefork/calculators/mace.py:719-738), so the per-atom term is reachable
     through the forward alone. The one channel both doors carry has to be the
     same number, or the reference pins a route nothing else uses.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     model = _load()
     calc = MACECalculator(
@@ -315,7 +315,7 @@ def test_a_dipole_model_cannot_be_driven_through_an_ase_accessor(fixtures):
     """
     from ase.calculators.calculator import PropertyNotImplementedError  # noqa: PLC0415
 
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     calc = MACECalculator(
         models=[_load()],

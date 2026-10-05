@@ -12,9 +12,9 @@ import torch
 import torch.utils.data
 from scipy.constants import c, e
 
-from mace.tools import to_numpy
-from mace.tools.scatter import scatter_mean, scatter_std, scatter_sum
-from mace.tools.torch_geometric.batch import Batch
+from macefork.tools import to_numpy
+from macefork.tools.scatter import scatter_mean, scatter_std, scatter_sum
+from macefork.tools.torch_geometric.batch import Batch
 
 from .blocks import AtomicEnergiesBlock
 

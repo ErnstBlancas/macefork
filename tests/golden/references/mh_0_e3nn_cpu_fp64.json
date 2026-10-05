@@ -561,7 +561,7 @@
   },
   "provenance": {
     "description": "MACE-MP mh-0, the multi-head release: one model carrying seven levels of theory (rgd1_b3lyp, matpes_r2scan, mp_pbe_refit_add, omol, spice_wB97M, oc20_usemppbe, omat_pbe). Pinned on the PBE materials head. The published multihead artifact a conversion has to come out of with every head still selectable, so the reference is one head's numbers and the tests beside it are the head set.",
-    "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+    "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
     "fixture_names": [
       "dimer_short",
       "isolated_atom",
@@ -571,7 +571,7 @@
       "water_cluster"
     ],
     "fixture_tags": [],
-    "recipe": "mace.calculators.foundations_models.mace_mp(model='mh-0', default_dtype='float64', device='cpu', head='mp_pbe_refit_add')",
+    "recipe": "macefork.calculators.foundations_models.mace_mp(model='mh-0', default_dtype='float64', device='cpu', head='mp_pbe_refit_add')",
     "sha256": "d62ff8f293664e6556cfa49364b28ee72a70cf1e6150f3c111a578397fed609d",
     "source": "https://github.com/ACEsuit/mace-foundations/releases/download/mace_mh_1/mace-mh-0.model",
     "tolerance_row": "fp64_cpu_reference"

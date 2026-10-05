@@ -1,7 +1,7 @@
 """Check that every trainable model parameter is registered in the optimizer.
 
-The training entry point (mace/cli/run_train.py) builds the optimizer from
-explicit named parameter groups in mace.tools.scripts_utils.get_params_options.
+The training entry point (macefork/cli/run_train.py) builds the optimizer from
+explicit named parameter groups in macefork.tools.scripts_utils.get_params_options.
 A submodule missing from those groups would silently receive no gradient
 updates, so get_params_options raises for unclaimed trainable parameters and
 these tests assert that every trainable model class passes that check.
@@ -18,9 +18,9 @@ import numpy as np
 import pytest
 import torch
 
-from mace import modules
-from mace.modules import interaction_classes
-from mace.tools.scripts_utils import get_optimizer, get_params_options
+from macefork import modules
+from macefork.modules import interaction_classes
+from macefork.tools.scripts_utils import get_optimizer, get_params_options
 from e3nn import o3  # isort: skip  (mace import must come first for torch.load)
 
 

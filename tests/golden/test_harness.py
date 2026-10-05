@@ -46,7 +46,7 @@ def test_harness_imports_with_the_framework_blocked():
         "import sys\n"
         "class Blocker:\n"
         "    def find_module(self, name, path=None):\n"
-        "        if name == 'mace' or name.startswith('mace.'):\n"
+        "        if name == 'macefork' or name.startswith('macefork.'):\n"
         "            raise ImportError('the framework is not importable here')\n"
         "        return None\n"
         "    def find_spec(self, name, path=None, target=None):\n"
@@ -58,7 +58,7 @@ def test_harness_imports_with_the_framework_blocked():
         # Derived, not a literal: every family adds fixtures, and a
         # hard count turns each addition into an edit here.
         "assert len(fixtures) == len(harness.load_manifest()) > 6\n"
-        "assert 'mace' not in sys.modules\n"
+        "assert 'macefork' not in sys.modules\n"
         "print('ok')\n"
     )
     done = subprocess.run(
@@ -476,7 +476,7 @@ class Keyspecced(FakeSource):
     """As either calculator presents itself: two dicts on the instance.
 
     `KeySpecification(info_keys=self.info_keys, arrays_keys=self.arrays_keys)`
-    is built from exactly these (mace/calculators/mace.py:577) and
+    is built from exactly these (macefork/calculators/mace.py:577) and
     `config_from_atoms` iterates them, so reading them is reading the reader.
     """
 
@@ -573,7 +573,7 @@ def test_an_input_the_evaluation_carries_itself_is_recorded():
     """The external field, which is the case that has no key at all.
 
     `MACECalculator(external_field=[...])` writes the vector into the batch
-    after the graph is built (mace/calculators/mace.py:685-690), so it
+    after the graph is built (macefork/calculators/mace.py:685-690), so it
     overrides the structure and appears in no array. It enters the energy and
     the BEC force correction, so a reference that recorded nothing for it held
     numbers that another field's reference could not be told apart from.
@@ -764,7 +764,7 @@ def test_every_allowlist_entry_carries_a_reason():
 
 
 def test_the_calculator_spellings_resolve_to_one_channel():
-    """The four names measured against mace/calculators/mace.py.
+    """The four names measured against macefork/calculators/mace.py.
 
     Each of these is what the calculator writes; the right-hand side is what
     the model's forward and the registry call it. Before the alias map, a LES
@@ -806,7 +806,7 @@ REPO_ROOT = Path(harness.__file__).resolve().parents[2]
 
 
 # ---------------------------------------------------------------------------
-# The three surfaces, each derived from mace/ by tests/golden/surface_scan.py
+# The three surfaces, each derived from macefork/ by tests/golden/surface_scan.py
 #
 # Nothing below restates a key. The extractors are the subject of the first
 # few tests and the coverage checks are the subject of the rest, in that order
@@ -858,7 +858,7 @@ def test_the_calculator_extractor_follows_every_write_form(tmp_path):
     The previous extractor was a regex for `self.results["name"]`, so it saw
     one of the five ways this package writes a result and hand-copied the
     sixth (the committee suffixes) into the test as four literals. Each form
-    below is either in mace/calculators/mace.py today or one refactor away,
+    below is either in macefork/calculators/mace.py today or one refactor away,
     and the point of a synthetic source is that a form stays tested even after
     the real file stops using it.
     """
@@ -972,10 +972,10 @@ def test_the_scans_still_find_the_families_they_are_meant_to():
     model = surface_scan.scan_model_surface()
     # one class per way of building the return dict...
     for name in (
-        "mace/modules/models.py::MACE",  # return {...}
-        "mace/modules/models.py::AtomicDielectricMACE",  # output = {...}; return output
-        "mace/modules/extensions.py::PolarMACE",
-        "mace/modules/extensions.py::MagneticSCFMACE",  # out["k"] = ...
+        "macefork/modules/models.py::MACE",  # return {...}
+        "macefork/modules/models.py::AtomicDielectricMACE",  # output = {...}; return output
+        "macefork/modules/extensions.py::PolarMACE",
+        "macefork/modules/extensions.py::MagneticSCFMACE",  # out["k"] = ...
     ):
         assert name in model.keys, sorted(model.keys)
     # ...and all four files that define one, which is the half that was
@@ -984,16 +984,16 @@ def test_the_scans_still_find_the_families_they_are_meant_to():
     # things a deployment golden actually evaluates -- were never checked.
     files = {owner.split("::")[0] for owner in model.keys}
     assert files == {
-        "mace/modules/models.py",
-        "mace/modules/extensions.py",
-        "mace/calculators/lammps_mace.py",
-        "mace/calculators/mace_torchsim.py",
+        "macefork/modules/models.py",
+        "macefork/modules/extensions.py",
+        "macefork/calculators/lammps_mace.py",
+        "macefork/calculators/mace_torchsim.py",
     }, sorted(files)
-    assert "scf_steps" in model.keys["mace/modules/extensions.py::MagneticSCFMACE"]
-    assert "edge_forces" in model.keys["mace/modules/models.py::MACE"]
+    assert "scf_steps" in model.keys["macefork/modules/extensions.py::MagneticSCFMACE"]
+    assert "edge_forces" in model.keys["macefork/modules/models.py::MACE"]
     assert (
         "total_energy_local"
-        in model.keys["mace/calculators/lammps_mace.py::LAMMPS_MACE"]
+        in model.keys["macefork/calculators/lammps_mace.py::LAMMPS_MACE"]
     )
     assert len(model.all_keys) >= 44, sorted(model.all_keys)
 
@@ -1025,7 +1025,7 @@ def test_the_model_forward_key_set_is_covered():
     """The second surface, and the half that was missing first.
 
     The alias map and its guard were both derived from
-    mace/calculators/mace.py alone, so all 31 calculator keys resolved while
+    macefork/calculators/mace.py alone, so all 31 calculator keys resolved while
     13 of the 43 forward keys resolved to nothing: atomic_stresses,
     atomic_virials, displacement, node_feats, contributions, atomic_dipoles,
     dmu_dr, dalpha_dr, spin_density, charges_history, scf_energy_history,
@@ -1054,7 +1054,7 @@ def test_the_model_forward_key_set_is_covered():
 def test_the_eval_cli_key_set_is_covered():
     """The third surface, which had no registrations at all.
 
-    mace_eval_configs writes thirteen names onto the structures it evaluates
+    macefork_eval_configs writes thirteen names onto the structures it evaluates
     and three of them -- BO_contributions, node_energies and descriptors --
     resolved to nothing, so a Phase 0 ticket pinning the eval CLI stopped at
     authoring time rather than at review.
@@ -1067,7 +1067,7 @@ def test_the_eval_cli_key_set_is_covered():
             unresolved.append(key)
     assert not unresolved, (
         "these eval CLI output names resolve to nothing, so a golden taken "
-        f"through mace_eval_configs would fail on them: {unresolved}"
+        f"through macefork_eval_configs would fail on them: {unresolved}"
     )
 
 
@@ -1106,7 +1106,7 @@ def test_the_eval_cli_spellings_resolve_to_one_channel():
     and one this test used to assert the wrong way round. The CLI writes the
     model's raw `output["node_energy"]`, which *includes* the isolated-atom
     reference, and the channel for that is `energies`; `node_energy` is the
-    calculator's E0-subtracted quantity (mace/calculators/mace.py:792-795).
+    calculator's E0-subtracted quantity (macefork/calculators/mace.py:792-795).
     The two have the same shape and the same unit, so an eval-route golden
     landing on the wrong one of them disagreed with a calculator-route golden
     by exactly the E0 table with nothing in the comparison able to say so.
@@ -1144,7 +1144,7 @@ def test_the_eval_cli_flattens_the_born_charges_and_the_schema_unflattens_them()
     n_atoms = 4
     rng = np.random.default_rng(1)
     full = rng.normal(size=(n_atoms, 3, 3))
-    flat = full.reshape(n_atoms, -1)  # what mace/cli/eval_configs.py:433 writes
+    flat = full.reshape(n_atoms, -1)  # what macefork/cli/eval_configs.py:433 writes
     assert np.array_equal(eval_keys.unflatten_bec(flat), full)
 
     class Written:
@@ -1231,8 +1231,8 @@ def test_a_spelling_may_mean_different_things_on_the_two_surfaces():
     """`virials` is the collision, and both readings have to survive.
 
     The model's forward returns the graph-level virial under this name
-    (mace/modules/models.py:433, shape (n_graphs, 3, 3)); the calculator
-    returns the per-atom one (mace/calculators/mace.py:729-733, shape
+    (macefork/modules/models.py:433, shape (n_graphs, 3, 3)); the calculator
+    returns the per-atom one (macefork/calculators/mace.py:729-733, shape
     (n_atoms, 3, 3)) and has no key at all for the graph virial. A single
     spelling->channel map has to pick one and mis-shape the other.
     """

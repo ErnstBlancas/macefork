@@ -9,15 +9,15 @@ import torch
 from ase.atoms import Atoms
 from e3nn import o3
 
-from mace.calculators import MACECalculator
-from mace.cli.eval_configs import run as mace_eval_configs_run
-from mace.cli.run_train import run as mace_run
-from mace.modules import interaction_classes
-from mace.modules.blocks import LinearLesReadoutBlock, NonLinearLesReadoutBlock
-from mace.modules.extensions import MACELES
-from mace.modules.models import ScaleShiftMACE
-from mace.tools.arg_parser import build_default_arg_parser
-from mace.tools.torch_tools import default_dtype
+from macefork.calculators import MACECalculator
+from macefork.cli.eval_configs import run as mace_eval_configs_run
+from macefork.cli.run_train import run as mace_run
+from macefork.modules import interaction_classes
+from macefork.modules.blocks import LinearLesReadoutBlock, NonLinearLesReadoutBlock
+from macefork.modules.extensions import MACELES
+from macefork.modules.models import ScaleShiftMACE
+from macefork.tools.arg_parser import build_default_arg_parser
+from macefork.tools.torch_tools import default_dtype
 from tests.helpers import (
     CUDA_AVAILABLE,
     CUET_AVAILABLE,

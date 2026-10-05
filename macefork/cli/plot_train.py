@@ -8,9 +8,9 @@ import os
 import re
 from typing import List
 
-from mace.tools import deprecation
+from macefork.tools import deprecation
 
-# matplotlib/pandas are not mace-torch dependencies: guard the import so the
+# matplotlib/pandas are not macefork dependencies: guard the import so the
 # console entry point resolves (and --help works) in a clean install, and
 # main() can explain what to install instead of crashing with ImportError.
 try:
@@ -339,7 +339,7 @@ def get_paths(path: str) -> List[str]:
 def main() -> None:
     if not PLOT_DEPS_AVAILABLE:
         raise SystemExit(
-            "mace_plot_train requires matplotlib and pandas: "
+            "macefork_plot_train requires matplotlib and pandas: "
             "pip install matplotlib pandas"
         )
     args = parse_args()

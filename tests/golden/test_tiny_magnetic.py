@@ -24,7 +24,7 @@ import numpy as np
 import pytest
 import torch
 
-from mace.tools import torch_tools
+from macefork.tools import torch_tools
 from tests.golden import harness
 from tests.golden import magnetic_surfaces as ms
 
@@ -162,7 +162,7 @@ def test_dedm_is_well_defined_at_a_zero_moment(anchor, fixtures):
     """The obvious worry about ``dE/dm``, measured instead of assumed.
 
     The forward takes ``torch.norm(magmom)`` before anything else
-    (mace/modules/extensions.py:1813), and the gradient of a 2-norm at the
+    (macefork/modules/extensions.py:1813), and the gradient of a 2-norm at the
     origin is 0/0 -- so a nonmagnetic site looks like a row of nans waiting to
     happen, and nans are the worst possible content for a golden because every
     comparison against them is false and none of them is reported as a
@@ -205,7 +205,7 @@ def test_dedm_is_well_defined_at_a_zero_moment(anchor, fixtures):
 
     step = 1e-5
     central = (energy(step) - energy(-step)) / (2.0 * step)
-    # magforces is -dE/dm (mace/modules/utils.py:229-263)
+    # magforces is -dE/dm (macefork/modules/utils.py:229-263)
     assert -float(magforces[1, 2]) == pytest.approx(central, rel=1e-6)
 
 
@@ -277,7 +277,7 @@ def test_the_one_body_magnetic_term_is_inside_the_reference(anchor, fixtures):
 
     The one-body term is a per-atom energy depending on |m| alone, through a
     Chebyshev basis and a per-species constant correction
-    (mace/modules/extensions.py:1719-1737, applied at :1866-1888). On the
+    (macefork/modules/extensions.py:1719-1737, applied at :1866-1888). On the
     isolated-atom fixture there are no edges, so the interaction and product
     blocks contribute nothing and this term is the entire magnetic content of
     the energy: zeroing its coefficients has to move that fixture's energy,
@@ -308,7 +308,7 @@ def test_the_per_element_m_max_is_indexed_by_species(anchor, fixtures):
     """The lookup only two elements can distinguish.
 
     ``m_max`` is read as ``self.m_max[argmax(node_attrs)]``
-    (mace/modules/extensions.py:1815-1817), so it is indexed by z-table
+    (macefork/modules/extensions.py:1815-1817), so it is indexed by z-table
     position: entry 0 is oxygen and entry 1 is iron. Changing *only* the
     oxygen entry must move the Fe2O2 cluster and must leave every all-iron
     structure bit-identical, because their species index never reaches that
@@ -338,7 +338,7 @@ def test_no_fixture_saturates_the_moment_clamp(fixtures, anchor):
     """A saturated clamp is a structurally zero derivative in disguise.
 
     The radial magnetic basis reads ``1 - 2 * clamp(|m| / m_max, 0, 1)**2``
-    (mace/modules/extensions.py:1818-1824). Above ``m_max`` the clamp is flat,
+    (macefork/modules/extensions.py:1818-1824). Above ``m_max`` the clamp is flat,
     so that whole path contributes exactly nothing to ``dE/dm`` -- a zero that
     looks like a computed one. The fixtures are chosen to stay inside; this
     asserts it against the anchor's own ``m_max`` rather than against the
@@ -379,7 +379,7 @@ def test_magforces_reach_no_calculator_which_is_why_this_golden_is_model_route(
     the magnetic forces, this fails and the calculator route becomes an
     option; until then, the ``golden_outputs`` hook is not a convenience.
     """
-    from mace.calculators import MagneticMACECalculator  # noqa: PLC0415
+    from macefork.calculators import MagneticMACECalculator  # noqa: PLC0415
 
     calc = MagneticMACECalculator(
         models=[anchor], device="cpu", default_dtype="float64",
@@ -402,7 +402,7 @@ def test_the_calculator_agrees_with_the_reference_on_what_it_does_expose(
 
     The second half is the collision. What ``MagneticMACECalculator`` calls
     ``node_energy`` is the model's ``node_energy`` with E0 subtracted
-    (mace/calculators/mace.py:1388), while the model's own spelling of that
+    (macefork/calculators/mace.py:1388), while the model's own spelling of that
     word is the E0-inclusive quantity, which is the ``energies`` channel. Both
     are per-atom scalars in eV, so nothing but the numbers distinguishes them,
     and before the surface-scoped alias in model_keys.py a model-route
@@ -410,7 +410,7 @@ def test_the_calculator_agrees_with_the_reference_on_what_it_does_expose(
     two different quantities. Here that difference is asserted to still be the
     E0 table.
     """
-    from mace.calculators import MagneticMACECalculator  # noqa: PLC0415
+    from macefork.calculators import MagneticMACECalculator  # noqa: PLC0415
 
     calc = MagneticMACECalculator(
         models=[anchor], device="cpu", default_dtype="float64",
@@ -452,7 +452,7 @@ def test_the_calculator_agrees_with_the_reference_on_what_it_does_expose(
 def test_the_eval_cli_reproduces_the_reference_including_magforces(
     fixtures, reference, tmp_path
 ):
-    """The third surface: ``mace_eval_configs --return_magforces``.
+    """The third surface: ``macefork_eval_configs --return_magforces``.
 
     This is the only way a user gets ``dE/dm`` out without writing python, and
     it is a different code path from both the forward and the calculator: it
@@ -485,7 +485,7 @@ def test_compute_magforces_is_only_honoured_alongside_the_forces(anchor, fixture
     """``--compute_magforces``, and the coupling nothing else states.
 
     ``get_outputs`` reaches ``compute_forces_magforces`` only on the branch
-    where ``compute_force`` is also true (mace/modules/utils.py:317-325);
+    where ``compute_force`` is also true (macefork/modules/utils.py:317-325);
     asking for magnetic forces without atomic forces falls through to the
     plain branch and returns ``None`` -- no error, no warning. The harness
     then leaves the channel out entirely and a reference that pins it fails
@@ -577,8 +577,8 @@ def test_a_joint_rotation_is_a_symmetry_and_a_spin_only_one_is_not(anchor, fixtu
 
 
 def _params_options(flag, model):
-    from mace.tools import build_default_arg_parser  # noqa: PLC0415
-    from mace.tools.scripts_utils import get_params_options  # noqa: PLC0415
+    from macefork.tools import build_default_arg_parser  # noqa: PLC0415
+    from macefork.tools.scripts_utils import get_params_options  # noqa: PLC0415
 
     args = build_default_arg_parser().parse_args(
         [
@@ -645,7 +645,7 @@ def test_frozen_it_is_absent_from_the_optimizer_and_nothing_complains(
 def test_the_flag_defaults_to_training_it(trainable_anchor):
     """So `--use_magmom_one_body` alone gives a trained one-body term, and the
     flag exists to hold it fixed -- at a foundation model's values, say."""
-    from mace.tools import build_default_arg_parser  # noqa: PLC0415
+    from macefork.tools import build_default_arg_parser  # noqa: PLC0415
 
     args = build_default_arg_parser().parse_args(
         ["--name", "onebody", "--train_file", "train.xyz"]

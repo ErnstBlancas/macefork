@@ -13,8 +13,8 @@ import numpy as np
 import torch
 from ase.atoms import Atoms
 
-from mace import data
-from mace.tools import AtomicNumberTable, torch_geometric
+from macefork import data
+from macefork.tools import AtomicNumberTable, torch_geometric
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 

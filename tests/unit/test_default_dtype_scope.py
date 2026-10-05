@@ -16,7 +16,7 @@ in a suite.
 import pytest
 import torch
 
-from mace.tools import torch_tools
+from macefork.tools import torch_tools
 
 
 @pytest.fixture(name="float32_default", autouse=True)
@@ -89,11 +89,11 @@ def test_nesting_unwinds_through_an_exception():
 # ---------------------------------------------------------------------------
 
 CONVERTER_MODULES = [
-    "mace.cli.convert_e3nn_cueq",
-    "mace.cli.convert_cueq_e3nn",
-    "mace.cli.convert_e3nn_oeq",
-    "mace.cli.convert_oeq_e3nn",
-    "mace.cli.convert_e3nn_hybrid",
+    "macefork.cli.convert_e3nn_cueq",
+    "macefork.cli.convert_cueq_e3nn",
+    "macefork.cli.convert_e3nn_oeq",
+    "macefork.cli.convert_oeq_e3nn",
+    "macefork.cli.convert_e3nn_hybrid",
 ]
 
 

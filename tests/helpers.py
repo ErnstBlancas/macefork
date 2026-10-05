@@ -3,7 +3,7 @@
 Consolidates the fixtures/utilities that used to be copy-pasted across test
 files:
 
-* ``run_mace_train`` — run ``mace/cli/run_train.py`` (or another CLI script)
+* ``run_mace_train`` — run ``macefork/cli/run_train.py`` (or another CLI script)
   in a subprocess with the repo prepended to ``PYTHONPATH``, replicating the
   historical pattern used throughout the suite.
 * canonical availability flags (``CUET_AVAILABLE`` & co.) — one definition
@@ -28,8 +28,8 @@ import torch
 
 REPO_ROOT = Path(__file__).parent.parent
 TESTS_ROOT = Path(__file__).parent
-run_train = REPO_ROOT / "mace" / "cli" / "run_train.py"
-preprocess_data = REPO_ROOT / "mace" / "cli" / "preprocess_data.py"
+run_train = REPO_ROOT / "macefork" / "cli" / "run_train.py"
+preprocess_data = REPO_ROOT / "macefork" / "cli" / "preprocess_data.py"
 
 # ---------------------------------------------------------------------------
 # Canonical availability flags.
@@ -115,7 +115,7 @@ _BASE_MACE_PARAMS = {
 
 
 def base_mace_params() -> dict:
-    """Return a fresh copy of the standard ``mace_run_train`` params dict."""
+    """Return a fresh copy of the standard ``macefork_run_train`` params dict."""
     return _BASE_MACE_PARAMS.copy()
 
 
@@ -183,7 +183,7 @@ def run_mace_train(
     Args:
         mace_params: mapping of CLI flag name -> value (``None`` => bare flag).
         extra_argv: extra raw arguments appended after the flags.
-        script: CLI script path (default: ``mace/cli/run_train.py``).
+        script: CLI script path (default: ``macefork/cli/run_train.py``).
         check / capture_output / text / cwd: passed to ``subprocess.run``.
         env_extra: extra environment variables set on top of the copied env.
 

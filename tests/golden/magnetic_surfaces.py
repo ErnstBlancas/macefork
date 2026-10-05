@@ -35,9 +35,9 @@ import ase.io
 import numpy as np
 import torch
 
-from mace import data as mace_data
-from mace.modules.extensions import MagneticSCFMACE
-from mace.tools import torch_geometric, torch_tools, utils
+from macefork import data as mace_data
+from macefork.modules.extensions import MagneticSCFMACE
+from macefork.tools import torch_geometric, torch_tools, utils
 from tests.golden import harness
 from tests.golden.build_magnetic_anchor import (
     ATOMIC_NUMBERS,
@@ -46,7 +46,7 @@ from tests.golden.build_magnetic_anchor import (
 )
 
 #: The array the magnetic models read their moments from
-#: (``mace/tools/default_keys.py:18``), and therefore the array the fixtures
+#: (``macefork/tools/default_keys.py:18``), and therefore the array the fixtures
 #: write them to. Not ase's initial magnetic moments: no forward on this tree
 #: reads those, and the harness refuses a structure that carries them there.
 MAGMOM_KEY = "REF_magmom"
@@ -68,7 +68,7 @@ def load_scf_anchor(**overrides: Any) -> MagneticSCFMACE:
     A **fresh** wrapper, every time, and callers should keep it that way.
     ``MagneticSCFMACE`` stores the converged moments in ``cache_magmom`` and
     uses them as the starting point of the next call that arrives without any
-    (``mace/modules/extensions.py:2018-2026``), so a wrapper reused across
+    (``macefork/modules/extensions.py:2018-2026``), so a wrapper reused across
     fixtures carries state between them. Our fixtures all carry their own
     moments, so the cache never gets to speak -- but a golden whose value
     depends on the order its fixtures happened to run in is not a golden, and
@@ -225,7 +225,7 @@ class MagneticSCFForward:
 class MagneticEvalCLI:
     """The evaluation command line, which returns nothing and writes files.
 
-    ``mace_eval_configs`` puts its results back onto the structures under a
+    ``macefork_eval_configs`` puts its results back onto the structures under a
     prefix and writes extxyz, so this drives the real ``run()`` over a
     one-structure file, reads the file back and hands the harness what the
     prefix collected. Reading the file rather than the in-memory objects is
@@ -233,7 +233,7 @@ class MagneticEvalCLI:
     extxyz's ``%16.8f`` on the per-atom columns is part of that surface.
 
     ``run()`` calls ``torch_tools.set_default_dtype`` on the *process*
-    (``mace/cli/eval_configs.py:188``), so the call is wrapped in a scope that
+    (``macefork/cli/eval_configs.py:188``), so the call is wrapped in a scope that
     puts it back -- otherwise this leaks float64 into every test that runs
     after it in the same worker.
     """
@@ -272,7 +272,7 @@ class MagneticEvalCLI:
             head=None,
             magmom_key=MAGMOM_KEY,
         )
-        from mace.cli.eval_configs import run  # noqa: PLC0415
+        from macefork.cli.eval_configs import run  # noqa: PLC0415
 
         with torch_tools.default_dtype("float64"):
             run(args)

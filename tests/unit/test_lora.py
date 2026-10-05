@@ -8,10 +8,10 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.data import Configuration
-from mace.modules.lora import inject_lora, merge_lora_weights
-from mace.tools import torch_geometric
+from macefork import data, modules, tools
+from macefork.data import Configuration
+from macefork.modules.lora import inject_lora, merge_lora_weights
+from macefork.tools import torch_geometric
 
 
 def _random_config() -> Configuration:
@@ -257,7 +257,7 @@ def test_lora_merge_preserves_outputs(build_lora_model, random_configs) -> None:
 
 def test_lora_merge_handles_o3_linear_bias_instructions() -> None:
     """Bias paths have a one-dimensional path shape, unlike weight paths."""
-    from mace.modules.lora import LoRAO3Linear
+    from macefork.modules.lora import LoRAO3Linear
 
     base = o3.Linear("2x0e", "3x0e", biases=True)
     assert any(len(instr.path_shape) == 1 for instr in base.instructions)
@@ -279,7 +279,7 @@ def test_lora_merge_handles_o3_linear_bias_instructions() -> None:
 
 def test_lora_merge_removes_wrappers(build_lora_model) -> None:
     """Test that merging removes LoRA wrapper modules."""
-    from mace.modules.lora import LoRADenseLinear, LoRAFCLayer, LoRAO3Linear
+    from macefork.modules.lora import LoRADenseLinear, LoRAFCLayer, LoRAO3Linear
 
     model, _ = build_lora_model(rank=2, alpha=0.5, randomize=True)
 
@@ -352,8 +352,8 @@ def test_lora_merge_preserves_equivariance(build_lora_model, random_configs) -> 
 
 def test_lora_evaluate_preserves_frozen_state(build_lora_model, random_configs) -> None:
     """Test that evaluate() preserves requires_grad states for LoRA models."""
-    from mace.modules.loss import WeightedEnergyForcesLoss
-    from mace.tools import evaluate
+    from macefork.modules.loss import WeightedEnergyForcesLoss
+    from macefork.tools import evaluate
 
     model, table = build_lora_model(rank=2, alpha=0.5, randomize=True)
 

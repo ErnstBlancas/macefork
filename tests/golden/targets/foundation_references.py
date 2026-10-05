@@ -70,7 +70,7 @@ def run() -> None:
     """Snapshot the two published non-energy models. Needs a download."""
     import torch  # pylint: disable=import-outside-toplevel
 
-    from mace.calculators.foundations_models import (  # pylint: disable=import-outside-toplevel
+    from macefork.calculators.foundations_models import (  # pylint: disable=import-outside-toplevel
         mace_mdp,
         mace_polar,
     )
@@ -78,7 +78,7 @@ def run() -> None:
     from tests.golden.routes import ForwardRoute  # pylint: disable=import-outside-toplevel
 
     # Both loaders are called with device and dtype spelled out. mace_polar
-    # defaults to float32 (mace/calculators/foundations_models.py:343) and
+    # defaults to float32 (macefork/calculators/foundations_models.py:343) and
     # mace_mdp to float64, and a golden that inherited either default would be
     # one loader signature away from silently becoming an fp32 reference
     # asserted at the fp64 row.
@@ -110,7 +110,7 @@ def run() -> None:
                 "emits no polarizability; that key is pinned on MACE-MDP."
             ),
             "evaluated_with": (
-                "mace.calculators.MACECalculator via mace_polar, e3nn, CPU, "
+                "macefork.calculators.MACECalculator via mace_polar, e3nn, CPU, "
                 "float64 (the published weights are float32 and are upcast, "
                 "which is exact)"
             ),

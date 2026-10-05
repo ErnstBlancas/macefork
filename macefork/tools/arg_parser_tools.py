@@ -120,6 +120,31 @@ def check_args(args):
             )
             args.swa = False
 
+    stage_two_early_options = (
+        args.stage_two_convergence_mean_threshold is not None
+        or args.stage_two_convergence_std_threshold is not None
+    )
+    if not args.swa and (stage_two_early_options or args.stage_two_epochs is not None):
+        log_messages.append(
+            (
+                "Stage Two convergence options and stage_two_epochs are ignored without Stage Two",
+                logging.WARNING,
+            )
+        )
+    elif (
+        args.swa
+        and args.stage_two_epochs is not None
+        and args.start_swa + args.stage_two_epochs > args.max_num_epochs
+    ):
+        log_messages.append(
+            (
+                f"start_stage_two + stage_two_epochs = {args.start_swa + args.stage_two_epochs} "
+                f"> max_num_epochs = {args.max_num_epochs}: Stage Two will be cut short by "
+                "max_num_epochs unless it starts early",
+                logging.WARNING,
+            )
+        )
+
     if args.embedding_specs:
         args.embedding_specs = ast.literal_eval(args.embedding_specs)
 

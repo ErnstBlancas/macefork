@@ -18,7 +18,7 @@ import yaml
 from ase.atoms import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
 
-from mace.calculators import MACECalculator
+from macefork.calculators import MACECalculator
 
 
 def create_test_atoms(num_atoms=5, seed=42):
@@ -93,7 +93,7 @@ def create_h5_dataset(xyz_file, output_dir, e0s_file=None, r_max=5.0, seed=42):
 
     # Find the path to the preprocess_data.py script
     preprocess_script = (
-        REPO_ROOT / "mace" / "cli" / "preprocess_data.py"
+        REPO_ROOT / "macefork" / "cli" / "preprocess_data.py"
     )
 
     # Set up command to run preprocess_data.py
@@ -362,7 +362,7 @@ def test_multifile_training():
 
         # Import the modified run_train from our local module
         run_train_script = (
-            REPO_ROOT / "mace" / "cli" / "run_train.py"
+            REPO_ROOT / "macefork" / "cli" / "run_train.py"
         )
 
         # Run training with subprocess
@@ -553,7 +553,7 @@ def test_multiple_xyz_per_head():
 
         # Import the modified run_train from our local module
         run_train_script = (
-            REPO_ROOT / "mace" / "cli" / "run_train.py"
+            REPO_ROOT / "macefork" / "cli" / "run_train.py"
         )
 
         # Run training with subprocess
@@ -746,7 +746,7 @@ def test_single_xyz_per_head():
 
         # Import the modified run_train from our local module
         run_train_script = (
-            REPO_ROOT / "mace" / "cli" / "run_train.py"
+            REPO_ROOT / "macefork" / "cli" / "run_train.py"
         )
 
         # Run training with subprocess
@@ -952,7 +952,7 @@ def test_multihead_finetuning_different_formats():
 
         # Run finetuning
         run_train_script = (
-            REPO_ROOT / "mace" / "cli" / "run_train.py"
+            REPO_ROOT / "macefork" / "cli" / "run_train.py"
         )
         env = os.environ.copy()
         env["PYTHONPATH"] = (

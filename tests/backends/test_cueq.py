@@ -12,11 +12,11 @@ import torch
 import torch.nn.functional as F
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.cli.convert_cueq_e3nn import run as run_cueq_to_e3nn
-from mace.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
-from mace.cli.convert_e3nn_hybrid import run as run_e3nn_to_hybrid
-from mace.tools import torch_geometric
+from macefork import data, modules, tools
+from macefork.cli.convert_cueq_e3nn import run as run_cueq_to_e3nn
+from macefork.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
+from macefork.cli.convert_e3nn_hybrid import run as run_e3nn_to_hybrid
+from macefork.tools import torch_geometric
 from tests.backends.backend_parity import BackendTestBase
 from tests.helpers import CUDA_AVAILABLE, CUET_AVAILABLE, OEQ_AVAILABLE
 

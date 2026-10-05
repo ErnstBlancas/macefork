@@ -1711,7 +1711,7 @@
   },
   "provenance": {
     "description": "Published MACE-Polar foundation model: the energy/force surface plus the electrostatics keys the calculator exposes (dipole, charges, spins, the three energy decompositions, the density coefficients and the Fukui functions). PolarMACE emits no polarizability; that key is pinned on MACE-MDP.",
-    "evaluated_with": "mace.calculators.MACECalculator via mace_polar, e3nn, CPU, float64 (the published weights are float32 and are upcast, which is exact)",
+    "evaluated_with": "macefork.calculators.MACECalculator via mace_polar, e3nn, CPU, float64 (the published weights are float32 and are upcast, which is exact)",
     "recipe": "tests/golden/regenerate.py --target foundation-references",
     "source": "mace_polar(model='polar-1-s')",
     "tolerance_row": "fp64_cpu_reference"

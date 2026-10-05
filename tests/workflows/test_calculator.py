@@ -10,12 +10,12 @@ from ase.atoms import Atoms
 from ase.calculators.test import gradient_test
 from ase.filters import FrechetCellFilter
 
-import mace.calculators.foundations_models as foundations_models
-from mace.calculators import mace_mp, mace_off
-from mace.calculators.foundations_models import mace_omol, mace_polar
-from mace.calculators.mace import MACECalculator
-from mace.modules.models import ScaleShiftMACE
-from mace.tools.torch_tools import default_dtype
+import macefork.calculators.foundations_models as foundations_models
+from macefork.calculators import mace_mp, mace_off
+from macefork.calculators.foundations_models import mace_omol, mace_polar
+from macefork.calculators.mace import MACECalculator
+from macefork.modules.models import ScaleShiftMACE
+from macefork.tools.torch_tools import default_dtype
 from tests.helpers import CUET_AVAILABLE, base_mace_params, run_mace_train
 
 from tests.helpers import REPO_ROOT

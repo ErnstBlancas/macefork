@@ -20,8 +20,8 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import modules, tools
-from mace.tools.arg_parser_tools import check_args
+from macefork import modules, tools
+from macefork.tools.arg_parser_tools import check_args
 
 TABLE = tools.AtomicNumberTable([1, 8])
 
@@ -136,7 +136,7 @@ def resolved_args(*argv):
     hand-built one drifts out of date the moment a flag is added; parsing gives
     the arguments the CLI would actually produce.
     """
-    from mace.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
     args = build_default_arg_parser().parse_args(
         ["--name", "x", "--train_file", "y.xyz", *argv]
@@ -170,8 +170,8 @@ def test_it_follows_the_work_dir_it_is_given():
 
 @pytest.fixture(name="batch")
 def fixture_batch():
-    from mace import data  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
-    from mace.tools import torch_geometric  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork import data  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools import torch_geometric  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
     config = data.Configuration(
         atomic_numbers=np.array([8, 1, 1]),

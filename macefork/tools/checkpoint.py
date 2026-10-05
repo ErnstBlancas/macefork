@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Tuple
 
 import torch
 
+from . import legacy_pickle
 from .torch_tools import TensorDict
 
 Checkpoint = Dict[str, TensorDict]
@@ -192,7 +193,9 @@ class CheckpointIO:
 
         logging.info(f"Loading checkpoint: {checkpoint_info.path}")
         return (
-            torch.load(f=checkpoint_info.path, map_location=device),
+            torch.load(
+                f=checkpoint_info.path, map_location=device, pickle_module=legacy_pickle
+            ),
             checkpoint_info.epochs,
         )
 

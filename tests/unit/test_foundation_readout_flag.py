@@ -26,9 +26,9 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import modules, tools
-from mace.tools import arg_parser, model_script_utils
-from mace.tools.finetuning_utils import load_foundations_elements
+from macefork import modules, tools
+from macefork.tools import arg_parser, model_script_utils
+from macefork.tools.finetuning_utils import load_foundations_elements
 
 TABLE = tools.AtomicNumberTable([1, 8])
 

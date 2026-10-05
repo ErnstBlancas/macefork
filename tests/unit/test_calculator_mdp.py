@@ -12,13 +12,13 @@ import torch.nn.functional as F
 from ase import build
 from e3nn import o3
 
-import mace.calculators.foundations_models as foundations_models
-from mace import modules, tools
-from mace.calculators import mace_mdp
-from mace.calculators.mace import MACECalculator
-from mace.modules.models import AtomicDielectricMACE
-from mace.tools import AtomicNumberTable
-from mace.tools.scripts_utils import extract_config_mace_model
+import macefork.calculators.foundations_models as foundations_models
+from macefork import modules, tools
+from macefork.calculators import mace_mdp
+from macefork.calculators.mace import MACECalculator
+from macefork.modules.models import AtomicDielectricMACE
+from macefork.tools import AtomicNumberTable
+from macefork.tools.scripts_utils import extract_config_mace_model
 
 
 def test_mace_mdp_local_model(tmp_path):

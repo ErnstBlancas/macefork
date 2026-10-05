@@ -16,13 +16,13 @@ from ase.calculators.calculator import Calculator
 from ase.io import read
 from e3nn import o3
 
-from mace import data
-from mace.calculators import MACECalculator
-from mace.calculators.foundations_models import mace_polar
-from mace.modules import interaction_classes
-from mace.modules.extensions import PolarMACE
-from mace.tools import torch_geometric, torch_tools, utils
-from mace.tools.scripts_utils import get_optimizer, get_params_options
+from macefork import data
+from macefork.calculators import MACECalculator
+from macefork.calculators.foundations_models import mace_polar
+from macefork.modules import interaction_classes
+from macefork.modules.extensions import PolarMACE
+from macefork.tools import torch_geometric, torch_tools, utils
+from macefork.tools.scripts_utils import get_optimizer, get_params_options
 
 # pylint: disable=redefined-outer-name
 
@@ -111,7 +111,7 @@ pytestmark = [
 ]
 
 from tests.helpers import REPO_ROOT, TESTS_ROOT  # noqa: E402
-RUN_TRAIN = REPO_ROOT / "mace" / "cli" / "run_train.py"
+RUN_TRAIN = REPO_ROOT / "macefork" / "cli" / "run_train.py"
 
 # ---------------------------------------------------------------------------
 # Common helpers

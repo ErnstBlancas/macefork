@@ -4,7 +4,7 @@ The golden harness is deliberately framework-agnostic: it knows what a
 channel *is* -- its shape and its unit -- but not what any particular
 implementation calls it. That knowledge lives here (for the calculator
 surface) and in ``model_keys`` (for the forward surface), and it is not a
-detail. Measured against ``mace/calculators/mace.py`` on this tree, the two
+detail. Measured against ``macefork/calculators/mace.py`` on this tree, the two
 surfaces disagree in three different ways, and each needs a different repair:
 
     calculator writes    model forward calls it    what differs
@@ -44,16 +44,16 @@ CALC = harness.SURFACE_CALCULATOR
 # surfaces because nothing else uses these words.
 # ---------------------------------------------------------------------------
 
-#: mace/calculators/mace.py: results["LES_alphas"] <- ret_tensors["latent_alphas"]
+#: macefork/calculators/mace.py: results["LES_alphas"] <- ret_tensors["latent_alphas"]
 harness.register_alias("LES_alphas", "latent_alphas")
 
-#: mace/calculators/mace.py: results["LES_kappas"] <- ret_tensors["latent_kappas"]
+#: macefork/calculators/mace.py: results["LES_kappas"] <- ret_tensors["latent_kappas"]
 harness.register_alias("LES_kappas", "latent_kappas")
 
-#: mace/calculators/mace.py: results["bec"] <- ret_tensors["BEC"]
+#: macefork/calculators/mace.py: results["bec"] <- ret_tensors["BEC"]
 harness.register_alias("bec", "BEC")
 
-#: mace/calculators/mace.py: MagneticMACECalculator writes the relaxed moments
+#: macefork/calculators/mace.py: MagneticMACECalculator writes the relaxed moments
 #: as results["MACE_magmoms"]; the model returns them as "equilibrated_magmom".
 harness.register_alias("MACE_magmoms", "equilibrated_magmom")
 
@@ -61,7 +61,7 @@ harness.register_alias("MACE_magmoms", "equilibrated_magmom")
 # ---------------------------------------------------------------------------
 # One quantity, two representations
 #
-# `results_map` (mace/calculators/mace.py:719-738) renames the two per-atom
+# `results_map` (macefork/calculators/mace.py:719-738) renames the two per-atom
 # decompositions, and for the stress it also *reshapes*: results["stresses"]
 # is put through `full_3x3_to_voigt_6_stress` per atom (:791-797) while the
 # model's `atomic_stresses` stays (n_atoms, 3, 3). results["virials"] is
@@ -86,7 +86,7 @@ harness.register_alias("MACE_magmoms", "equilibrated_magmom")
 # Choosing the 3x3 as canonical is therefore only safe if MACE's per-atom
 # tensors are symmetric to begin with -- and they are, by construction:
 # `get_atomic_virials_stresses` symmetrises explicitly at
-# mace/modules/utils.py:382 (`atom_virial + atom_virial.transpose(-1, -2)) / 2`)
+# macefork/modules/utils.py:382 (`atom_virial + atom_virial.transpose(-1, -2)) / 2`)
 # before dividing by the cell volume, so both the virial and the stress
 # inherit it.
 #
@@ -116,13 +116,13 @@ harness.register_alias(
     note=(
         "ase stores a per-atom stress in Voigt-6; the channel is the model's "
         "full 3x3. Lossless because the per-atom virial is symmetrised at "
-        "mace/modules/utils.py:382 -- measured 0.0 on every fixture."
+        "macefork/modules/utils.py:382 -- measured 0.0 on every fixture."
     ),
 )
 
 #: The graph-level stress is the same story one level up: ase's `stress`
 #: property is Voigt-6 by convention (and MACECalculator converts to it at
-#: mace/calculators/mace.py:790), while the channel is the model's 3x3. Same
+#: macefork/calculators/mace.py:790), while the channel is the model's 3x3. Same
 #: conversion, same reason, and registering it here rather than special-casing
 #: it inside the harness keeps one representation change in one place.
 harness.register_alias(
@@ -137,8 +137,8 @@ harness.register_alias(
 )
 
 #: The collision, not a rename. `virials` is the *graph* virial in every
-#: model forward (mace/modules/models.py:433) and the *per-atom* virial in the
-#: calculator's results (mace/calculators/mace.py:729-733), and the calculator
+#: model forward (macefork/modules/models.py:433) and the *per-atom* virial in the
+#: calculator's results (macefork/calculators/mace.py:729-733), and the calculator
 #: never exposes the graph one at all. A single spelling->channel map has to
 #: pick one and mis-shape the other; scoping the alias to this surface is what
 #: lets both be true.
@@ -148,7 +148,7 @@ harness.register_alias(
     surface=CALC,
     note=(
         "MACECalculator's results['virials'] is the per-atom virial "
-        "(mace/calculators/mace.py:729-733). The model's forward uses the same "
+        "(macefork/calculators/mace.py:729-733). The model's forward uses the same "
         "word for the graph-level virial, which is what the `virials` channel "
         "is; the calculator has no key for that one."
     ),
@@ -172,14 +172,14 @@ harness.register_alias(
 # mapping the reader is handed, and both calculators keep that mapping on the
 # instance:
 #
-#     mace/calculators/mace.py:187-196   MACECalculator.info_keys / .arrays_keys
-#     mace/calculators/mace.py:1038-1043 MagneticMACECalculator, its own defaults
-#     mace/calculators/mace.py:576       arrays_keys["charges"] = self.charges_key
-#     mace/calculators/mace.py:1301-1305 ... and "magmom" = self.magmom_key
+#     macefork/calculators/mace.py:187-196   MACECalculator.info_keys / .arrays_keys
+#     macefork/calculators/mace.py:1038-1043 MagneticMACECalculator, its own defaults
+#     macefork/calculators/mace.py:576       arrays_keys["charges"] = self.charges_key
+#     macefork/calculators/mace.py:1301-1305 ... and "magmom" = self.magmom_key
 #
 # `KeySpecification(info_keys=..., arrays_keys=...)` is built from exactly
 # those two dicts (:577, :1307) and `config_from_atoms` iterates them
-# (mace/data/utils.py:197-205), so reading them is reading the reader. A
+# (macefork/data/utils.py:197-205), so reading them is reading the reader. A
 # constructor argument added tomorrow lands in one of the two dicts and is
 # picked up with no change here; if it names a property the schema has no
 # channel for, the snapshot fails and says which, which is the outcome the
@@ -200,8 +200,8 @@ harness.register_input_property("total_spin", "total_spin")
 harness.register_input_property("elec_temp", "elec_temp")
 harness.register_input_property("external_field", "external_field")
 
-# The rest of the property vocabulary (mace/data/utils.py:53-64, and
-# DefaultKeys in mace/tools/default_keys.py) is training labels. They are
+# The rest of the property vocabulary (macefork/data/utils.py:53-64, and
+# DefaultKeys in macefork/tools/default_keys.py) is training labels. They are
 # parsed off the structure into `Configuration.properties` and carried in the
 # graph -- `AtomicData.from_config` gives each one a field -- but no `forward`
 # on this tree reads any of them: the batch keys the models actually read are
@@ -226,7 +226,7 @@ _LABEL_PROPERTIES = {
     "of this name is the prediction, and the label never reaches a forward",
     "head": "selects which head answers, but not through this property: "
     "AtomicData.from_config takes the head from `config.head`, which comes "
-    "from the head_name argument (mace/data/atomic_data.py:206), and "
+    "from the head_name argument (macefork/data/atomic_data.py:206), and "
     "properties['head'] is never read. It is also a name, not a number, so no "
     "channel kind could hold it.",
 }
@@ -237,7 +237,7 @@ for _prop, _reason in _LABEL_PROPERTIES.items():
 
 #: One input is not read off the structure at all. `MACECalculator(
 #: external_field=[Ex, Ey, Ez])` keeps the vector on the instance
-#: (mace/calculators/mace.py:140) and writes it straight into the batch
+#: (macefork/calculators/mace.py:140) and writes it straight into the batch
 #: *after* the graph is built (:685-690), so it overwrites whatever
 #: `info_keys["external_field"]` produced. A snapshot that only looked at the
 #: structure recorded nothing for a run whose field was non-zero -- and the
@@ -312,7 +312,7 @@ for _key, _reason in _COMMITTEE_SPREAD.items():
 # 2. Three more constructor arguments change the numbers and are *not* input
 #    channels: `eps_infty`, `keep_neutral` and `electric_field_unit` all scale
 #    the BEC force correction that is added to results["forces"]
-#    (mace/calculators/mace.py:809-859), and `energy_units_to_eV` /
+#    (macefork/calculators/mace.py:809-859), and `energy_units_to_eV` /
 #    `length_units_to_A` scale most of the results dict. None of them is a
 #    per-structure quantity and none reaches the batch, so none is a channel:
 #    they are configuration of the evaluation, and a reference that varies one
@@ -322,7 +322,7 @@ for _key, _reason in _COMMITTEE_SPREAD.items():
 #    not.
 #
 # 3. results["virials"] is scaled by `energy_units_to_eV / length_units_to_A**3`
-#    (mace/calculators/mace.py:729-733) -- a *stress* conversion applied to a
+#    (macefork/calculators/mace.py:729-733) -- a *stress* conversion applied to a
 #    virial, which is an energy. It is the identity under the default units, so
 #    nothing in this repository sees it, and the harness declares the channel
 #    "eV" because that is what the quantity is. A calculator constructed with

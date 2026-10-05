@@ -23,8 +23,8 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import modules, tools
-from mace.tools.scripts_utils import LRScheduler, get_optimizer, get_params_options
+from macefork import modules, tools
+from macefork.tools.scripts_utils import LRScheduler, get_optimizer, get_params_options
 
 LR = 0.017
 BETA = 0.87
@@ -183,7 +183,7 @@ def test_an_unknown_scheduler_is_refused(model):
 def test_swa_lr_is_the_rate_the_second_stage_anneals_to(model):
     """`--swa_lr` only appears after the stage-two swap, so it is checked on the
     SWALR the swap builds rather than on the first-stage optimizer."""
-    from mace.tools.scripts_utils import get_swa  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools.scripts_utils import get_swa  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
     _, options = groups(model)
     optimizer = get_optimizer(args_for(), options)

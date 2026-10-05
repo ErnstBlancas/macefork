@@ -17,8 +17,8 @@ import torch
 from ase import Atoms
 from e3nn import o3
 
-from mace import data, modules
-from mace.tools import AtomicNumberTable, torch_geometric
+from macefork import data, modules
+from macefork.tools import AtomicNumberTable, torch_geometric
 
 ATT_RESIDUAL = "RealAgnosticAttResidualInteractionBlock"
 PLAIN_RESIDUAL = "RealAgnosticResidualInteractionBlock"

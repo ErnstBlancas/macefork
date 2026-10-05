@@ -15,8 +15,8 @@ import torch.nn.functional
 from e3nn import nn, o3
 from e3nn.util.jit import compile_mode
 
-from mace.modules.gate import GatedEquivariantBlock
-from mace.modules.wrapper_ops import (
+from macefork.modules.gate import GatedEquivariantBlock
+from macefork.modules.wrapper_ops import (
     CuEquivarianceConfig,
     FullyConnectedTensorProduct,
     Linear,
@@ -25,9 +25,9 @@ from mace.modules.wrapper_ops import (
     TensorProduct,
     get_layout,
 )
-from mace.tools.compile import simplify_if_compile
-from mace.tools.scatter import scatter_sum
-from mace.tools.utils import LAMMPS_MP
+from macefork.tools.compile import simplify_if_compile
+from macefork.tools.scatter import scatter_sum
+from macefork.tools.utils import LAMMPS_MP
 
 from .irreps_tools import mask_head, reshape_irreps, tp_out_irreps_with_instructions
 from .radial import (
@@ -689,8 +689,8 @@ class InteractionBlock(torch.nn.Module):
         `torch.Tensor` type, and `_load_from_state_dict` covers checkpoints
         loaded *as state dicts*. It does not cover the other way MACE ships a
         model: `torch.load` of a whole pickled module, which is what the ASE
-        calculator, every `mace/cli` tool and the pretrained artifacts under
-        `mace/calculators/foundations_models/` all use. Unpickling restores
+        calculator, every `macefork/cli` tool and the pretrained artifacts under
+        `macefork/calculators/foundations_models/` all use. Unpickling restores
         `__dict__` directly, so neither `__init__` nor `_load_from_state_dict`
         runs, and the instance keeps the plain Python float it was pickled
         with. Eager forward passes are indifferent -- a float promotes against
@@ -699,7 +699,7 @@ class InteractionBlock(torch.nn.Module):
 
             Could not cast attribute 'avg_num_neighbors' to type Tensor
 
-        which made `mace_create_lammps_model` fail on every checkpoint written
+        which made `macefork_create_lammps_model` fail on every checkpoint written
         before the buffer landed.
 
         Both the dtype and the device come from the module's own weights, so

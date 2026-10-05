@@ -13,7 +13,7 @@ The architecture is the ``tiny_scaleshift`` anchor's, deliberately: same
 cutoff, same irreps, same three elements, same ZBL. ``MACELES`` is a
 ``ScaleShiftMACE`` subclass, so the only intended difference between the two
 checkpoints is the LES head -- plus one thing the class forces and the recipe
-cannot: ``keep_last_layer_irreps=True`` (``mace/modules/extensions.py:146``),
+cannot: ``keep_last_layer_irreps=True`` (``macefork/modules/extensions.py:146``),
 without which the last layer would drop its vector features and the dipole,
 quadrupole and polarizability readouts would have nothing to read.
 
@@ -47,8 +47,8 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace import modules
-from mace.tools.arg_parser import read_yaml
+from macefork import modules
+from macefork.tools.arg_parser import read_yaml
 
 GOLDEN_ROOT = Path(__file__).resolve().parent
 MODELS_DIR = GOLDEN_ROOT / "models"
@@ -68,7 +68,7 @@ AVG_NUM_NEIGHBORS = 8.0
 
 #: Not 1.0 on purpose. `MACELES` puts the short-range readout sum through
 #: `scale_shift` and adds the LES energy *outside* it
-#: (mace/modules/extensions.py:517-522, :604), so a unit scale would make the
+#: (macefork/modules/extensions.py:517-522, :604), so a unit scale would make the
 #: reference unable to tell the two placements apart.
 ATOMIC_INTER_SCALE = 1.3
 
@@ -106,7 +106,7 @@ def load_les_arguments(path: Path = LES_ARGUMENTS_PATH) -> Dict[str, Any]:
 
 def build_model(les_arguments: Dict[str, Any] | None = None) -> torch.nn.Module:
     """Instantiate the ``MACELES`` anchor under a fixed seed."""
-    from mace.modules.extensions import MACELES  # noqa: PLC0415
+    from macefork.modules.extensions import MACELES  # noqa: PLC0415
 
     if les_arguments is None:
         les_arguments = load_les_arguments()
@@ -191,7 +191,7 @@ def build_anchor(model_path: Path) -> Path:
         "num_parameters": int(sum(p.numel() for p in model.parameters())),
         "note": (
             "MACELES forces keep_last_layer_irreps=True on its base class "
-            "(mace/modules/extensions.py:146), so the last layer keeps its "
+            "(macefork/modules/extensions.py:146), so the last layer keeps its "
             "vector features and the LES readouts have something to read. "
             "The architecture is otherwise the tiny_scaleshift anchor's."
         ),

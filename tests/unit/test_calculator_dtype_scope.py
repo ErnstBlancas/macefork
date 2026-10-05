@@ -18,7 +18,7 @@ import inspect
 
 import pytest
 
-from mace.calculators import mace as mace_calc_module
+from macefork.calculators import mace as mace_calc_module
 
 
 def _unscoped_forwards(class_name):

@@ -14,7 +14,7 @@ torch.serialization.add_safe_globals([slice])
 from e3nn import nn as e3nn_nn  # noqa: E402
 from e3nn import o3
 
-from mace.modules.gate import GatedEquivariantBlock  # noqa: E402
+from macefork.modules.gate import GatedEquivariantBlock  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Irreps configurations matching MACE usage patterns
@@ -355,7 +355,7 @@ def test_repr(layout):
 # Test: _normalize2mom_cst caching
 # ---------------------------------------------------------------------------
 def test_normalize2mom_caching():
-    from mace.modules.gate import _NORM_CACHE, _normalize2mom_cst
+    from macefork.modules.gate import _NORM_CACHE, _normalize2mom_cst
 
     _NORM_CACHE.clear()
     fn = torch.nn.functional.silu

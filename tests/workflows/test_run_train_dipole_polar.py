@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from ase.atoms import Atoms
 
-from mace.calculators import MACECalculator
+from macefork.calculators import MACECalculator
 from tests.helpers import REPO_ROOT
 
 try:
@@ -18,7 +18,7 @@ try:
 except ImportError:
     CUET_AVAILABLE = False
 
-run_train = REPO_ROOT / "mace" / "cli" / "run_train.py"
+run_train = REPO_ROOT / "macefork" / "cli" / "run_train.py"
 
 
 @pytest.fixture(name="fitting_configs")

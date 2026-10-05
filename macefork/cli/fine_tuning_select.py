@@ -17,9 +17,9 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from mace.calculators import MACECalculator, mace_mp
-from mace.calculators.foundations_models import mace_mp_names
-from mace.tools import deprecation
+from macefork.calculators import MACECalculator, mace_mp
+from macefork.calculators.foundations_models import mace_mp_names
+from macefork.tools import deprecation
 
 try:
     import fpsample  # type: ignore
@@ -561,7 +561,7 @@ def select_samples(
 
 
 def main() -> None:
-    deprecation.warn("ep.mace_finetuning_select")
+    deprecation.warn("ep.macefork_finetuning_select")
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)-8s %(message)s",

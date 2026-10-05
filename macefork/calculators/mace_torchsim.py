@@ -8,8 +8,8 @@ from typing import Any, Callable, Dict, Optional, Union
 
 import torch
 
-from mace.modules.extensions import PolarMACE
-from mace.tools import atomic_numbers_to_indices, utils
+from macefork.modules.extensions import PolarMACE
+from macefork.tools import atomic_numbers_to_indices, legacy_pickle, utils
 
 log = logging.getLogger(__name__)
 
@@ -105,7 +105,10 @@ class MaceTorchSimModel(ModelInterface):
 
         if isinstance(model, (str, Path)):
             self.model = torch.load(
-                str(model), map_location=self._device, weights_only=False
+                str(model),
+                map_location=self._device,
+                weights_only=False,
+                pickle_module=legacy_pickle,
             )
         elif isinstance(model, torch.nn.Module):
             self.model = model.to(self._device)
@@ -117,11 +120,11 @@ class MaceTorchSimModel(ModelInterface):
             self.model = self.model.to(dtype=self._dtype)
 
         if enable_cueq and enable_oeq:
-            from mace.cli.convert_e3nn_hybrid import run as run_hybrid
+            from macefork.cli.convert_e3nn_hybrid import run as run_hybrid
 
             self.model = run_hybrid(self.model, device=self._device.type)
         elif enable_cueq:
-            from mace.cli.convert_e3nn_cueq import run as run_cueq
+            from macefork.cli.convert_e3nn_cueq import run as run_cueq
 
             try:
                 self.model = run_cueq(
@@ -130,7 +133,7 @@ class MaceTorchSimModel(ModelInterface):
                     conv_fusion=True,
                 )
             except (RuntimeError, ValueError):
-                from mace.cli.convert_e3nn_hybrid import run as run_hybrid
+                from macefork.cli.convert_e3nn_hybrid import run as run_hybrid
 
                 log.warning(
                     "cueq conv_fusion failed (non-uniform irreps), "
@@ -140,7 +143,7 @@ class MaceTorchSimModel(ModelInterface):
                 self._enable_oeq = True
                 self._uses_accelerated = True
         elif enable_oeq:
-            from mace.cli.convert_e3nn_oeq import run as run_oeq
+            from macefork.cli.convert_e3nn_oeq import run as run_oeq
 
             self.model = run_oeq(self.model, device=self._device.type)
 
@@ -209,7 +212,7 @@ class MaceTorchSimModel(ModelInterface):
         # Side effect: ensure Dynamo is initialized before torch.compile.
         import torch._dynamo as dynamo  # pylint: disable=unused-import  # noqa: F401
 
-        from mace.tools.compile import configure_autograd_for_compile, simplify
+        from macefork.tools.compile import configure_autograd_for_compile, simplify
 
         if self._enable_oeq:
             # oeq ops are opaque to AOTAutograd; autograd.grad must run in eager

@@ -1,4 +1,4 @@
-"""Two things `mace_eval_configs` could not do, both fixed by copying itself.
+"""Two things `macefork_eval_configs` could not do, both fixed by copying itself.
 
 `--return_node_energies` accumulated one entry per *batch* and then built a
 rectangular array out of it, so it worked only while every structure had the
@@ -21,7 +21,7 @@ from ase.io import read, write
 
 from tests.helpers import REPO_ROOT, run_mace_train
 
-EVAL_CONFIGS = REPO_ROOT / "mace" / "cli" / "eval_configs.py"
+EVAL_CONFIGS = REPO_ROOT / "macefork" / "cli" / "eval_configs.py"
 
 
 def _water(count):
@@ -99,7 +99,7 @@ def test_a_dtype_that_disagrees_with_the_checkpoint_is_converted_not_fatal(
     An earlier version of this test asserted equality and failed in CI at exactly
     that: 1.1e-7 relative, against a float32 eps of 1.19e-7.
     """
-    from mace.calculators import MACECalculator
+    from macefork.calculators import MACECalculator
 
     frames, output = _evaluate(
         trained_tiny_model_path,

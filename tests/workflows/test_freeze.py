@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 import torch
 
-from mace.calculators import MACECalculator
+from macefork.calculators import MACECalculator
 from tests.helpers import CUET_AVAILABLE, base_mace_params, run_mace_train  # noqa: F401  # pylint: disable=unused-import
 
 pytestmark = [pytest.mark.network]

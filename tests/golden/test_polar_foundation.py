@@ -10,7 +10,7 @@ analogue in any energy model and therefore no other reference.
 
 **There is no polarizability here, and that is not an omission.**
 ``AtomicDielectricMACE`` is the only class in the tree that emits that key
-(``mace/modules/models.py:1190``); ``PolarMACE`` emits a dipole and its
+(``macefork/modules/models.py:1190``); ``PolarMACE`` emits a dipole and its
 electrostatics and never a polarizability -- the word does not occur in the
 class. A test that "checks the polarizability of the polar model" checks
 nothing, so the polarizability golden is next door, on MACE-MDP.
@@ -39,10 +39,10 @@ pytestmark = [pytest.mark.polar, pytest.mark.network]
 
 @pytest.fixture(name="polar_calc", scope="module")
 def fixture_polar_calc():
-    from mace.calculators.foundations_models import mace_polar  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_polar  # noqa: PLC0415
 
     # dtype and device spelled out: mace_polar defaults to float32
-    # (mace/calculators/foundations_models.py:343) and to cuda when one is
+    # (macefork/calculators/foundations_models.py:343) and to cuda when one is
     # present, so a golden that took the defaults would be an fp32 GPU
     # snapshot asserted at the fp64 CPU row.
     return mace_polar(model=POLAR_MODEL, device="cpu", default_dtype="float64")
@@ -122,7 +122,7 @@ def test_polar_mace_emits_no_polarizability(polar_calc, fixtures):
     """
     import inspect  # noqa: PLC0415
 
-    from mace.modules.extensions import PolarMACE  # noqa: PLC0415
+    from macefork.modules.extensions import PolarMACE  # noqa: PLC0415
 
     polar_calc.set_electrostatic_pbcs("realspace")
     probe = fixtures["water_cluster"].copy()

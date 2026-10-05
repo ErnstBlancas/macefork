@@ -3,9 +3,9 @@ import copy
 import pytest
 import torch
 
-from mace.modules import TimeReversalSymmetrizedMACE
-from mace.modules.extensions import MagneticSCFMACE
-from mace.tools.torch_tools import default_dtype
+from macefork.modules import TimeReversalSymmetrizedMACE
+from macefork.modules.extensions import MagneticSCFMACE
+from macefork.tools.torch_tools import default_dtype
 
 from .test_magmace import (
     _build_small_magnetic_model,
@@ -446,8 +446,8 @@ def test_multi_structure_batch_of_differing_sizes():
     import numpy as np
     from ase.atoms import Atoms
 
-    from mace import data
-    from mace.tools import torch_geometric, utils
+    from macefork import data
+    from macefork.tools import torch_geometric, utils
 
     with default_dtype(torch.float64):
         rng = np.random.default_rng(0)
@@ -522,7 +522,7 @@ def test_config_extraction_targets_the_unwrapped_model():
     Documents the known integration boundary rather than leaving it to be
     discovered at runtime.
     """
-    from mace.tools.scripts_utils import extract_config_mace_model
+    from macefork.tools.scripts_utils import extract_config_mace_model
 
     with default_dtype(torch.float64):
         base = _build_small_magnetic_model().double().eval()
@@ -548,8 +548,8 @@ def test_edge_forces_and_hessian_keep_their_undoubled_shapes():
     import numpy as np
     from ase.atoms import Atoms
 
-    from mace import data
-    from mace.tools import torch_geometric, utils
+    from macefork import data
+    from macefork.tools import torch_geometric, utils
 
     with default_dtype(torch.float64):
         rng = np.random.default_rng(1)

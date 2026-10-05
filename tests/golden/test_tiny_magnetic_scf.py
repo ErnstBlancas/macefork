@@ -1,6 +1,6 @@
 """The SCF-wrapped magnetic anchor reproduces its committed fixed point.
 
-``MagneticSCFMACE`` (``mace/modules/extensions.py:1968``) is a wrapper, not a
+``MagneticSCFMACE`` (``macefork/modules/extensions.py:1968``) is a wrapper, not a
 model: it drives ``torch.optim.LBFGS`` over the magnetic moments, sets
 ``magmom.grad = -output["magforces"]`` by hand, and then re-evaluates the
 model it wraps once at the relaxed moments. So the quantity it adds is a
@@ -30,8 +30,8 @@ import numpy as np
 import pytest
 import torch
 
-from mace.modules.extensions import MagneticSCFMACE
-from mace.tools import torch_tools
+from macefork.modules.extensions import MagneticSCFMACE
+from macefork.tools import torch_tools
 from tests.golden import harness
 from tests.golden import magnetic_surfaces as ms
 
@@ -211,7 +211,7 @@ def test_the_relaxation_is_not_bounded_by_the_models_own_m_max(reference):
 
     Nothing in ``MagneticSCFMACE`` constrains the magnitude of the moments.
     The model's magnetic descriptor uses *solid* harmonics of ``m``
-    (``sphericart.torch.SolidHarmonics``, mace/modules/extensions.py:1351),
+    (``sphericart.torch.SolidHarmonics``, macefork/modules/extensions.py:1351),
     which grow as |m|^l, so the energy is polynomial in |m| and unbounded
     below outside the clamped radial term -- measured on the committed anchor,
     scaling the ferromagnetic dimer's moments by ten takes the energy from
@@ -242,7 +242,7 @@ def test_the_collinear_variant_moves_the_moments_only_along_z(fixtures):
     """The single recorded ``use_collinear`` case.
 
     With ``use_collinear=True`` the wrapper zeroes the transverse components
-    of the gradient before LBFGS sees them (mace/modules/extensions.py:
+    of the gradient before LBFGS sees them (macefork/modules/extensions.py:
     2065-2070), so a relaxation started from moments along z stays exactly
     along z -- exactly, not approximately, because the components are never
     given a nonzero step. Off, the same structure is free to cant, and on the
@@ -273,7 +273,7 @@ def test_the_wrapper_answers_for_the_model_it_wraps(attribute):
     """Attribute delegation, on the committed checkpoint.
 
     Without it every consumer has to know to reach through ``magmom_mace``,
-    and most do not: ``mace_eval_configs`` failed for every SCF checkpoint,
+    and most do not: ``macefork_eval_configs`` failed for every SCF checkpoint,
     ``create_lammps_model`` and ``select_head`` read ``model.heads``, and
     fine-tuning reads ``interactions`` and ``atomic_energies_fn``. The
     behavioural suite pins this on a throwaway model; here it is pinned on the
@@ -307,7 +307,7 @@ def test_the_wrapper_is_not_convertible_and_the_delegation_does_not_hide_it():
     model and labelled it the wrapper. TRN-2's model-transform hook has to
     know that an SCF checkpoint is unwrappable before it is convertible.
     """
-    from mace.tools.scripts_utils import extract_config_mace_model  # noqa: PLC0415
+    from macefork.tools.scripts_utils import extract_config_mace_model  # noqa: PLC0415
 
     refused = extract_config_mace_model(ms.load_scf_anchor())
     assert isinstance(refused, dict) and "error" in refused
@@ -321,7 +321,7 @@ def test_cache_magmom_supplies_the_moments_when_the_batch_has_none(fixtures):
 
     ``forward`` takes the moments from ``data["magmom"]`` when the batch has
     them and from ``self.cache_magmom`` when it does not
-    (mace/modules/extensions.py:2018-2026), and it writes the relaxed moments
+    (macefork/modules/extensions.py:2018-2026), and it writes the relaxed moments
     into that cache on the way out. So a second call with the moments removed
     does not fail -- it silently continues from where the first one stopped,
     and returns the fixed point of the first call rather than of the fixture.
@@ -387,7 +387,7 @@ def test_the_calculator_refuses_a_hessian_for_an_scf_wrapped_model(fixtures):
     the plain anchor still answers, which is what says the refusal is scoped
     to the wrapper rather than to the family.
     """
-    from mace.calculators import MagneticMACECalculator  # noqa: PLC0415
+    from macefork.calculators import MagneticMACECalculator  # noqa: PLC0415
 
     atoms = fixtures["mag_fe_dimer_fm"].copy()
     wrapped = MagneticMACECalculator(
@@ -420,7 +420,7 @@ def test_the_eval_cli_refuses_magforces_for_an_scf_wrapped_model(fixtures, tmp_p
 
     import ase.io  # noqa: PLC0415
 
-    from mace.cli.eval_configs import run  # noqa: PLC0415
+    from macefork.cli.eval_configs import run  # noqa: PLC0415
 
     model_path = tmp_path / "scf.model"
     torch.save(ms.load_scf_anchor(), model_path)

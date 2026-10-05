@@ -161,6 +161,32 @@ def pytest_collection_modifyitems(config, items):  # pylint: disable=unused-argu
             )
 
 
+def _read_upstream_pickles_as_macefork():
+    """Default every test's `torch.load` to the package's legacy unpickler.
+
+    The committed anchors under tests/golden/models were pickled by upstream
+    mace and name `mace.*` classes. A bare `torch.load` would fail on them, or,
+    with upstream mace installed alongside, quietly test upstream's classes
+    instead of this fork's. An explicit `pickle_module` or `weights_only=True`
+    is left alone.
+    """
+    import functools
+
+    import torch
+
+    from macefork.tools import legacy_pickle
+
+    real_load = torch.load
+
+    @functools.wraps(real_load)
+    def load(*args, **kwargs):
+        if len(args) < 3 and kwargs.get("weights_only") is not True:
+            kwargs.setdefault("pickle_module", legacy_pickle)
+        return real_load(*args, **kwargs)
+
+    torch.load = load
+
+
 def pytest_configure(config):
     """Validate MACE_REQUIRE_CAPS, isolate cache per xdist worker, and guard
     known plugin reseed issues."""
@@ -182,6 +208,8 @@ def pytest_configure(config):
     if hasattr(config.option, "randomly_reset_seed"):
         # Some environments with pytest-randomly + thinc can produce invalid seeds.
         config.option.randomly_reset_seed = False
+
+    _read_upstream_pickles_as_macefork()
 
     worker = os.environ.get("PYTEST_XDIST_WORKER")
     if worker:
@@ -247,7 +275,7 @@ def fixture_trained_tiny_1layer_model_path(tmp_path_factory):
     Same purpose and cost, one message-passing layer instead of two, so the
     forward never asks LAMMPS to exchange ghost node features. That is what
     makes the real-tier ML-IAP test runnable against a stock (non-KOKKOS)
-    LAMMPS build -- see `mace.calculators.lammps_mliap_mace`.
+    LAMMPS build -- see `macefork.calculators.lammps_mliap_mace`.
     """
     import ase.io
 

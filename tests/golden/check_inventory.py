@@ -13,7 +13,7 @@ per-CLI parsers, model classes, registries, losses, calculator params,
 calculator exports, extras); the rest close the holes those ten leave: the
 `--model` choices (which can name a class that does not exist), the
 user-observable output keys (model forward dicts, the ASE calculator's
-`results`, and what `mace_eval_configs` writes into the XYZ), the `MACE_*`
+`results`, and what `macefork_eval_configs` writes into the XYZ), the `MACE_*`
 environment variables, the pytest markers, and the default property-key
 enum that every labelled dataset on disk depends on.
 
@@ -132,12 +132,12 @@ COLUMNS = (
     "pinned by",
 )
 
-# The thirteen per-CLI parsers of `mace/cli/`. Six of them are the `convert_*`
+# The thirteen per-CLI parsers of `macefork/cli/`. Six of them are the `convert_*`
 # family, and three of those six have no console entry point at all, so a list
 # derived from `setup.cfg` misses them twice over: not as entry points and not
 # as parsers. The list is derived from the directory, not written out, so a new
 # CLI cannot be missed the same way.
-CLI_DIR = REPO / "mace" / "cli"
+CLI_DIR = REPO / "macefork" / "cli"
 
 
 @dataclass(frozen=True)
@@ -254,17 +254,17 @@ def source_extras() -> dict[str, Decl]:
 
 
 def source_train_dests() -> dict[str, Decl]:
-    path = REPO / "mace" / "tools" / "arg_parser.py"
+    path = REPO / "macefork" / "tools" / "arg_parser.py"
     return _dests(_func(_parse(path), "build_default_arg_parser"), path)
 
 
 def source_preprocess_dests() -> dict[str, Decl]:
-    path = REPO / "mace" / "tools" / "arg_parser.py"
+    path = REPO / "macefork" / "tools" / "arg_parser.py"
     return _dests(_func(_parse(path), "build_preprocess_arg_parser"), path)
 
 
 def source_cli_dests() -> dict[str, Decl]:
-    """Every dest of every parser under `mace/cli/`, keyed `<module>.<dest>`.
+    """Every dest of every parser under `macefork/cli/`, keyed `<module>.<dest>`.
 
     A dest is counted once per parser that declares it: `--device` in four
     different CLIs is four knobs with four defaults and four help strings, so
@@ -287,7 +287,7 @@ def source_model_choices() -> dict[str, Decl]:
     Deliberately a separate set from the model classes: two of the choices name
     a class that exists nowhere in the tree and reach only a deprecation raise.
     """
-    path = REPO / "mace" / "tools" / "arg_parser.py"
+    path = REPO / "macefork" / "tools" / "arg_parser.py"
     for node in ast.walk(_func(_parse(path), "build_default_arg_parser")):
         if not _is_add_call(node):
             continue
@@ -312,18 +312,18 @@ def _classes(path: Path) -> dict[str, Decl]:
 
 
 def source_model_classes() -> dict[str, Decl]:
-    out = _classes(REPO / "mace" / "modules" / "models.py")
-    out.update(_classes(REPO / "mace" / "modules" / "extensions.py"))
+    out = _classes(REPO / "macefork" / "modules" / "models.py")
+    out.update(_classes(REPO / "macefork" / "modules" / "extensions.py"))
     return out
 
 
 def source_loss_classes() -> dict[str, Decl]:
-    return _classes(REPO / "mace" / "modules" / "loss.py")
+    return _classes(REPO / "macefork" / "modules" / "loss.py")
 
 
 def source_registries() -> dict[str, Decl]:
     """The string->class registries that connect CLI values to implementations."""
-    path = REPO / "mace" / "modules" / "__init__.py"
+    path = REPO / "macefork" / "modules" / "__init__.py"
     wanted = ("interaction_classes", "readout_classes", "scaling_classes", "gate_dict")
     out: dict[str, Decl] = {}
     for node in ast.walk(_parse(path)):
@@ -445,7 +445,7 @@ def source_calculator_params() -> dict[str, Decl]:
     keeps its extra knobs from being invisible. Each of the two is read twice:
     the signature, and the names taken back out of `**kwargs`.
     """
-    path = REPO / "mace" / "calculators" / "mace.py"
+    path = REPO / "macefork" / "calculators" / "mace.py"
     out: dict[str, Decl] = {}
     for class_name in ("MACECalculator", "MagneticMACECalculator"):
         for source in (_init_params, _kwargs_reads):
@@ -455,7 +455,7 @@ def source_calculator_params() -> dict[str, Decl]:
 
 
 def source_calculator_exports() -> dict[str, Decl]:
-    path = REPO / "mace" / "calculators" / "__init__.py"
+    path = REPO / "macefork" / "calculators" / "__init__.py"
     for node in ast.walk(_parse(path)):
         if isinstance(node, ast.Assign) and any(
             isinstance(t, ast.Name) and t.id == "__all__" for t in node.targets
@@ -464,7 +464,7 @@ def source_calculator_exports() -> dict[str, Decl]:
                 name: Decl(name, "", f"{_rel(path)}:{node.lineno}")
                 for name in ast.literal_eval(node.value)
             }
-    raise SystemExit("mace/calculators/__init__.py has no __all__")
+    raise SystemExit("macefork/calculators/__init__.py has no __all__")
 
 
 def source_radial_classes() -> dict[str, Decl]:
@@ -475,7 +475,7 @@ def source_radial_classes() -> dict[str, Decl]:
     are reached by other flags or by construction, so counting the choices does
     not account for the file.
     """
-    return _classes(REPO / "mace" / "modules" / "radial.py")
+    return _classes(REPO / "macefork" / "modules" / "radial.py")
 
 
 def source_block_classes() -> dict[str, Decl]:
@@ -486,32 +486,32 @@ def source_block_classes() -> dict[str, Decl]:
     A block class added without a registry entry is reachable from Python and
     from a checkpoint, and was invisible here until this set existed.
     """
-    out = _classes(REPO / "mace" / "modules" / "blocks.py")
-    out.update(_classes(REPO / "mace" / "modules" / "gate.py"))
+    out = _classes(REPO / "macefork" / "modules" / "blocks.py")
+    out.update(_classes(REPO / "macefork" / "modules" / "gate.py"))
     return out
 
 
 def source_contraction_classes() -> dict[str, Decl]:
     """The many-body contraction, which the accelerated backends replace."""
-    return _classes(REPO / "mace" / "modules" / "symmetric_contraction.py")
+    return _classes(REPO / "macefork" / "modules" / "symmetric_contraction.py")
 
 
 def source_data_transforms() -> dict[str, Decl]:
     """Training-data transforms. `--data_aug_magmom` is one flag over a class
     that could gain siblings, and a second transform would arrive unlisted."""
-    return _classes(REPO / "mace" / "data" / "augmentation.py")
+    return _classes(REPO / "macefork" / "data" / "augmentation.py")
 
 
 def source_calculator_classes() -> dict[str, Decl]:
     """The runtime backends: the ASE calculators and the deployment wrappers.
 
     `calc.param.*` and `calc.export.*` cover `MACECalculator`'s signature and
-    what `mace/calculators/__init__.py` exports; neither accounts for a new
+    what `macefork/calculators/__init__.py` exports; neither accounts for a new
     class in these files.
     """
     out: dict[str, Decl] = {}
     for name in ("mace.py", "lammps_mace.py", "lammps_mliap_mace.py", "mace_torchsim.py"):
-        out.update(_classes(REPO / "mace" / "calculators" / name))
+        out.update(_classes(REPO / "macefork" / "calculators" / name))
     return out
 
 
@@ -520,7 +520,7 @@ def source_model_output_keys() -> dict[str, Decl]:
     consumer (calculator, eval CLI, LAMMPS, training loop) reads."""
     out: dict[str, Decl] = {}
     for name in ("models.py", "extensions.py"):
-        path = REPO / "mace" / "modules" / name
+        path = REPO / "macefork" / "modules" / name
         for cls in _parse(path).body:
             if not isinstance(cls, ast.ClassDef):
                 continue
@@ -594,7 +594,7 @@ def source_calculator_result_keys() -> dict[str, Decl]:
     `self.results["k"] = ...` assignments, the `results_map` table, and the
     committee suffixes derived from `results_store_ensemble`.
     """
-    path = REPO / "mace" / "calculators" / "mace.py"
+    path = REPO / "macefork" / "calculators" / "mace.py"
     out: dict[str, Decl] = {}
 
     def add(key: str, lineno: int, detail: str) -> None:
@@ -638,12 +638,12 @@ def source_calculator_result_keys() -> dict[str, Decl]:
 
 
 def source_eval_output_keys() -> dict[str, Decl]:
-    """The `atoms.info` / `atoms.arrays` keys `mace_eval_configs` writes.
+    """The `atoms.info` / `atoms.arrays` keys `macefork_eval_configs` writes.
 
     All of them are written as `info_prefix + "<key>"`, so the constant on the
     right of the concatenation is the key; the prefix itself is a flag.
     """
-    path = REPO / "mace" / "cli" / "eval_configs.py"
+    path = REPO / "macefork" / "cli" / "eval_configs.py"
     out: dict[str, Decl] = {}
     for node in ast.walk(_parse(path)):
         if not isinstance(node, ast.Assign):
@@ -671,7 +671,7 @@ def source_env_vars() -> dict[str, Decl]:
     would report none of them.
     """
     out: dict[str, Decl] = {}
-    for path in sorted((REPO / "mace").rglob("*.py")):
+    for path in sorted((REPO / "macefork").rglob("*.py")):
         if "torch_geometric" in path.parts:  # vendored
             continue
         for const in _str_consts(_parse(path)):
@@ -702,7 +702,7 @@ def source_pytest_markers() -> dict[str, Decl]:
 def source_default_keys() -> dict[str, Decl]:
     """`DefaultKeys` — the on-disk data contract. Every labelled dataset in the
     wild uses these names, so a silent rename breaks all of them at once."""
-    path = REPO / "mace" / "tools" / "default_keys.py"
+    path = REPO / "macefork" / "tools" / "default_keys.py"
     for node in _parse(path).body:
         if isinstance(node, ast.ClassDef) and node.name == "DefaultKeys":
             return {
@@ -722,9 +722,9 @@ def source_default_keys() -> dict[str, Decl]:
 def collect_sources() -> list[SourceSet]:
     return [
         SourceSet("entry points", "ep.", "entry points", source_entry_points()),
-        SourceSet("mace_run_train dests", "train.", "dests", source_train_dests()),
-        SourceSet("mace_prepare_data dests", "prep.", "dests", source_preprocess_dests()),
-        SourceSet("mace/cli parser dests", "cli.", "dests", source_cli_dests()),
+        SourceSet("macefork_run_train dests", "train.", "dests", source_train_dests()),
+        SourceSet("macefork_prepare_data dests", "prep.", "dests", source_preprocess_dests()),
+        SourceSet("macefork/cli parser dests", "cli.", "dests", source_cli_dests()),
         SourceSet("--model choices", "choice.", "choices", source_model_choices()),
         SourceSet("model-level classes", "model.", "classes", source_model_classes()),
         SourceSet("registry entries", "reg.", "entries", source_registries()),

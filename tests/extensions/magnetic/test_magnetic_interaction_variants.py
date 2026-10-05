@@ -18,10 +18,10 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import data
-from mace.modules import interaction_classes
-from mace.modules.extensions import MagneticScaleShiftMACE
-from mace.tools import AtomicNumberTable, torch_geometric
+from macefork import data
+from macefork.modules import interaction_classes
+from macefork.modules.extensions import MagneticScaleShiftMACE
+from macefork.tools import AtomicNumberTable, torch_geometric
 
 RESIDUAL_SOC = "MagneticRealAgnosticResidueSpinOrbitCoupledDensityInteractionBlock"
 PLAIN_SOC = "MagneticRealAgnosticSpinOrbitCoupledDensityInteractionBlock"

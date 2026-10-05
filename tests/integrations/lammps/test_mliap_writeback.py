@@ -21,7 +21,7 @@ import numpy as np
 import pytest
 import torch
 
-from mace.calculators.lammps_mliap_mace import LAMMPS_MLIAP_MACE
+from macefork.calculators.lammps_mliap_mace import LAMMPS_MLIAP_MACE
 from tests.integrations.lammps._harness import StubMACE
 
 

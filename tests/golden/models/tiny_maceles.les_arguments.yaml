@@ -9,9 +9,9 @@
 # architecture is not recoverable from the weights alone.
 #
 # It is also the exact payload the CLI builds: `--les_arguments <this file>`
-# is `type=read_yaml` (mace/tools/arg_parser.py:530-536) and the resulting
+# is `type=read_yaml` (macefork/tools/arg_parser.py:530-536) and the resulting
 # dict is passed straight to `MACELES(les_arguments=...)`
-# (mace/tools/model_script_utils.py:431-436). `tests/golden/test_tiny_maceles.py`
+# (macefork/tools/model_script_utils.py:431-436). `tests/golden/test_tiny_maceles.py`
 # asserts that round trip rather than assuming it.
 #
 # Everything is written out, including values that are the current default,
@@ -19,7 +19,7 @@
 # pinned against one specific `les` commit. A silent default change upstream
 # would otherwise move the numbers with nothing in the diff.
 
-# --- read by MACELES (mace/modules/extensions.py:156-188) -------------------
+# --- read by MACELES (macefork/modules/extensions.py:156-188) -------------------
 
 # All four latent quantities on: charges are always predicted, and these add
 # the dipole, quadrupole, induced-charge (kappa) and induced-dipole (alpha)

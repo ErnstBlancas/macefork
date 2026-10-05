@@ -35,30 +35,30 @@ MERGE = "MERGE"
 #: (id, kind, what, why), one row per non-KEEP surface of the inventory.
 DISPOSITIONS: Tuple[Tuple[str, str, str, str], ...] = (
     (
-        "ep.mace_finetuning_select",
+        "ep.macefork_finetuning_select",
         MERGE,
-        "mace_finetuning_select",
+        "macefork_finetuning_select",
         "absorbed into the integrated fine-tuning pipeline, driven by a fine-tuning "
         "config rather than a separate selection command",
     ),
     (
-        "ep.mace_e3nn_cueq",
+        "ep.macefork_e3nn_cueq",
         DROP,
-        "mace_e3nn_cueq",
+        "macefork_e3nn_cueq",
         "v1 weights are canonical and backend dispatch is automatic, so there is "
         "nothing left to convert between backends",
     ),
     (
-        "ep.mace_cueq_to_e3nn",
+        "ep.macefork_cueq_to_e3nn",
         DROP,
-        "mace_cueq_to_e3nn",
+        "macefork_cueq_to_e3nn",
         "the reverse direction; v1 weights are canonical and backend dispatch is "
         "automatic, so there is nothing left to convert between backends",
     ),
     (
-        "ep.mace_active_learning_md",
+        "ep.macefork_active_learning_md",
         DROP,
-        "mace_active_learning_md",
+        "macefork_active_learning_md",
         "out of v1.0 scope: an ASE MD loop a user writes in ~30 lines over the "
         "calculator, at the cost of MACE owning thermostat, timestep and trajectory "
         "I/O. The committee variance it consumes stays in calculate; the release "
@@ -1356,7 +1356,7 @@ DISPOSITIONS: Tuple[Tuple[str, str, str, str], ...] = (
         "a 2023 organic-chemistry model superseded by MACE-OFF, and the only loader "
         "with a divergent signature (model_path instead of model): an API exception "
         "for an obsolete artifact. Its tracked checkpoint "
-        "mace/calculators/foundations_models/ani500k_large_CC.model goes with it; "
+        "macefork/calculators/foundations_models/ani500k_large_CC.model goes with it; "
         'the release notes say "use MACE-OFF"',
     ),
     (
@@ -1459,10 +1459,10 @@ DISPOSITIONS: Tuple[Tuple[str, str, str, str], ...] = (
     (
         "pkg.vendored_torch_geometric",
         DROP,
-        "the vendored mace.tools.torch_geometric copy",
+        "the vendored macefork.tools.torch_geometric copy",
         "v1 collates without torch_geometric; the vendored copy is excluded from "
         "lint and mypy today, which is the clearest sign it is not maintained code. "
-        "Complication: mace/data/augmentation.py imports the *real* package while "
+        "Complication: macefork/data/augmentation.py imports the *real* package while "
         "the rest of the tree imports the vendored one, and the [magnetic] extra "
         "declares external torch-geometric, so both must go at once",
     ),
@@ -1516,21 +1516,21 @@ DISPOSITIONS: Tuple[Tuple[str, str, str, str], ...] = (
     (
         "ep.convert_e3nn_oeq",
         DROP,
-        "the mace.cli.convert_e3nn_oeq command",
+        "the macefork.cli.convert_e3nn_oeq command",
         "v1 weights are canonical and backend dispatch is automatic, so there is "
         "nothing left to convert between backends",
     ),
     (
         "ep.convert_oeq_e3nn",
         DROP,
-        "the mace.cli.convert_oeq_e3nn command",
+        "the macefork.cli.convert_oeq_e3nn command",
         "the reverse direction; v1 weights are canonical and backend dispatch is "
         "automatic, so there is nothing left to convert between backends",
     ),
     (
         "ep.convert_e3nn_hybrid",
         DROP,
-        "the mace.cli.convert_e3nn_hybrid command",
+        "the macefork.cli.convert_e3nn_hybrid command",
         "the mixed e3nn/cueq layout it produces has no counterpart once backend "
         "dispatch is automatic and v1 weights are canonical",
     ),

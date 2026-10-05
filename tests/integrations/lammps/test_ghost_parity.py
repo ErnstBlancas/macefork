@@ -16,7 +16,7 @@ import pytest
 import torch
 from e3nn.util import jit
 
-from mace.calculators import LAMMPS_MACE
+from macefork.calculators import LAMMPS_MACE
 from tests.integrations.lammps._harness import (
     fold_ghost_forces,
     lammps_style_cluster,

@@ -149,7 +149,7 @@ def test_the_floors_carry_their_reasoning_in_the_job_that_enforces_them():
     question the next person will otherwise answer wrongly: why only these
     files (the rest is pinned by goldens and contracts, not line coverage),
     which selection the percentages are measured under (the same floor reads
-    76 or 87 on `mace/modules/utils.py` depending on it), and what to do when
+    76 or 87 on `macefork/modules/utils.py` depending on it), and what to do when
     a module moves to the new stack (the floor moves with it). Comments are
     not in the parsed YAML, so this reads the raw file.
     """
@@ -377,7 +377,7 @@ def test_the_coverage_job_installs_every_capability_it_requires():
     `les` -- which arrive through pip-packages rather than extras -- while the
     `magnetic` extra was absent entirely. Every test under
     tests/extensions/magnetic therefore skipped in the one job whose numbers
-    the floors judge, and the mace/modules/utils.py floor counts
+    the floors judge, and the macefork/modules/utils.py floor counts
     compute_forces_virials_magforces and compute_forces_magforces, reachable
     from nowhere else. That is ~8 points of a file with 2 points of headroom:
     the floor could not have been met, and the failure would have read as a

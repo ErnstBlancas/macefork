@@ -2,11 +2,11 @@
 
 import pytest
 
-# mace.tools first on purpose: mace.tools.train imports TrainingPlotter, so
-# importing mace.cli.visualise_train before it hits a partially initialised
+# macefork.tools first on purpose: macefork.tools.train imports TrainingPlotter, so
+# importing macefork.cli.visualise_train before it hits a partially initialised
 # module. The cycle predates this test.
-import mace.tools  # noqa: F401  # pylint: disable=unused-import
-from mace.cli.visualise_train import belongs_to_head
+import macefork.tools  # noqa: F401  # pylint: disable=unused-import
+from macefork.cli.visualise_train import belongs_to_head
 
 
 @pytest.mark.parametrize(

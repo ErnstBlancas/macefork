@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-import mace.calculators.foundations_models as foundations_models
-from mace.calculators import mace_off
+import macefork.calculators.foundations_models as foundations_models
+from macefork.calculators import mace_off
 
 
 @pytest.mark.parametrize(

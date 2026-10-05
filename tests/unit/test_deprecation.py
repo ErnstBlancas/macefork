@@ -25,8 +25,8 @@ from pathlib import Path
 
 import pytest
 
-from mace.tools import deprecation
-from mace.tools.arg_parser import build_default_arg_parser, build_preprocess_arg_parser
+from macefork.tools import deprecation
+from macefork.tools.arg_parser import build_default_arg_parser, build_preprocess_arg_parser
 
 MACE_ROOT = Path(deprecation.__file__).resolve().parent.parent
 
@@ -78,7 +78,7 @@ def test_a_drop_removes_and_a_merge_replaces():
 def test_no_message_names_a_v1_command():
     """The plan's rule: a 0.3.x warning may not point at the v1 CLI.
 
-    ``mace.cli.convert_e3nn_oeq`` is a module path and stays legal; ``mace
+    ``macefork.cli.convert_e3nn_oeq`` is a module path and stays legal; ``mace
     train`` is a command that will not exist until after the last 0.3.x
     release, and naming it would send the reader to a binary they cannot run.
     """
@@ -145,7 +145,7 @@ def test_every_extra_row_is_a_declared_one():
     entry_points = {
         dep_id
         for dep_id in deprecation.DEPRECATIONS
-        if dep_id.startswith("ep.") and not dep_id.startswith("ep.mace_")
+        if dep_id.startswith("ep.") and not dep_id.startswith("ep.macefork_")
     }
     assert entry_points == NOT_FROM_INVENTORY
 
@@ -178,7 +178,7 @@ def test_every_emission_site_cites_a_row_that_exists():
         if "torch_geometric" in path.parts or path.name.startswith("deprecation"):
             continue
         text = path.read_text(encoding="utf-8")
-        if "mace.tools.deprecation" not in text and "import deprecation" not in text:
+        if "macefork.tools.deprecation" not in text and "import deprecation" not in text:
             continue
         # warnings.warn is also spelled warn(...) in this tree, and its argument
         # is prose. An identifier never contains whitespace.
@@ -322,7 +322,7 @@ def test_the_never_warned_surfaces_really_have_no_call_site():
         if "torch_geometric" in path.parts or path.name.startswith("deprecation"):
             continue
         text = path.read_text(encoding="utf-8")
-        if "mace.tools.deprecation" not in text and "import deprecation" not in text:
+        if "macefork.tools.deprecation" not in text and "import deprecation" not in text:
             continue
         cited.update(
             arg
@@ -383,7 +383,7 @@ def test_warning_does_not_install_a_handler_on_the_root_logger():
 
 def test_the_message_still_reaches_the_log():
     """The named logger must not have made the log half of it silent."""
-    logger = logging.getLogger("mace.tools.deprecation")
+    logger = logging.getLogger("macefork.tools.deprecation")
     records = []
 
     class Capture(logging.Handler):
@@ -501,7 +501,7 @@ def test_no_warning_sits_inside_a_try_that_swallows_exceptions():
         if "torch_geometric" in path.parts or path.name.startswith("deprecation"):
             continue
         text = path.read_text(encoding="utf-8")
-        if "mace.tools.deprecation" not in text and "import deprecation" not in text:
+        if "macefork.tools.deprecation" not in text and "import deprecation" not in text:
             continue
         for node in ast.walk(ast.parse(text)):
             if not isinstance(node, ast.Try) or not swallows_broadly(node.handlers):

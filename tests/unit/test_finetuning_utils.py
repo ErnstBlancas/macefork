@@ -1,4 +1,4 @@
-"""Unit tests for mace/tools/finetuning_utils.py.
+"""Unit tests for macefork/tools/finetuning_utils.py.
 
 Builds two small ScaleShiftMACE models in-process (no network, no
 pretrained checkpoints): a "foundation" over elements [1, 6, 8] and a
@@ -16,9 +16,9 @@ import torch
 import torch.nn.functional
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.tools import torch_geometric
-from mace.tools.finetuning_utils import load_foundations, load_foundations_elements
+from macefork import data, modules, tools
+from macefork.tools import torch_geometric
+from macefork.tools.finetuning_utils import load_foundations, load_foundations_elements
 
 torch.set_default_dtype(torch.float64)
 

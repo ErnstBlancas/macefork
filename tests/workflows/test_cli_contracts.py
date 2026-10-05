@@ -11,8 +11,8 @@ one rule, and it is the rule to break the tests over:
 Return codes, the log the CLI prints, the JSON-lines record file it writes
 into ``--results_dir``, the checkpoints and models it leaves on disc, the
 extxyz it writes, and the results an ase calculator returns. Nothing here
-imports ``mace.modules``, ``mace.data`` or ``mace.tools`` -- the two imports
-of the package that do appear are ``mace.calculators.MACECalculator``, which
+imports ``macefork.modules``, ``macefork.data`` or ``macefork.tools`` -- the two imports
+of the package that do appear are ``macefork.calculators.MACECalculator``, which
 is itself one of the contracts under test (there is no console script for the
 ase calculator, and the graph-padding arguments exist nowhere else), and
 ``torch.load`` on an artefact, which reads a file rather than reaching into
@@ -40,8 +40,8 @@ import pytest
 from tests.golden import harness
 from tests.helpers import REPO_ROOT, run_mace_train
 
-EVAL_CONFIGS = REPO_ROOT / "mace" / "cli" / "eval_configs.py"
-SELECT_HEAD = REPO_ROOT / "mace" / "cli" / "select_head.py"
+EVAL_CONFIGS = REPO_ROOT / "macefork" / "cli" / "eval_configs.py"
+SELECT_HEAD = REPO_ROOT / "macefork" / "cli" / "select_head.py"
 
 TOL = harness.FP64_CPU_REFERENCE
 
@@ -52,10 +52,10 @@ TOL = harness.FP64_CPU_REFERENCE
 
 
 def training_records(results_dir, name: str, seed: int) -> list:
-    """The JSON-lines record file ``mace_run_train`` writes per run.
+    """The JSON-lines record file ``macefork_run_train`` writes per run.
 
     This is a first-class user artefact -- ``--results_dir`` exists to produce
-    it and ``mace_plot_train`` consumes it -- so reading it keeps the
+    it and ``macefork_plot_train`` consumes it -- so reading it keeps the
     assertions black-box while giving them numbers instead of log scraping.
     """
     path = Path(results_dir) / f"{name}_run-{seed}_train.txt"
@@ -143,7 +143,7 @@ def base_training_params(tmp_path: Path, regression_set: Path, **overrides) -> d
 
 
 def run_eval(model: Path, configs: Path, output: Path, **flags) -> None:
-    """Drive ``mace_eval_configs`` and insist it succeeded."""
+    """Drive ``macefork_eval_configs`` and insist it succeeded."""
     params = {
         "configs": str(configs),
         "model": str(model),
@@ -155,7 +155,7 @@ def run_eval(model: Path, configs: Path, output: Path, **flags) -> None:
     # store_true options need, so the mapping is passed through untouched.
     params.update(flags)
     run_mace_train(params, script=EVAL_CONFIGS)
-    assert output.exists(), f"mace_eval_configs wrote no {output}"
+    assert output.exists(), f"macefork_eval_configs wrote no {output}"
 
 
 # ---------------------------------------------------------------------------
@@ -374,7 +374,7 @@ def test_restart_latest_with_lbfgs_resumes_and_never_reaches_the_post_swap_reloa
 ):
     """The recorded state of the ``restart_lbfgs`` branch: it does not run.
 
-    ``mace/cli/run_train.py`` carries a second, post-optimiser-swap reload for
+    ``macefork/cli/run_train.py`` carries a second, post-optimiser-swap reload for
     L-BFGS resumes, reached only when *both* ``load_latest`` attempts raise.
     They cannot both raise. The intended trigger -- a checkpoint whose L-BFGS
     optimiser state the freshly built Adam cannot accept -- raises a
@@ -494,7 +494,7 @@ def test_eval_configs_agrees_with_the_ase_calculator_on_every_fixture(
     channel-by-channel with units and shapes checked, and at the one fp64 row
     -- not at a number invented here.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     written = tmp_path / "evaluated.xyz"
     run_eval(
@@ -838,7 +838,7 @@ def test_eval_head_selects_a_head_and_refuses_one_the_model_does_not_have(
 
 
 # ---------------------------------------------------------------------------
-# 5. mace_select_head
+# 5. macefork_select_head
 #
 # An installed entry point with no test at all before this file.
 # ---------------------------------------------------------------------------
@@ -967,7 +967,7 @@ def test_select_head_and_the_multihead_model_agree_on_the_selected_head(
 def test_the_calculator_returns_the_contract_keys_with_the_right_shapes(
     anchor_scaleshift, fixture_structures
 ):
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     calculator = MACECalculator(
         model_paths=str(anchor_scaleshift), device="cpu", default_dtype="float64"
@@ -1006,7 +1006,7 @@ def test_the_calculator_agrees_with_eval_configs(
     harness reconciles that, which is the reason to route it through the
     harness rather than compare by hand.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     written = tmp_path / "evaluated_stress.xyz"
     run_eval(anchor_scaleshift, fixture_file, written, compute_stress=None)
@@ -1033,7 +1033,7 @@ def padded_versus_unpadded(anchor, fixtures, *, constructor=None, environment=No
     class-level default would show up as the unpadded run changing rather
     than as agreement.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     plain = MACECalculator(
         model_paths=str(anchor), device="cpu", default_dtype="float64"
@@ -1154,7 +1154,7 @@ def test_padded_per_atom_arrays_come_back_with_exactly_len_atoms_rows(
     which says the schema was disappointed rather than that the calculator
     handed a caller rows for atoms that do not exist.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     calculator = MACECalculator(
         model_paths=str(anchor_scaleshift),

@@ -48,13 +48,13 @@ jobs:
               - 'tests/helpers.py'
               - '.github/workflows/ci-extensions.yaml'
               - '.github/actions/setup-mace/**'
-              - 'mace/modules/**'
-              - 'mace/tools/**'
-              - 'mace/data/**'
+              - 'macefork/modules/**'
+              - 'macefork/tools/**'
+              - 'macefork/data/**'
             polar:
               - *shared
-              - 'mace/cli/polar_density_cube.py'
-              - 'mace/calculators/**'
+              - 'macefork/cli/polar_density_cube.py'
+              - 'macefork/calculators/**'
               - 'tests/extensions/polar/**'
               - 'requirements/polar.txt'
               # The MACE-Polar golden lives here, and this is the only
@@ -65,18 +65,18 @@ jobs:
               - *shared
               - 'tests/extensions/les/**'
               # The golden anchors run in this job, and two of the three
-              # surfaces they pin live outside mace/modules: the external-field
+              # surfaces they pin live outside macefork/modules: the external-field
               # and BEC handling in the calculator, and the eval CLI's
               # flattened latent multipoles. Without these paths a change to
               # either would not run the job that holds its numbers.
               - 'tests/golden/**'
-              - 'mace/calculators/**'
-              - 'mace/cli/eval_configs.py'
+              - 'macefork/calculators/**'
+              - 'macefork/cli/eval_configs.py'
               - 'requirements/les.txt'
             magnetic:
               - *shared
-              - 'mace/calculators/**'
-              - 'mace/cli/**'
+              - 'macefork/calculators/**'
+              - 'macefork/cli/**'
               - 'tests/extensions/magnetic/**'
               # This job owns the magnetic goldens too: they live in
               # tests/golden and are the only place that runs them with
@@ -84,14 +84,14 @@ jobs:
               - 'tests/golden/**'
             torchsim:
               - *shared
-              - 'mace/calculators/**'
+              - 'macefork/calculators/**'
               - 'tests/extensions/torchsim/**'
             schedulefree:
               - *shared
               - 'tests/extensions/schedulefree/**'
             backends:
               - *shared
-              - 'mace/cli/convert_*.py'
+              - 'macefork/cli/convert_*.py'
               - 'tests/backends/**'
               # The backend goldens live with the other goldens, not in
               # tests/backends: they are cueq/oeq tests that happen to assert
@@ -116,7 +116,7 @@ jobs:
         with:
           path: ~/.cache/mace
           # URLs live in foundations_models.py: new URLs -> new cache.
-          key: mace-foundations-${{ hashFiles('mace/calculators/foundations_models.py') }}
+          key: mace-foundations-${{ hashFiles('macefork/calculators/foundations_models.py') }}
       # Polar regression tests compare against released foundation models.
       # tests/golden rides along because this is the only PR-time job with
       # graph_longrange installed, and so the only one where the MACE-Polar

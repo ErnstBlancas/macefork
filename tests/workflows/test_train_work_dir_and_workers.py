@@ -26,7 +26,7 @@ import numpy as np
 import pytest
 from ase import Atoms
 
-from mace.cli import run_train as run_train_module
+from macefork.cli import run_train as run_train_module
 from tests.helpers import base_mace_params, run_mace_train
 
 

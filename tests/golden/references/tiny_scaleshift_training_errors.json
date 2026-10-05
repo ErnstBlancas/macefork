@@ -1,5 +1,5 @@
 {
-  "description": "Final train/valid error table of the ScaleShiftMACE anchor training, as rendered by mace/tools/tables_utils.create_error_table, plus the last evaluation record written by the metrics logger. Committed so a rewrite's training run can be compared against the legacy stack's own numbers on the same tiny set.",
+  "description": "Final train/valid error table of the ScaleShiftMACE anchor training, as rendered by macefork/tools/tables_utils.create_error_table, plus the last evaluation record written by the metrics logger. Committed so a rewrite's training run can be compared against the legacy stack's own numbers on the same tiny set.",
   "error_table": {
     "train_Default": {
       "RMSE E / meV / atom": 250.7,

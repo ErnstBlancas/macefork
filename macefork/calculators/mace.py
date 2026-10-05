@@ -21,22 +21,22 @@ from ase.calculators.calculator import Calculator, all_changes
 from ase.stress import full_3x3_to_voigt_6_stress
 from e3nn import o3
 
-from mace import data as mace_data
-from mace.modules.utils import extract_invariant
-from mace.tools import torch_geometric, torch_tools, utils
-from mace.tools.compile import (
+from macefork import data as mace_data
+from macefork.modules.utils import extract_invariant
+from macefork.tools import legacy_pickle, torch_geometric, torch_tools, utils
+from macefork.tools.compile import (
     configure_autograd_for_compile,
     disable_e3nn_codegen,
     prepare,
     simplify,
 )
-from mace.tools.default_keys import DefaultKeys
-from mace.tools.deprecation import warn
-from mace.tools.polar_conversion import validate_pbc_handling
-from mace.tools.scripts_utils import extract_model
+from macefork.tools.default_keys import DefaultKeys
+from macefork.tools.deprecation import warn
+from macefork.tools.polar_conversion import validate_pbc_handling
+from macefork.tools.scripts_utils import extract_model
 
 try:
-    from mace.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
+    from macefork.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
 
     CUEQQ_AVAILABLE = True
 except (ImportError, ModuleNotFoundError):
@@ -44,7 +44,7 @@ except (ImportError, ModuleNotFoundError):
     run_e3nn_to_cueq = None
 
 try:
-    from mace.cli.convert_e3nn_oeq import run as run_e3nn_to_oeq
+    from macefork.cli.convert_e3nn_oeq import run as run_e3nn_to_oeq
 
     OEQ_AVAILABLE = True
 except (ImportError, ModuleNotFoundError):
@@ -52,7 +52,7 @@ except (ImportError, ModuleNotFoundError):
     run_e3nn_to_oeq = None
 
 try:
-    from mace.cli.convert_e3nn_hybrid import run as run_e3nn_to_hybrid
+    from macefork.cli.convert_e3nn_hybrid import run as run_e3nn_to_hybrid
 
     HYBRID_AVAILABLE = True
 except (ImportError, ModuleNotFoundError):
@@ -271,7 +271,9 @@ class MACECalculator(Calculator):
                 raise ValueError("No mace file names supplied")
             self.num_models = len(model_paths)
             self.models = [
-                torch.load(f=model_path, map_location=device)
+                torch.load(
+                    f=model_path, map_location=device, pickle_module=legacy_pickle
+                )
                 for model_path in model_paths
             ]
         elif models is not None:
@@ -648,7 +650,7 @@ class MACECalculator(Calculator):
 
         data_list = [real_graph]
         if pad_atoms > 0 or pad_edges > 0:
-            from mace.data.padding_tools import build_fake_padding_graph
+            from macefork.data.padding_tools import build_fake_padding_graph
 
             if pad_edges > 0 >= pad_atoms:
                 pad_atoms = 1
@@ -1186,7 +1188,9 @@ class MagneticMACECalculator(Calculator):
             # dtype change and for the `models=` branch too. Doing it twice
             # fed a converted model to a converter expecting e3nn layout.
             self.models = [
-                torch.load(f=model_path, map_location=device)
+                torch.load(
+                    f=model_path, map_location=device, pickle_module=legacy_pickle
+                )
                 for model_path in model_paths
             ]
 

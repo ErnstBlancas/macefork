@@ -12,7 +12,7 @@ from ase import Atoms
 from ase.calculators.calculator import PropertyNotImplementedError
 from ase.calculators.fd import calculate_numerical_stress
 
-from mace.calculators import mace_polar
+from macefork.calculators import mace_polar
 
 pytestmark = [pytest.mark.polar, pytest.mark.network]
 

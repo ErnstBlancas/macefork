@@ -23,9 +23,9 @@ import torch
 from ase import Atoms
 from e3nn import o3
 
-from mace import modules
-from mace.calculators import MACECalculator
-from mace.tools import AtomicNumberTable
+from macefork import modules
+from macefork.calculators import MACECalculator
+from macefork.tools import AtomicNumberTable
 
 
 @pytest.fixture(scope="module", name="model_path")

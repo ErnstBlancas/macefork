@@ -8,7 +8,7 @@ import numpy as np
 from ase import Atoms
 from ase.build import molecule
 
-from mace.calculators import MACECalculator
+from macefork.calculators import MACECalculator
 
 
 def test_run_train_with_elec_temp(tmp_path):
@@ -104,7 +104,7 @@ embedding_specs:
     }
 
     # Run training
-    run_train = REPO_ROOT / "mace" / "cli" / "run_train.py"
+    run_train = REPO_ROOT / "macefork" / "cli" / "run_train.py"
 
     # Make sure the run_train.py script exists
     assert run_train.exists(), f"Could not find run_train.py at {run_train}"
@@ -301,7 +301,7 @@ embedding_specs:
     }
 
     # Run training
-    run_train = REPO_ROOT / "mace" / "cli" / "run_train.py"
+    run_train = REPO_ROOT / "macefork" / "cli" / "run_train.py"
 
     # Make sure the run_train.py script exists
     assert run_train.exists(), f"Could not find run_train.py at {run_train}"

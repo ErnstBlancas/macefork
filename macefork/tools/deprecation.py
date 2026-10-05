@@ -2,7 +2,7 @@
 
 MACE v1.0 is a rewrite. Its feature inventory carries a KEEP / MERGE / DROP
 disposition for every enumerable surface of this package, and the non-KEEP rows
-of it are reproduced in :mod:`mace.tools.deprecation_table`. This module turns
+of it are reproduced in :mod:`macefork.tools.deprecation_table`. This module turns
 those rows into warnings, so that a 0.3.x user hears about a removal from the
 release that still has the feature rather than from the one that dropped it.
 
@@ -19,7 +19,7 @@ warned about when it is run. Some rows have no such moment, and
 :data:`NEVER_WARNED` below says which and why. Those rows stay in the table and
 are printed by::
 
-    python -m mace.tools.deprecation
+    python -m macefork.tools.deprecation
 
 which is the one place the whole disposition list is visible.
 
@@ -128,7 +128,7 @@ def warn(
     except KeyError:
         raise KeyError(
             f"{dep_id!r} is not a row of the v1 disposition table; "
-            f"add it to mace/tools/deprecation_table.py or fix the call site"
+            f"add it to macefork/tools/deprecation_table.py or fix the call site"
         ) from None
     if dep_id in _warned:
         return False

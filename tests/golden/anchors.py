@@ -19,9 +19,9 @@ impossible.
 
 **`KeySpecification.from_defaults()` is passed explicitly, because the default
 argument is an empty one.** `config_from_atoms` defaults to a bare
-`KeySpecification()` (mace/data/utils.py:174), which reads no property out of
+`KeySpecification()` (macefork/data/utils.py:174), which reads no property out of
 the structure at all, and `AtomicData.from_config` then falls back to
-`energy = 0.0` and `forces = zeros` (mace/data/atomic_data.py:308-321) while
+`energy = 0.0` and `forces = zeros` (macefork/data/atomic_data.py:308-321) while
 the matching weights fall back to 1.0 -- so a loss taken on that batch is the
 loss against zero labels, at full weight, with nothing to distinguish it from
 the real one but its value. `from_defaults()` maps the `REF_energy` /
@@ -36,9 +36,9 @@ from typing import Dict, Iterable, Sequence
 import torch
 from ase import Atoms
 
-from mace import data
-from mace.data.utils import KeySpecification
-from mace.tools import torch_geometric, torch_tools, utils
+from macefork import data
+from macefork.data.utils import KeySpecification
+from macefork.tools import torch_geometric, torch_tools, utils
 
 from . import harness
 

@@ -560,7 +560,7 @@
   },
   "provenance": {
     "description": "Trained ScaleShiftMACE anchor: the class the training CLI emits, with the short-range repulsion term inside the scale-shift.",
-    "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+    "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
     "recipe": "tests/golden/train_anchor.py",
     "source": "tests/golden/models/tiny_scaleshift.model",
     "tolerance_row": "fp64_cpu_reference"

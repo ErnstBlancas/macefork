@@ -1,6 +1,6 @@
-## Wrapper for mace.cli.preprocess_data.main ##
+## Wrapper for macefork.cli.preprocess_data.main ##
 
-from mace.cli.preprocess_data import main
+from macefork.cli.preprocess_data import main
 
 if __name__ == "__main__":
     main()

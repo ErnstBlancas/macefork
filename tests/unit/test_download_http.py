@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from mace.calculators import foundations_models as fm
+from macefork.calculators import foundations_models as fm
 
 
 class Response(io.BytesIO):

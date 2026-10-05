@@ -3,8 +3,8 @@ import types
 import pytest
 import torch
 
-from mace.data.augmentation import Random3DRotation
-from mace.tools.torch_tools import default_dtype
+from macefork.data.augmentation import Random3DRotation
+from macefork.tools.torch_tools import default_dtype
 
 # ----------------------------------------------------------
 # Which symmetries each mode augments

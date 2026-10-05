@@ -12,11 +12,11 @@ target-version = "py310"
 # only the union syntax is at issue.
 #
 # This is every file carrying @compile_mode("script"). Keep it in sync with
-#   git grep -l '@compile_mode' mace/
+#   git grep -l '@compile_mode' macefork/
 [per-file-target-version]
-"mace/modules/**" = "py39"
-"mace/calculators/lammps_mace.py" = "py39"
-"mace/calculators/lammps_mliap_mace.py" = "py39"
+"macefork/modules/**" = "py39"
+"macefork/calculators/lammps_mace.py" = "py39"
+"macefork/calculators/lammps_mliap_mace.py" = "py39"
 
 [lint]
 select = ["FA102"]

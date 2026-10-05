@@ -9,9 +9,9 @@ from typing import Any, List, Optional
 import torch
 from e3nn import o3
 
-from mace.modules.symmetric_contraction import SymmetricContraction
-from mace.tools.cg import O3_e3nn
-from mace.tools.scatter import scatter_sum
+from macefork.modules.symmetric_contraction import SymmetricContraction
+from macefork.tools.cg import O3_e3nn
+from macefork.tools.scatter import scatter_sum
 
 try:
     import cuequivariance as cue

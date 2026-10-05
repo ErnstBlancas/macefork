@@ -6,10 +6,10 @@ import numpy as np
 import pytest
 from ase.atoms import Atoms
 
-from mace.calculators.mace import MACECalculator
-from mace.cli.run_train import run as run_mace_train
-from mace.data.utils import KeySpecification
-from mace.tools import build_default_arg_parser
+from macefork.calculators.mace import MACECalculator
+from macefork.cli.run_train import run as run_mace_train
+from macefork.data.utils import KeySpecification
+from macefork.tools import build_default_arg_parser
 from tests.helpers import run_mace_train as run_mace_train_subprocess
 
 

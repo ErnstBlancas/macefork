@@ -74,7 +74,7 @@ def _load_mp_small(device):
     Same loader and same dtype; only the device differs, and it has to --
     the reference is the CPU evaluation this run is being compared against.
     """
-    from mace.calculators.foundations_models import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.calculators.foundations_models import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         mace_mp,
     )
 
@@ -135,12 +135,12 @@ def _convert(model, backend, device):
     something.
     """
     if backend == audit.CUEQ:
-        from mace.cli.convert_e3nn_cueq import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+        from macefork.cli.convert_e3nn_cueq import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
             run as run_e3nn_to_cueq,
         )
 
         return run_e3nn_to_cueq(model, device=device)
-    from mace.cli.convert_e3nn_oeq import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.cli.convert_e3nn_oeq import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         run as run_e3nn_to_oeq,
     )
 
@@ -148,7 +148,7 @@ def _convert(model, backend, device):
 
 
 def _calculator(model, device):
-    from mace.calculators import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         MACECalculator,
     )
 
@@ -250,11 +250,11 @@ def test_the_calculators_own_backend_flag_reaches_the_same_kernels(backend):
     """The route a user takes, held to the same standard as the converter.
 
     ``MACECalculator(enable_cueq=True)`` does the conversion itself and passes
-    its own ``device`` through (mace/calculators/mace.py:359-369). That is the
+    its own ``device`` through (macefork/calculators/mace.py:359-369). That is the
     shipped path, and it would be perfectly possible for the golden above to
     pin fused kernels while the calculator flag quietly produced unfused ones.
     """
-    from mace.calculators import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         MACECalculator,
     )
 
@@ -379,7 +379,7 @@ def test_the_audits_verdict_tracks_whether_the_fused_ops_are_installed():
     import cuequivariance as cue  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
     import cuequivariance_torch as cuet  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
-    from mace.tools.cg import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools.cg import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         O3_e3nn,
     )
 
@@ -477,7 +477,7 @@ def test_the_conversion_whitelist_refuses_the_plain_anchor_and_both_converters_s
     be compared against a reference. Pinned so the choice of anchor is a
     stated contract rather than a workaround for a surprise.
     """
-    from mace.tools.scripts_utils import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.tools.scripts_utils import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         extract_config_mace_model,
     )
 
@@ -540,7 +540,7 @@ def _unguarded_fusion_wrapper(segmented):
     weakening the guard shows up as a failing test rather than as a golden
     that silently starts pinning the naive path.
     """
-    from mace.modules.wrapper_ops import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.modules.wrapper_ops import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         CueqConvFusionWrapper,
     )
 

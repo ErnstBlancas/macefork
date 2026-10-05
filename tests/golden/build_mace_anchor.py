@@ -1,15 +1,15 @@
 """Build the plain-``MACE`` parity anchor by direct instantiation.
 
-This anchor is deliberately *not* produced by ``mace_run_train``, and that is
+This anchor is deliberately *not* produced by ``macefork_run_train``, and that is
 not a matter of convenience. ``--model MACE`` returns a ``ScaleShiftMACE``
 with ``atomic_inter_scale=args.std`` and the shift zeroed
-(``mace/tools/model_script_utils.py:279-296``), so the CLI cannot emit a
+(``macefork/tools/model_script_utils.py:279-296``), so the CLI cannot emit a
 plain ``MACE`` at all; a CLI recipe would silently anchor the wrong class.
 
 What the anchor exists to pin is the plain-``MACE`` energy assembly, and in
 particular where the short-range repulsion term enters. ``MACE`` appends the
 pair term to ``energies`` / ``node_energies_list`` next to ``e0``
-(``mace/modules/models.py:359-361``) and never scales it, while
+(``macefork/modules/models.py:359-361``) and never scales it, while
 ``ScaleShiftMACE`` seeds its readout sum with ``[pair_node_energy]``
 (``:539``) and puts the whole sum through ``scale_shift`` (``:579``) -- so
 the same term is scaled in one class and raw in the other. Only anchoring
@@ -34,7 +34,7 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace import modules
+from macefork import modules
 
 MODELS_DIR = Path(__file__).resolve().parent / "models"
 MODEL_PATH = MODELS_DIR / "tiny_mace.model"
@@ -66,7 +66,7 @@ ANCHOR_CONFIG: Dict[str, Any] = {
     "distance_transform": "None",
     "pair_repulsion": True,
     # Pinned to False on purpose. The default is True, and
-    # `mace/modules/wrapper_ops.py:428` then silently degrades it to False
+    # `macefork/modules/wrapper_ops.py:428` then silently degrades it to False
     # when cuequivariance is absent -- so an anchor built with the default
     # would have different weights, and different outputs, depending on what
     # happens to be installed on the machine that built it. A cross-machine

@@ -1,4 +1,4 @@
-"""Unit tests for mace/tools/multihead_tools.py.
+"""Unit tests for macefork/tools/multihead_tools.py.
 
 Covers the pure/offline pieces: HeadConfig construction and defaults,
 dict_head_to_dataclass (head-dict overrides vs. args fallbacks + the
@@ -25,14 +25,14 @@ import ase.io
 from ase import Atoms
 from e3nn import o3
 
-from mace import modules, tools
-from mace.data.utils import config_from_atoms
+from macefork import modules, tools
+from macefork.data.utils import config_from_atoms
 
-from mace.data import KeySpecification
-from mace.data.utils import update_keyspec_from_kwargs
-from mace.tools import build_default_arg_parser
-from mace.tools.torch_tools import default_dtype
-from mace.tools.multihead_tools import (
+from macefork.data import KeySpecification
+from macefork.data.utils import update_keyspec_from_kwargs
+from macefork.tools import build_default_arg_parser
+from macefork.tools.torch_tools import default_dtype
+from macefork.tools.multihead_tools import (
     HeadConfig,
     assemble_replay_data,
     apply_pseudolabels_to_pt_head_configs,

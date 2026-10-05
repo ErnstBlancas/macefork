@@ -103,7 +103,7 @@ def test_the_registry_url_is_still_the_package_url(name):
     """A download tier pins the URL `foundations_models.py` actually uses."""
     spec = fa.ARTIFACTS[name]
     if not spec.network:
-        from mace.calculators import foundations_models  # noqa: PLC0415
+        from macefork.calculators import foundations_models  # noqa: PLC0415
 
         # Compared by suffix, not by absolute path: CI installs the wheel, so
         # the package's idea of this path is inside site-packages while the
@@ -128,7 +128,7 @@ def test_an_unqualified_mace_mp_is_mpa0_medium_and_reads_no_url():
     (`2023-12-03-mace-mp.model` is still there). A golden that assumed the
     old meaning would pin a model nobody loads.
     """
-    from mace.calculators import foundations_models  # noqa: PLC0415
+    from macefork.calculators import foundations_models  # noqa: PLC0415
 
     with fa.tracked_checkpoint_in_place(), fa.no_network():
         resolved = foundations_models.download_mace_mp_checkpoint(None)
@@ -137,7 +137,7 @@ def test_an_unqualified_mace_mp_is_mpa0_medium_and_reads_no_url():
     spec = fa.ARTIFACTS["mpa0_medium"]
     assert fa.sha256_of(resolved) == spec.sha256
     # and it is a different file from the pre-3.10 default, which also ships
-    older = fa.REPO_ROOT / "mace/calculators/foundations_models/2023-12-03-mace-mp.model"
+    older = fa.REPO_ROOT / "macefork/calculators/foundations_models/2023-12-03-mace-mp.model"
     if older.exists():
         assert fa.sha256_of(older) != spec.sha256
 
@@ -157,7 +157,7 @@ def test_the_tracked_checkpoint_resolves_to_a_real_file_in_either_install():
     closed in whichever way this environment is installed. It also fails, with
     a digest mismatch, if the checkout's copy is not the pinned artifact.
     """
-    from mace.calculators import foundations_models  # noqa: PLC0415
+    from macefork.calculators import foundations_models  # noqa: PLC0415
 
     spec = fa.ARTIFACTS["mpa0_medium"]
     with fa.tracked_checkpoint_in_place():
@@ -180,13 +180,13 @@ def test_a_wheel_shaped_install_would_download_without_the_redirect(
     and it is silent on any machine whose cache is already warm, which is
     every machine a developer would test this on.
     """
-    from mace.calculators import foundations_models  # noqa: PLC0415
+    from macefork.calculators import foundations_models  # noqa: PLC0415
 
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path))
     monkeypatch.setattr(
         foundations_models,
         "local_model_path",
-        str(tmp_path / "site-packages/mace/calculators/foundations_models/"
+        str(tmp_path / "site-packages/macefork/calculators/foundations_models/"
             "mace-mpa-0-medium.model"),
     )
     with fa.no_network():
@@ -339,7 +339,7 @@ def test_mh_0_refuses_to_load_without_a_head():
     and it says so with the list rather than choosing. That refusal is why this
     artifact's registry entry carries a `head` and the single-head ones do not.
     """
-    from mace.calculators.foundations_models import (  # noqa: PLC0415
+    from macefork.calculators.foundations_models import (  # noqa: PLC0415
         mace_mp,
     )
 

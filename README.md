@@ -81,32 +81,32 @@ A partial documentation is available at: https://mace-docs.readthedocs.io
 
 **Make sure to install PyTorch.** Please refer to the [official PyTorch installation](https://pytorch.org/get-started/locally/) for the installation instructions. Select the appropriate options for your system.
 
-### Installation from PyPI
+### Installation (macefork)
 
-This is the recommended way to install MACE.
+This fork is renamed so it can be installed next to upstream MACE without
+conflicts: the distribution is `macefork`, the import package is `macefork`
+(`from macefork.calculators import mace_mp`), and the command-line tools are
+`macefork_run_train`, `macefork_eval_configs`, and so on. Upstream `mace-torch`
+keeps `mace`, `mace_run_train`, etc. Model files written by upstream MACE
+(including the foundation models) load into `macefork` classes.
 
-```sh
-pip install --upgrade pip
-pip install mace-torch
-```
-
-**Note:** The homonymous package on [PyPI](https://pypi.org/project/MACE/) has nothing to do with this one.
-
-### Installation from source
+It is not published on PyPI; install it from source:
 
 ```sh
-git clone https://github.com/ACEsuit/mace.git
-pip install ./mace
+git clone https://github.com/ErnstBlancas/macefork.git
+pip install ./macefork
 ```
+
+Upstream MACE is installed as usual with `pip install mace-torch`.
 
 ## Usage
 
 ### Training
 
-To train a MACE model, you can use the `mace_run_train` script, which should be in the usual place that pip places binaries (or you can explicitly run `python3 <path_to_cloned_dir>/mace/cli/run_train.py`)
+To train a MACE model, you can use the `macefork_run_train` script, which should be in the usual place that pip places binaries (or you can explicitly run `python3 <path_to_cloned_dir>/macefork/cli/run_train.py`)
 
 ```sh
-mace_run_train \
+macefork_run_train \
     --name="MACE_model" \
     --train_file="train.xyz" \
     --valid_fraction=0.05 \
@@ -181,10 +181,10 @@ And append to the command line `--config="your_configs.yaml"`. Any argument spec
 
 ### Evaluation
 
-To evaluate your MACE model on an XYZ file, run the `mace_eval_configs`:
+To evaluate your MACE model on an XYZ file, run the `macefork_eval_configs`:
 
 ```sh
-mace_eval_configs \
+macefork_eval_configs \
     --configs="your_configs.xyz" \
     --model="your_model.model" \
     --output="./your_output.xyz"
@@ -255,7 +255,7 @@ python ./mace/scripts/run_train.py \
 If you would like to use MACE with Weights and Biases to log your experiments simply install with
 
 ```sh
-pip install ./mace[wandb]
+pip install ./macefork[wandb]
 ```
 
 And specify the necessary keyword arguments (`--wandb`, `--wandb_project`, `--wandb_entity`, `--wandb_name`, `--wandb_log_hypers`)
@@ -292,7 +292,7 @@ If you use them please cite [our paper](https://arxiv.org/abs/2401.00096) which 
 #### Example usage in ASE
 
 ```py
-from mace.calculators import mace_mp
+from macefork.calculators import mace_mp
 from ase import build
 
 atoms = build.molecule('H2O')
@@ -310,7 +310,7 @@ If you use them please cite [our paper](https://arxiv.org/abs/2312.15211) which 
 #### Example usage in ASE
 
 ```py
-from mace.calculators import mace_off
+from macefork.calculators import mace_off
 from ase import build
 
 atoms = build.molecule('H2O')
@@ -328,10 +328,10 @@ For usage, outputs, and training/finetuning details, see the PolarMACE guide:
 
 ### Finetuning foundation models
 
-To finetune one of the mace-mp-0 foundation model, you can use the `mace_run_train` script with the extra argument `--foundation_model=model_type`. For example to finetune the small model on a new dataset, you can use:
+To finetune one of the mace-mp-0 foundation model, you can use the `macefork_run_train` script with the extra argument `--foundation_model=model_type`. For example to finetune the small model on a new dataset, you can use:
 
 ```sh
-mace_run_train \
+macefork_run_train \
   --name="MACE" \
   --foundation_model="small" \
   --train_file="train.xyz" \
@@ -374,7 +374,7 @@ the whole list at once, including the parts that have no single moment to warn
 at, run:
 
 ```sh
-python -m mace.tools.deprecation
+python -m macefork.tools.deprecation
 ```
 
 Each entry says whether v1.0 removes the feature outright or replaces it with a

@@ -1,7 +1,7 @@
-"""`mace_plot_train` against a real results log.
+"""`macefork_plot_train` against a real results log.
 
 The plotting CLI had no test at all, and the results log format it parses had
-none either, so nothing connected the two: `mace_run_train` is free to rename a
+none either, so nothing connected the two: `macefork_run_train` is free to rename a
 column and the only symptom is a plot nobody generates in CI.
 
 That absence was hiding a CLI that could not run. `plot` aggregated every column
@@ -29,7 +29,7 @@ import pytest
 from tests.helpers import base_mace_params, make_fitting_configs, run_mace_train
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-PLOT_TRAIN = REPO_ROOT / "mace" / "cli" / "plot_train.py"
+PLOT_TRAIN = REPO_ROOT / "macefork" / "cli" / "plot_train.py"
 
 #: `plot` writes `{name}_{head}.{format}` next to the working directory, and
 #: `name` comes off the log's filename, not from a flag.

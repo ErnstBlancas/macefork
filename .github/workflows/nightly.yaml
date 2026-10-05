@@ -34,7 +34,7 @@ jobs:
         with:
           path: ~/.cache/mace
           # URLs live in foundations_models.py: new URLs -> new cache.
-          key: mace-foundations-${{ hashFiles('mace/calculators/foundations_models.py') }}
+          key: mace-foundations-${{ hashFiles('macefork/calculators/foundations_models.py') }}
       # Downloads are allowed and REQUIRED here: a broken download host
       # must turn this job red, never a PR.
       #
@@ -124,7 +124,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/mace
-          key: mace-foundations-${{ hashFiles('mace/calculators/foundations_models.py') }}
+          key: mace-foundations-${{ hashFiles('macefork/calculators/foundations_models.py') }}
       - uses: ./.github/actions/run-tests
         with:
           tests: tests/benchmarks
@@ -261,7 +261,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/mace
-          key: mace-foundations-${{ hashFiles('mace/calculators/foundations_models.py') }}
+          key: mace-foundations-${{ hashFiles('macefork/calculators/foundations_models.py') }}
       - name: Free up disk space
         run: |
           sudo rm -rf /usr/lib/jvm /usr/share/dotnet /usr/share/swift \
@@ -336,7 +336,7 @@ jobs:
       # WHY ONLY THESE FILES. The rewrite's test-prerequisite bar is golden
       # characterization + end-to-end contracts + line-coverage floors on the
       # modules whose *behaviour* ports. There is deliberately no global
-      # target: everything else in mace/ is pinned by the goldens in
+      # target: everything else in macefork/ is pinned by the goldens in
       # tests/golden and the CLI/calculator contracts in tests/workflows, and
       # a global number would be a second, weaker statement about the same
       # code. These six are the pure-math and physics-glue modules that have
@@ -360,7 +360,7 @@ jobs:
       # thing.
       #
       # That second one is not a theoretical objection, and the file that
-      # settles it is mace/modules/utils.py. Measured on one host over the
+      # settles it is macefork/modules/utils.py. Measured on one host over the
       # whole selection: 76% on the PR slice, 87% on the full scope. Its floor
       # is 85. The same number against the same file therefore PASSES here and
       # FAILS in the PR job. The gap is 36 statements and it is not diffuse:
@@ -412,12 +412,12 @@ jobs:
               >> "$GITHUB_STEP_SUMMARY"
             printf '%s\n%s\n' "--- $file (floor ${floor}%): $verdict" "$report"
           done <<'FLOORS'
-          mace/modules/loss.py 90
-          mace/modules/radial.py 90
-          mace/modules/utils.py 85
-          mace/data/utils.py 85
-          mace/data/neighborhood.py 95
-          mace/data/atomic_data.py 85
+          macefork/modules/loss.py 90
+          macefork/modules/radial.py 90
+          macefork/modules/utils.py 85
+          macefork/data/utils.py 85
+          macefork/data/neighborhood.py 95
+          macefork/data/atomic_data.py 85
           FLOORS
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit "$status"

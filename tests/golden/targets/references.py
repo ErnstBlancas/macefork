@@ -24,7 +24,7 @@ def run() -> None:
     # Late import: see the package docstring.
     import torch  # pylint: disable=import-outside-toplevel
 
-    from mace.calculators import (  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # pylint: disable=import-outside-toplevel
         MACECalculator,
     )
 
@@ -51,7 +51,7 @@ def run() -> None:
                 "source": f"tests/golden/models/{model_path.name}",
                 "recipe": anchors_target.RECIPES[name],
                 "description": description,
-                "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+                "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
                 "tolerance_row": harness.FP64_CPU_REFERENCE.name,
             },
             allow_overwrite=True,

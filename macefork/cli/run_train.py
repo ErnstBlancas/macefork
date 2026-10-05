@@ -20,9 +20,9 @@ from torch.optim import LBFGS
 from torch.utils.data import ConcatDataset
 from torch_ema import ExponentialMovingAverage
 
-import mace
-from mace import data, tools
-from mace.calculators.foundations_models import (
+import macefork
+from macefork import data, tools
+from macefork.calculators.foundations_models import (
     mace_mp,
     mace_mp_names,
     mace_off,
@@ -30,17 +30,17 @@ from mace.calculators.foundations_models import (
     mace_polar,
     polar_model_names,
 )
-from mace.cli.convert_cueq_e3nn import run as run_cueq_to_e3nn
-from mace.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
-from mace.cli.convert_e3nn_oeq import run as run_e3nn_to_oeq
-from mace.cli.convert_oeq_e3nn import run as run_oeq_to_e3nn
-from mace.cli.visualise_train import TrainingPlotter
-from mace.data import KeySpecification, update_keyspec_from_kwargs
-from mace.modules.lora import inject_LoRAs, merge_lora_weights
-from mace.tools import deprecation, torch_geometric
-from mace.tools.distributed_tools import init_distributed, xpu_device_index
-from mace.tools.model_script_utils import configure_model
-from mace.tools.multihead_tools import (
+from macefork.cli.convert_cueq_e3nn import run as run_cueq_to_e3nn
+from macefork.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
+from macefork.cli.convert_e3nn_oeq import run as run_e3nn_to_oeq
+from macefork.cli.convert_oeq_e3nn import run as run_oeq_to_e3nn
+from macefork.cli.visualise_train import TrainingPlotter
+from macefork.data import KeySpecification, update_keyspec_from_kwargs
+from macefork.modules.lora import inject_LoRAs, merge_lora_weights
+from macefork.tools import deprecation, legacy_pickle, torch_geometric
+from macefork.tools.distributed_tools import init_distributed, xpu_device_index
+from macefork.tools.model_script_utils import configure_model
+from macefork.tools.multihead_tools import (
     HeadConfig,
     apply_pseudolabels_to_pt_head_configs,
     assemble_replay_data,
@@ -49,12 +49,12 @@ from mace.tools.multihead_tools import (
     prepare_default_head,
     prepare_pt_head,
 )
-from mace.tools.run_train_utils import (
+from macefork.tools.run_train_utils import (
     combine_datasets,
     load_dataset_for_path,
     normalize_file_paths,
 )
-from mace.tools.scripts_utils import (
+from macefork.tools.scripts_utils import (
     LRScheduler,
     SubsetCollection,
     check_path_ase_read,
@@ -74,8 +74,8 @@ from mace.tools.scripts_utils import (
     remove_pt_head,
     setup_wandb,
 )
-from mace.tools.tables_utils import create_error_table
-from mace.tools.utils import AtomicNumberTable
+from macefork.tools.tables_utils import create_error_table
+from macefork.tools.utils import AtomicNumberTable
 
 
 def main() -> None:
@@ -128,7 +128,7 @@ def run(args) -> None:
         logging.info(f"Processes: {world_size}")
 
     try:
-        logging.info(f"MACE version: {mace.__version__}")
+        logging.info(f"MACE version: {macefork.__version__}")
     except AttributeError:
         logging.info("Cannot find MACE version, please install MACE via pip")
     logging.debug(f"Configuration: {args}")
@@ -217,7 +217,9 @@ def run(args) -> None:
             model_foundation = calc.models[0]
         else:
             model_foundation = torch.load(
-                args.foundation_model, map_location=args.device
+                args.foundation_model,
+                map_location=args.device,
+                pickle_module=legacy_pickle,
             )
             logging.info(
                 f"Using foundation model {args.foundation_model} as initial checkpoint."
@@ -1039,6 +1041,26 @@ def run(args) -> None:
         logging.info("DRY RUN mode enabled. Stopping now.")
         return
 
+    convergence = None
+    if any(
+        t is not None
+        for t in (
+            args.convergence_mean_threshold,
+            args.convergence_std_threshold,
+            args.stage_two_convergence_mean_threshold,
+            args.stage_two_convergence_std_threshold,
+        )
+    ):
+        convergence = tools.ConvergenceMonitor(
+            metric=args.convergence_metric,
+            window=args.convergence_window,
+            mean_threshold=args.convergence_mean_threshold,
+            std_threshold=args.convergence_std_threshold,
+            stage_two_mean_threshold=args.stage_two_convergence_mean_threshold,
+            stage_two_std_threshold=args.stage_two_convergence_std_threshold,
+            head=args.convergence_head,
+        )
+
     tools.train(
         model=model,
         loss_fn=loss_fn,
@@ -1067,6 +1089,8 @@ def run(args) -> None:
         rank=rank,
         data_aug_magmom=args.data_aug_magmom,
         data_aug_magmom_mode=getattr(args, "data_aug_magmom_mode", "non-soc"),
+        convergence=convergence,
+        stage_two_epochs=args.stage_two_epochs,
     )
 
     logging.info("")

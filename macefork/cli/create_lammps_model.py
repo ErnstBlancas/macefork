@@ -8,10 +8,10 @@ os.environ["TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD"] = "1"
 import torch
 from e3nn.util import jit
 
-from mace.calculators import LAMMPS_MACE
-from mace.calculators.lammps_mliap_mace import LAMMPS_MLIAP_MACE
-from mace.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
-from mace.tools import deprecation
+from macefork.calculators import LAMMPS_MACE
+from macefork.calculators.lammps_mliap_mace import LAMMPS_MLIAP_MACE
+from macefork.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
+from macefork.tools import deprecation, legacy_pickle
 
 
 def parse_args():
@@ -82,6 +82,7 @@ def main():
     model = torch.load(
         model_path,
         map_location=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+        pickle_module=legacy_pickle,
     )
     if args.dtype == "float64":
         model = model.double().to("cpu")

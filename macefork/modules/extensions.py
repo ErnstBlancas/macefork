@@ -23,33 +23,33 @@ try:
 except (ImportError, ModuleNotFoundError):
     GRAPH_LONGRANGE_AVAILABLE = False
 
-from mace.modules.blocks import (
+from macefork.modules.blocks import (
     LinearLesReadoutBlock,
     LinearReadoutBlock,
     NonLinearBiasReadoutBlock,
     NonLinearLesReadoutBlock,
     NonLinearReadoutBlock,
 )
-from mace.modules.embeddings import GenericJointEmbedding
-from mace.modules.models import ScaleShiftMACE
-from mace.modules.utils import (
+from macefork.modules.embeddings import GenericJointEmbedding
+from macefork.modules.models import ScaleShiftMACE
+from macefork.modules.utils import (
     compute_total_charge_dipole_permuted,
     get_atomic_virials_stresses,
     get_outputs,
     prepare_graph,
     safe_double,
 )
-from mace.modules.wrapper_ops import (
+from macefork.modules.wrapper_ops import (
     CuEquivarianceConfig,
     OEQConfig,
     TransposeIrrepsLayoutWrapper,
 )
-from mace.tools.polar_conversion import (
+from macefork.tools.polar_conversion import (
     ensure_polar_compatibility,
     validate_pbc_handling,
 )
-from mace.tools.scatter import scatter_mean, scatter_sum
-from mace.tools.torch_tools import spherical_to_cartesian
+from macefork.tools.scatter import scatter_mean, scatter_sum
+from macefork.tools.torch_tools import spherical_to_cartesian
 
 from .blocks import (
     AtomicEnergiesBlock,
@@ -1730,7 +1730,7 @@ class MagneticMACE(torch.nn.Module):
                 )
             else:
                 # Intermediate iterations use LinearReadoutBlock — same choice
-                # as base MACE (see mace/modules/models.py). `readout_cls`
+                # as base MACE (see macefork/modules/models.py). `readout_cls`
                 # defaults to NonLinearReadoutBlock and takes different ctor
                 # args, so using it here would blow up whenever
                 # num_interactions > 2.
@@ -2196,12 +2196,12 @@ class TimeReversalSymmetrizedMACE(torch.nn.Module):
     .. warning::
         Tooling that dispatches on the model's class name does not see through the
         wrapper. In particular
-        :func:`mace.tools.scripts_utils.extract_config_mace_model` returns an error dict
+        :func:`macefork.tools.scripts_utils.extract_config_mace_model` returns an error dict
         rather than raising, so the
         calculator's ``compile_mode`` path and TorchScript export must be applied to the
         unwrapped model (``wrapped.model``), with the wrapper re-applied afterwards.
         ``torch.save`` / ``torch.load`` of the wrapped model work normally, as does the
-        eager :class:`~mace.calculators.MagneticMACECalculator` path via attribute
+        eager :class:`~macefork.calculators.MagneticMACECalculator` path via attribute
         delegation.
     """
 

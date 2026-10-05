@@ -1,7 +1,7 @@
 """The spellings the evaluation command line writes onto its structures.
 
-The third door, and the one that had none of this. ``mace_eval_configs``
-(``mace/cli/eval_configs.py``) does not return a dict: it writes its results
+The third door, and the one that had none of this. ``macefork_eval_configs``
+(``macefork/cli/eval_configs.py``) does not return a dict: it writes its results
 back onto the ``ase.Atoms`` it was given, into ``info`` for graph-level
 quantities and ``arrays`` for per-atom ones, each under a caller-chosen
 prefix (``--info_prefix``, default ``MACE_``), and then writes the lot out as
@@ -44,7 +44,7 @@ from tests.golden import harness
 
 EVAL = harness.SURFACE_EVAL
 
-#: mace/cli/eval_configs.py:106. Not part of any name -- the prefix is an
+#: macefork/cli/eval_configs.py:106. Not part of any name -- the prefix is an
 #: argument, so a schema that baked it in would need a spelling per
 #: invocation. `harness.collect_prefixed_outputs` strips it.
 DEFAULT_INFO_PREFIX = "MACE_"
@@ -54,20 +54,20 @@ DEFAULT_INFO_PREFIX = "MACE_"
 # Plain renames
 # ---------------------------------------------------------------------------
 
-#: mace/cli/eval_configs.py:452 -- atoms.info[prefix + "BO_contributions"] is
+#: macefork/cli/eval_configs.py:452 -- atoms.info[prefix + "BO_contributions"] is
 #: `output["contributions"]` for this configuration, the per-body-order energy
 #: terms. "BO" is the writer's abbreviation and appears nowhere else in the
 #: tree.
 harness.register_alias("BO_contributions", "contributions", surface=EVAL)
 
-#: mace/cli/eval_configs.py:472 -- atoms.arrays[prefix + "node_energies"] is
+#: macefork/cli/eval_configs.py:472 -- atoms.arrays[prefix + "node_energies"] is
 #: `output["node_energy"]`, plural against the model's singular.
 #:
 #: And it lands on `energies`, not on `node_energy`, which is the opposite of
 #: what this registration said when it was written. The near miss was spotted
 #: and then resolved the wrong way round: the two channels do differ by the E0
 #: table, and `node_energy` is the one with the reference *subtracted*
-#: (mace/calculators/mace.py:792-795 makes `energies` a copy of the model's
+#: (macefork/calculators/mace.py:792-795 makes `energies` a copy of the model's
 #: node_energy and then subtracts node_e0 from `node_energy`) -- so the raw
 #: `output["node_energy"]` this CLI writes, with no E0 arithmetic at all, is
 #: `energies`. Landing it on `node_energy` meant an eval-route golden and a
@@ -96,7 +96,7 @@ harness.register_alias(
 # ---------------------------------------------------------------------------
 # One layout change: the Born effective charges arrive flat
 #
-# mace/cli/eval_configs.py:433-435 writes
+# macefork/cli/eval_configs.py:433-435 writes
 # `atoms.arrays[prefix + "BEC"] = bec.reshape(bec.shape[0], -1)`, because an
 # extxyz per-atom column set is two-dimensional and a (n_atoms, 3, 3) cannot
 # be written as one. The channel is the model's (n_atoms, 3, 3), so the
@@ -150,7 +150,7 @@ harness.register_alias(
     convert=unflatten_bec,
     note=(
         "the eval CLI flattens each atom's Born charges to 9 or 18 columns so "
-        "they fit an extxyz array (mace/cli/eval_configs.py:433-435); the "
+        "they fit an extxyz array (macefork/cli/eval_configs.py:433-435); the "
         "channel is the model's (3, 3) or (2, 3, 3), and reshape is its exact "
         "inverse"
     ),
@@ -160,7 +160,7 @@ harness.register_alias(
 # ---------------------------------------------------------------------------
 # The same flattening, twice more: the latent multipoles
 #
-# `BEC` is not the only thing this surface flattens. mace/cli/eval_configs.py
+# `BEC` is not the only thing this surface flattens. macefork/cli/eval_configs.py
 # :417-423 puts `latent_alphas` and `latent_quads` through the same
 # `reshape(n_atoms, -1)`, for the same extxyz reason, and neither had a
 # registration -- so an eval-surface LES snapshot resolved both onto their
@@ -204,7 +204,7 @@ for _latent in ("latent_alphas", "latent_quads"):
         convert=unflatten_latent_tensor,
         note=(
             "the eval CLI flattens each atom's latent multipole to fit an "
-            "extxyz array (mace/cli/eval_configs.py:443-449); the channel is "
+            "extxyz array (macefork/cli/eval_configs.py:443-449); the channel is "
             "the layout the forward returns"
         ),
     )
@@ -215,7 +215,7 @@ for _latent in ("latent_alphas", "latent_quads"):
 #
 # `--return_descriptors` writes the model's `node_feats`, optionally reduced
 # to the invariant (l=0) part and truncated to the requested number of layers
-# (mace/cli/eval_configs.py:316-348). Where it lands depends on
+# (macefork/cli/eval_configs.py:316-348). Where it lands depends on
 # `--descriptor_aggregation_method` (:428-443), and the three cases are three
 # different shapes:
 #
@@ -284,7 +284,7 @@ harness.register_alias(
 # 1. `stress` needs no alias here, and that is the interesting part. The
 #    calculator converts it to Voigt-6 and the schema converts it back
 #    (calculator_keys.py); the eval CLI writes the model's (3, 3) straight
-#    into atoms.info (mace/cli/eval_configs.py:430, from a (n_graphs, 3, 3)
+#    into atoms.info (macefork/cli/eval_configs.py:430, from a (n_graphs, 3, 3)
 #    stack), so on this surface the spelling and the layout both already
 #    match the channel. Because aliases are surface-scoped, the calculator's
 #    Voigt conversion does not leak here -- which is exactly what a flat
@@ -292,7 +292,7 @@ harness.register_alias(
 #    silently expanded an already-3x3 tensor.
 #
 # 2. The `latent_*` family keeps the model's own names on this surface
-#    (mace/cli/eval_configs.py:437-449), unlike the calculator, which renames
+#    (macefork/cli/eval_configs.py:437-449), unlike the calculator, which renames
 #    four of them. Nothing to register, but it means the calculator's
 #    `LES_alphas` alias is genuinely calculator-scoped rather than a global
 #    rename waiting to be applied here too.

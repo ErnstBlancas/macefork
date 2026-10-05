@@ -1,4 +1,4 @@
-"""`mace_finetuning_select` through its command line.
+"""`macefork_finetuning_select` through its command line.
 
 `tests/workflows/test_finetuning_select.py` builds `SelectionSettings` in-process,
 which covers the selection logic and leaves the CLI itself unexercised: nothing
@@ -26,7 +26,7 @@ from ase import Atoms
 from tests.helpers import run_mace_train
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SELECT = REPO_ROOT / "mace" / "cli" / "fine_tuning_select.py"
+SELECT = REPO_ROOT / "macefork" / "cli" / "fine_tuning_select.py"
 
 
 @pytest.fixture(name="pool")

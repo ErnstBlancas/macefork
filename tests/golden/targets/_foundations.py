@@ -73,13 +73,13 @@ def regenerate(network: bool) -> None:
             provenance={
                 **provenance,
                 "recipe": (
-                    "mace.calculators.foundations_models."
+                    "macefork.calculators.foundations_models."
                     f"{spec.loader}({_kwargs_repr(spec.loader_kwargs)})"
                 ),
                 "description": spec.description,
                 "fixture_tags": list(spec.fixture_tags),
                 "fixture_names": list(spec.fixture_names),
-                "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+                "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
                 "tolerance_row": harness.FP64_CPU_REFERENCE.name,
             },
             allow_overwrite=True,

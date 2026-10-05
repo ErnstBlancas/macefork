@@ -7,8 +7,8 @@ import torch
 import torch.nn.functional as F
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.tools import scripts_utils, torch_geometric
+from macefork import data, modules, tools
+from macefork.tools import scripts_utils, torch_geometric
 
 # Capability contract (tests/conftest.py): skipped locally when schedulefree is
 # missing, failed in CI jobs that guarantee it via MACE_REQUIRE_CAPS. The import

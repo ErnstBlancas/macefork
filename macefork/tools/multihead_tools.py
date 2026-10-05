@@ -9,21 +9,21 @@ from typing import Any, Dict, List, Optional, Union
 
 import torch
 
-from mace.cli.fine_tuning_select import (
+from macefork.cli.fine_tuning_select import (
     FilteringType,
     SelectionSettings,
     SubselectType,
     select_samples,
 )
-from mace.data import AtomicData, KeySpecification
-from mace.data.utils import Configuration
-from mace.tools import torch_geometric
-from mace.tools.scripts_utils import (
+from macefork.data import AtomicData, KeySpecification
+from macefork.data.utils import Configuration
+from macefork.tools import torch_geometric
+from macefork.tools.scripts_utils import (
     SubsetCollection,
     extract_config_mace_model,
     get_dataset_from_xyz,
 )
-from mace.tools.utils import AtomicNumberTable, get_cache_dir
+from macefork.tools.utils import AtomicNumberTable, get_cache_dir
 
 
 @dataclasses.dataclass

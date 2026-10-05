@@ -9,8 +9,9 @@ import torch
 from ase import units
 from ase.calculators.mixing import SumCalculator
 
-from mace.tools.deprecation import warn
-from mace.tools.utils import get_cache_dir
+from macefork.tools import legacy_pickle
+from macefork.tools.deprecation import warn
+from macefork.tools.utils import get_cache_dir
 
 from .mace import MACECalculator
 
@@ -338,7 +339,7 @@ def mace_mp(
         )
 
     if return_raw_model:
-        return torch.load(model_path, map_location=device)
+        return torch.load(model_path, map_location=device, pickle_module=legacy_pickle)
 
     mace_calc = MACECalculator(
         model_paths=model_path, device=device, default_dtype=default_dtype, **kwargs
@@ -384,7 +385,7 @@ def mace_polar(
 
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     if return_raw_model:
-        return torch.load(model_path, map_location=device)
+        return torch.load(model_path, map_location=device, pickle_module=legacy_pickle)
     return MACECalculator(
         model_paths=str(model_path),
         device=device,
@@ -463,7 +464,7 @@ def mace_off(
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     if return_raw_model:
-        return torch.load(model, map_location=device)
+        return torch.load(model, map_location=device, pickle_module=legacy_pickle)
 
     if default_dtype == "float64":
         print(
@@ -532,7 +533,7 @@ def mace_anicc(
             raise RuntimeError(f"Failed to download model: {e}") from e
 
     if return_raw_model:
-        return torch.load(model_path, map_location=device)
+        return torch.load(model_path, map_location=device, pickle_module=legacy_pickle)
     return MACECalculator(
         model_paths=model_path, device=device, default_dtype="float64"
     )
@@ -614,7 +615,7 @@ def mace_omol(
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     if return_raw_model:
-        return torch.load(model, map_location=device)
+        return torch.load(model, map_location=device, pickle_module=legacy_pickle)
 
     if default_dtype == "float64":
         print(
@@ -700,7 +701,7 @@ def mace_mdp(
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     if return_raw_model:
-        return torch.load(model_path, map_location=device)
+        return torch.load(model_path, map_location=device, pickle_module=legacy_pickle)
 
     return MACECalculator(
         model_paths=model_path,

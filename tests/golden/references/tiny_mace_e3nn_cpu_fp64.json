@@ -560,7 +560,7 @@
   },
   "provenance": {
     "description": "Directly instantiated plain MACE anchor: the class the CLI cannot produce, with the short-range repulsion term outside any scaling.",
-    "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+    "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
     "recipe": "tests/golden/build_mace_anchor.py",
     "source": "tests/golden/models/tiny_mace.model",
     "tolerance_row": "fp64_cpu_reference"

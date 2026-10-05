@@ -17,8 +17,8 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import modules, tools
-from mace.tools.scripts_utils import get_swa
+from macefork import modules, tools
+from macefork.tools.scripts_utils import get_swa
 
 ENERGY, FORCES, VIRIALS, STRESS = 7.0, 11.0, 13.0, 17.0
 DIPOLE, POLARIZABILITY, MAGFORCES = 19.0, 23.0, 29.0

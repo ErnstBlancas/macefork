@@ -730,7 +730,7 @@
   },
   "provenance": {
     "description": "The same anchor through MACECalculator with an external field, eps_infty and keep_neutral: the field reaches the Ewald sum through the batch, and the Born charges are turned into a force correction outside the model.",
-    "evaluated_with": "mace.calculators.MACECalculator(compute_bec=True, external_field=..., eps_infty=..., keep_neutral=...), e3nn, CPU, float64",
+    "evaluated_with": "macefork.calculators.MACECalculator(compute_bec=True, external_field=..., eps_infty=..., keep_neutral=...), e3nn, CPU, float64",
     "field_settings": {
       "electric_field_unit": 1.0,
       "eps_infty": 2.5,

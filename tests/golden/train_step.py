@@ -43,8 +43,8 @@ from typing import Dict
 import numpy as np
 import torch
 
-from mace.modules.loss import WeightedEnergyForcesLoss
-from mace.tools import torch_tools
+from macefork.modules.loss import WeightedEnergyForcesLoss
+from macefork.tools import torch_tools
 
 from . import harness
 from .anchors import (

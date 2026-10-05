@@ -8,8 +8,8 @@ os.environ["TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD"] = "1"
 
 import pytest
 
-from mace.cli.convert_e3nn_oeq import run as run_e3nn_to_oeq
-from mace.cli.convert_oeq_e3nn import run as run_oeq_to_e3nn
+from macefork.cli.convert_e3nn_oeq import run as run_e3nn_to_oeq
+from macefork.cli.convert_oeq_e3nn import run as run_oeq_to_e3nn
 from tests.backends.backend_parity import BackendTestBase
 from tests.helpers import OEQ_AVAILABLE
 

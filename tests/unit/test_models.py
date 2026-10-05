@@ -7,9 +7,9 @@ from e3nn import o3
 from e3nn.util import jit
 from scipy.spatial.transform import Rotation as R
 
-from mace import data, modules, tools
-from mace.tools import scripts_utils  # noqa: F401  (tools.scripts_utils)
-from mace.tools import torch_geometric
+from macefork import data, modules, tools
+from macefork.tools import scripts_utils  # noqa: F401  (tools.scripts_utils)
+from macefork.tools import torch_geometric
 
 torch.set_default_dtype(torch.float64)
 config = data.Configuration(
@@ -754,7 +754,7 @@ def test_non_linear_first_interaction_block_runs_and_is_equivariant():
 def test_non_linear_first_interaction_block_cannot_be_torchscripted():
     """Characterization of a real limitation, not a wish: TorchScript cannot
     resolve the `-> o3.Irreps` annotation on `GatedEquivariantBlock.irreps_in`
-    (`mace/modules/gate.py:205`), so a model with this block compiles nowhere
+    (`macefork/modules/gate.py:205`), so a model with this block compiles nowhere
     -- which rules out the LAMMPS export path, whose whole artifact is a
     scripted module. Every other interaction block scripts fine, so this is
     the block's property and not the model's.

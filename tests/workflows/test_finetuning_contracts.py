@@ -35,7 +35,7 @@ from ase.atoms import Atoms
 from tests.helpers import REPO_ROOT, run_mace_train
 from tests.workflows.conftest import split_regression_set
 
-FINETUNING_SELECT = REPO_ROOT / "mace" / "cli" / "fine_tuning_select.py"
+FINETUNING_SELECT = REPO_ROOT / "macefork" / "cli" / "fine_tuning_select.py"
 
 
 def finetuning_params(work: Path, finetune: Path, replay: Path, **overrides) -> dict:
@@ -99,7 +99,7 @@ def test_multihead_replay_finetuning_completes_and_carries_both_heads(
 
     The heads are read off the saved artefact rather than off the log,
     because the log line is a message and the head list is the thing every
-    downstream tool -- ``mace_select_head``, ``--head`` at evaluation, the
+    downstream tool -- ``macefork_select_head``, ``--head`` at evaluation, the
     LAMMPS export -- actually dispatches on.
     """
     import torch  # noqa: PLC0415
@@ -367,8 +367,8 @@ def test_pseudolabel_replay_accepts_a_replay_set_with_no_labels_at_all(
 # ---------------------------------------------------------------------------
 # Replay-set selection, through the command line
 #
-# The three `--*_pt` flags on `mace_run_train` are forwarded verbatim into the
-# same selection settings `mace_finetuning_select` exposes as `--subselect`,
+# The three `--*_pt` flags on `macefork_run_train` are forwarded verbatim into the
+# same selection settings `macefork_finetuning_select` exposes as `--subselect`,
 # `--filtering_type` and `--disallow_random_padding`. The `_pt` flags
 # themselves only run against the four *downloaded* replay corpora, so the
 # semantics are pinned here through the selection entry point, which needs no
@@ -377,7 +377,7 @@ def test_pseudolabel_replay_accepts_a_replay_set_with_no_labels_at_all(
 
 
 def run_selection(cwd, **flags):
-    """Drive ``mace_finetuning_select``, from a scratch directory.
+    """Drive ``macefork_finetuning_select``, from a scratch directory.
 
     ``cwd`` is not optional and is not cosmetic: the selection CLI writes a
     ``<pool>_descriptors.npy`` cache **next to wherever it was started**, not
@@ -428,7 +428,7 @@ def test_the_replay_selection_flags_exist_on_the_training_cli(
     """The `_pt` flags themselves, pinned as a surface rather than by effect.
 
     Their *behaviour* only runs against the four downloaded replay corpora,
-    so the semantics are pinned through ``mace_finetuning_select`` below.
+    so the semantics are pinned through ``macefork_finetuning_select`` below.
     What can be pinned offline is that the flag still exists on the training
     command line and still accepts the same vocabulary -- which is what a
     rename or a dropped choice would break, and what every replay recipe in

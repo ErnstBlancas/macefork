@@ -236,7 +236,7 @@ def water_batched_sim_state(water_batched_atoms):
 
 @pytest.fixture(scope="module")
 def mace_model(trained_model_path):
-    from mace.calculators.mace_torchsim import MaceTorchSimModel
+    from macefork.calculators.mace_torchsim import MaceTorchSimModel
 
     return MaceTorchSimModel(
         model=trained_model_path,
@@ -249,7 +249,7 @@ def mace_model(trained_model_path):
 
 @pytest.fixture(scope="module")
 def mace_calculator(trained_model_path):
-    from mace.calculators.mace import MACECalculator
+    from macefork.calculators.mace import MACECalculator
 
     return MACECalculator(
         model_paths=trained_model_path, device=DEVICE.type, default_dtype="float64"
@@ -280,7 +280,7 @@ def test_mace_torchsim_basic(mace_model, water_sim_state, water_atoms):
 
 
 def test_mace_torchsim_no_stress(trained_model_path, water_sim_state):
-    from mace.calculators.mace_torchsim import MaceTorchSimModel
+    from macefork.calculators.mace_torchsim import MaceTorchSimModel
 
     model = MaceTorchSimModel(
         model=trained_model_path,
@@ -300,7 +300,7 @@ def test_mace_torchsim_no_stress(trained_model_path, water_sim_state):
 def mace_cueq_model(trained_model_path):
     if not CUET_AVAILABLE:
         pytest.skip("cuequivariance not installed")
-    from mace.calculators.mace_torchsim import MaceTorchSimModel
+    from macefork.calculators.mace_torchsim import MaceTorchSimModel
 
     return MaceTorchSimModel(
         model=trained_model_path,
@@ -341,7 +341,7 @@ def polar_raw_model():
     """Load the smallest pre-trained PolarMACE foundation model."""
     if not GRAPH_LONGRANGE_AVAILABLE:
         pytest.skip("graph_longrange is not installed")
-    from mace.calculators.foundations_models import mace_polar
+    from macefork.calculators.foundations_models import mace_polar
 
     try:
         return mace_polar(
@@ -353,7 +353,7 @@ def polar_raw_model():
 
 @pytest.fixture(scope="module")
 def polar_model(polar_raw_model):
-    from mace.calculators.mace_torchsim import MaceTorchSimModel
+    from macefork.calculators.mace_torchsim import MaceTorchSimModel
 
     return MaceTorchSimModel(
         model=polar_raw_model,
@@ -368,7 +368,7 @@ def polar_model(polar_raw_model):
 def polar_calculator():
     if not GRAPH_LONGRANGE_AVAILABLE:
         pytest.skip("graph_longrange is not installed")
-    from mace.calculators.foundations_models import mace_polar
+    from macefork.calculators.foundations_models import mace_polar
 
     try:
         return mace_polar(

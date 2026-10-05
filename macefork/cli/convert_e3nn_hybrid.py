@@ -6,13 +6,13 @@ import os
 
 import torch
 
-from mace.modules.wrapper_ops import CuEquivarianceConfig, OEQConfig
-from mace.tools import deprecation
-from mace.tools.scripts_utils import extract_config_mace_model
-from mace.tools.torch_tools import restores_default_dtype
+from macefork.modules.wrapper_ops import CuEquivarianceConfig, OEQConfig
+from macefork.tools import deprecation, legacy_pickle
+from macefork.tools.scripts_utils import extract_config_mace_model
+from macefork.tools.torch_tools import restores_default_dtype
 
 try:
-    from mace.cli.convert_e3nn_cueq import transfer_symmetric_contractions
+    from macefork.cli.convert_e3nn_cueq import transfer_symmetric_contractions
 
     CUEQ_AVAILABLE = True
 except (ImportError, ModuleNotFoundError):
@@ -39,7 +39,9 @@ def run(
         raise ImportError("openequivariance is required for hybrid conversion")
 
     if isinstance(input_model, str):
-        source_model = torch.load(input_model, map_location=device)
+        source_model = torch.load(
+            input_model, map_location=device, pickle_module=legacy_pickle
+        )
     else:
         source_model = input_model
 

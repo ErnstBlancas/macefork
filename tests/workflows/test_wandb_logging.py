@@ -22,7 +22,7 @@ from pathlib import Path
 import ase.io
 import pytest
 
-from mace.tools import scripts_utils
+from macefork.tools import scripts_utils
 from tests.helpers import base_mace_params, make_fitting_configs, run_mace_train
 
 # Capability contract (tests/conftest.py): skipped locally when the wandb extra
@@ -128,7 +128,7 @@ def test_the_full_arguments_are_recorded_as_json(captured_init, monkeypatch):
     """
     import numpy as np  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
-    from mace.data.utils import KeySpecification  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.data.utils import KeySpecification  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
 
     args = args_for()
     args.key_specification = KeySpecification()

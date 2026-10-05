@@ -50,7 +50,7 @@ _PACKAGE_PREFIX = {CUEQ: "cuequivariance", OEQ: "openequivariance"}
 
 #: The method ``cuet.SegmentedPolynomial`` reports when the fused uniform_1d
 #: kernels are in use. Any other value means the fallback -- see the module
-#: docstring. This is the same attribute ``mace/modules/wrapper_ops.py`` reads
+#: docstring. This is the same attribute ``macefork/modules/wrapper_ops.py`` reads
 #: to build its own guard, so the two cannot disagree about where to look.
 _CUEQ_FUSED_METHOD = "uniform_1d"
 
@@ -107,7 +107,7 @@ def _from_package(obj: Any, prefix: str) -> bool:
 def _cueq_conv_site(index: int, interaction: Any) -> _SiteDraft:
     # Imported here rather than at module scope only to keep the import graph
     # of this file to the standard library plus MACE's own wrapper types.
-    from mace.modules.wrapper_ops import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+    from macefork.modules.wrapper_ops import (  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
         CueqConvFusionWrapper,
     )
 

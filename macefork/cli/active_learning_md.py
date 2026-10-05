@@ -10,8 +10,8 @@ from ase import units
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 
-from mace.calculators.mace import MACECalculator
-from mace.tools import deprecation
+from macefork.calculators.mace import MACECalculator
+from macefork.tools import deprecation
 
 
 def parse_args() -> argparse.Namespace:
@@ -142,7 +142,7 @@ def stop_error(dyn, threshold, reg=0.2):
 
 
 def main() -> None:
-    deprecation.warn("ep.mace_active_learning_md")
+    deprecation.warn("ep.macefork_active_learning_md")
     args = parse_args()
     run(args)
 

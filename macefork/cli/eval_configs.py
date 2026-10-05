@@ -14,13 +14,19 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace import data
-from mace.calculators.mace import get_model_dtype
-from mace.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
-from mace.data import KeySpecification, update_keyspec_from_kwargs
-from mace.modules.utils import extract_invariant
-from mace.tools import deprecation, torch_geometric, torch_tools, utils
-from mace.tools.default_keys import DefaultKeys
+from macefork import data
+from macefork.calculators.mace import get_model_dtype
+from macefork.cli.convert_e3nn_cueq import run as run_e3nn_to_cueq
+from macefork.data import KeySpecification, update_keyspec_from_kwargs
+from macefork.modules.utils import extract_invariant
+from macefork.tools import (
+    deprecation,
+    legacy_pickle,
+    torch_geometric,
+    torch_tools,
+    utils,
+)
+from macefork.tools.default_keys import DefaultKeys
 
 
 def parse_args() -> argparse.Namespace:
@@ -161,7 +167,9 @@ def run(args: argparse.Namespace) -> None:
     device = torch_tools.init_device(args.device)
 
     # Load model
-    model = torch.load(f=args.model, map_location=args.device)
+    model = torch.load(
+        f=args.model, map_location=args.device, pickle_module=legacy_pickle
+    )
 
     # Reconcile the requested dtype with the checkpoint's, as the ase
     # calculator already does. Without this, `--default_dtype float32` against a

@@ -15,7 +15,7 @@ import numpy as np
 import pytest
 import torch
 
-from mace.data.augmentation import Random3DRotation
+from macefork.data.augmentation import Random3DRotation
 
 
 class _Sample:

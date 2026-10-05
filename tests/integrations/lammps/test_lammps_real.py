@@ -29,7 +29,7 @@ import torch
 from tests.helpers import REPO_ROOT, run_mace_train
 from tests.integrations.lammps._harness import model_batch, water_unit_cell
 
-CREATE_LAMMPS_MODEL = REPO_ROOT / "mace" / "cli" / "create_lammps_model.py"
+CREATE_LAMMPS_MODEL = REPO_ROOT / "macefork" / "cli" / "create_lammps_model.py"
 
 pytestmark = [pytest.mark.bin_lammps, pytest.mark.cueq]
 

@@ -42,7 +42,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-PACKAGE_ROOT = REPO_ROOT / "mace"
+PACKAGE_ROOT = REPO_ROOT / "macefork"
 EVAL_CLI = PACKAGE_ROOT / "cli" / "eval_configs.py"
 
 #: Vendored, excluded from lint and mypy by the project, and not ours to
@@ -82,10 +82,10 @@ class Scan:
 #: in writing, because the alternative is a scan that shrinks quietly.
 PASSTHROUGH_WRITES: Tuple[Tuple[str, str, str], ...] = (
     (
-        "mace/calculators/mace_torchsim.py",
+        "macefork/calculators/mace_torchsim.py",
         "results[key] = v.clone() if self._use_cudagraphs else v",
         "the torchsim wrapper forwards whatever the wrapped model returned, "
-        "key by key (mace/calculators/mace_torchsim.py:706-717), so its key "
+        "key by key (macefork/calculators/mace_torchsim.py:706-717), so its key "
         "set *is* the model surface's and is covered there. No static "
         "analysis can name the keys, because they come from a model chosen at "
         "runtime.",
@@ -525,9 +525,9 @@ def scan_model_surface(paths: Optional[Iterable[Path]] = None) -> Scan:
     """Every key a ``forward`` in this package can return.
 
     The file list is discovered rather than named. Four files define such a
-    forward -- ``mace/modules/models.py``, ``mace/modules/extensions.py``,
-    ``mace/calculators/lammps_mace.py`` and
-    ``mace/calculators/mace_torchsim.py`` -- and the two deployment wrappers
+    forward -- ``macefork/modules/models.py``, ``macefork/modules/extensions.py``,
+    ``macefork/calculators/lammps_mace.py`` and
+    ``macefork/calculators/mace_torchsim.py`` -- and the two deployment wrappers
     are precisely what a deployment golden evaluates, so listing the two
     obvious ones is how ``total_energy_local`` stayed unknown to the schema.
     """
@@ -739,7 +739,7 @@ def _calculator_keyspec_defaults(
 ) -> Dict[str, Tuple[str, Optional[str]]]:
     """The calculators' own keyspec defaults, as ``property -> (store, key)``.
 
-    Two shapes, both in ``mace/calculators/mace.py``: the literal
+    Two shapes, both in ``macefork/calculators/mace.py``: the literal
     ``info_keys = {...}`` fallback in each ``__init__``, and the
     ``arrays_keys.update({...})`` in the batch builder, whose values are the
     ``*_key`` constructor arguments rather than constants -- so the spelling

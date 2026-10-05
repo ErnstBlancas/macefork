@@ -21,11 +21,11 @@ import torch
 from ase import Atoms
 from e3nn import o3
 
-from mace import data, modules, tools
-from mace.data import KeySpecification
-from mace.tools import torch_geometric
-from mace.tools.tables_utils import create_error_table
-from mace.tools.torch_tools import default_dtype
+from macefork import data, modules, tools
+from macefork.data import KeySpecification
+from macefork.tools import torch_geometric
+from macefork.tools.tables_utils import create_error_table
+from macefork.tools.torch_tools import default_dtype
 
 TABLE = tools.AtomicNumberTable([1, 8])
 

@@ -13,7 +13,7 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace.tools.deprecation import warn_env
+from macefork.tools.deprecation import warn_env
 
 try:
     import cuequivariance as cue

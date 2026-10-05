@@ -64,7 +64,7 @@
   "les_arguments_file": "tiny_maceles.les_arguments.yaml",
   "les_commit": "fadfb0ca3b89ed371e5de6b383f4425defabd4a8",
   "model": "tiny_maceles.model",
-  "note": "MACELES forces keep_last_layer_irreps=True on its base class (mace/modules/extensions.py:146), so the last layer keeps its vector features and the LES readouts have something to read. The architecture is otherwise the tiny_scaleshift anchor's.",
+  "note": "MACELES forces keep_last_layer_irreps=True on its base class (macefork/modules/extensions.py:146), so the last layer keeps its vector features and the LES readouts have something to read. The architecture is otherwise the tiny_scaleshift anchor's.",
   "num_parameters": 42032,
   "recipe": "tests/golden/build_maceles_anchor.py",
   "regenerate_with": "python tests/golden/regenerate.py --target les --i-know-what-i-am-doing",

@@ -15,8 +15,8 @@ import numpy as np
 import pytest
 import torch
 
-from mace.modules.utils import get_edge_vectors_and_lengths
-from mace.tools import torch_tools
+from macefork.modules.utils import get_edge_vectors_and_lengths
+from macefork.tools import torch_tools
 from tests.golden import harness
 from tests.golden.anchors import ANCHORS
 from tests.golden.anchors import anchor_graph as _batch
@@ -38,7 +38,7 @@ def fixture_fixtures():
 
 @pytest.mark.parametrize("name", sorted(ANCHORS))
 def test_anchor_reproduces_its_reference(name, fixtures):
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     model = _load(name)
     calc = MACECalculator(models=[model], device="cpu", default_dtype="float64")
@@ -57,7 +57,7 @@ def test_anchor_is_the_class_it_claims_to_be(name):
 
     The training CLI cannot emit a plain MACE: `--model MACE` returns a
     ScaleShiftMACE with the scale taken from the dataset std and the shift
-    zeroed (mace/tools/model_script_utils.py:279-296). If this assertion ever
+    zeroed (macefork/tools/model_script_utils.py:279-296). If this assertion ever
     starts failing on tiny_mace, the anchor was rebuilt through the CLI and
     silently became the other class.
     """
@@ -96,7 +96,7 @@ def test_the_repulsion_term_is_scaled_in_one_class_and_raw_in_the_other(fixtures
     """The divergence the two anchors exist to turn into a number.
 
     Plain MACE appends the pair term to `energies` next to `e0`
-    (mace/modules/models.py:359-361) and never scales it. ScaleShiftMACE
+    (macefork/modules/models.py:359-361) and never scales it. ScaleShiftMACE
     seeds its readout sum with `[pair_node_energy]` (`:539`) and puts the
     whole sum through `scale_shift` (`:579`). Removing the term therefore
     moves the total energy by the raw pair sum in one case and by
@@ -154,7 +154,7 @@ def test_the_plain_anchor_is_not_convertible_and_says_so():
     ScaleShiftMACE anchor for a stated reason rather than working around a
     surprise.
     """
-    from mace.tools.scripts_utils import extract_config_mace_model  # noqa: PLC0415
+    from macefork.tools.scripts_utils import extract_config_mace_model  # noqa: PLC0415
 
     refused = extract_config_mace_model(_load("tiny_mace"))
     assert isinstance(refused, dict) and "error" in refused
@@ -187,13 +187,13 @@ def test_the_two_per_atom_stress_routes_land_on_one_channel(fixtures):
     """The measurement the single `atomic_stresses` channel rests on.
 
     The model emits a per-atom stress as (n_atoms, 3, 3); the calculator
-    renames it to `stresses` and stores it Voigt-6 (mace/calculators/mace.py:
+    renames it to `stresses` and stores it Voigt-6 (macefork/calculators/mace.py:
     791-797). One channel can hold both only if the Voigt round trip loses
     nothing, and Voigt-6 cannot represent an asymmetric tensor --
     `full_3x3_to_voigt_6_stress` averages each off-diagonal pair.
 
     It is lossless here because `get_atomic_virials_stresses` symmetrises
-    explicitly (mace/modules/utils.py:382) before dividing by the volume. That
+    explicitly (macefork/modules/utils.py:382) before dividing by the volume. That
     is a line in somebody else's file, so it is measured rather than trusted:
     if it is ever dropped, the two routes start disagreeing and this fails
     instead of a golden quietly pinning a symmetrised copy of an asymmetric
@@ -207,7 +207,7 @@ def test_the_two_per_atom_stress_routes_land_on_one_channel(fixtures):
     dimer_short: graph inside, forward outside -> the two routes differ by
     4.4e-10 on the per-atom stress; both inside -> 0.0.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     model = _load("tiny_scaleshift")
     calc = MACECalculator(
@@ -258,7 +258,7 @@ def test_the_two_per_atom_stress_routes_snapshot_identically(fixtures):
     impossible to even ask -- which is the split the single channel exists to
     prevent.
     """
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     model = _load("tiny_scaleshift")
     calc = MACECalculator(
@@ -303,7 +303,7 @@ def test_the_two_per_atom_stress_routes_snapshot_identically(fixtures):
 
 def test_zero_edge_and_degenerate_cell_fixtures_produce_finite_numbers(fixtures):
     """The two fixtures most likely to produce a NaN rather than a wrong number."""
-    from mace.calculators import MACECalculator  # noqa: PLC0415
+    from macefork.calculators import MACECalculator  # noqa: PLC0415
 
     model = _load("tiny_scaleshift")
     calc = MACECalculator(models=[model], device="cpu", default_dtype="float64")

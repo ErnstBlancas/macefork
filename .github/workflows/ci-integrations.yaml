@@ -38,10 +38,10 @@ jobs:
               - 'tests/helpers.py'
               - '.github/workflows/ci-integrations.yaml'
               - '.github/actions/setup-mace/**'
-              - 'mace/modules/**'
-              - 'mace/cli/create_lammps_model.py'
-              - 'mace/cli/select_head.py'
-              - 'mace/calculators/lammps_*.py'
+              - 'macefork/modules/**'
+              - 'macefork/cli/create_lammps_model.py'
+              - 'macefork/cli/select_head.py'
+              - 'macefork/calculators/lammps_*.py'
               - 'tests/integrations/**'
               # The export golden lives with the other goldens, not with the
               # test that reads it, so a change to the committed numbers or

@@ -133,7 +133,7 @@ def run() -> None:
                 "into a force correction outside the model."
             ),
             "evaluated_with": (
-                "mace.calculators.MACECalculator(compute_bec=True, "
+                "macefork.calculators.MACECalculator(compute_bec=True, "
                 "external_field=..., eps_infty=..., keep_neutral=...), e3nn, "
                 "CPU, float64"
             ),

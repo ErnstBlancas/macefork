@@ -4,8 +4,8 @@ import torch
 import torch.nn.functional
 from e3nn import o3
 
-from mace.data import AtomicData, Configuration
-from mace.modules import (
+from macefork.data import AtomicData, Configuration
+from macefork.modules import (
     AtomicEnergiesBlock,
     BesselBasis,
     PolynomialCutoff,
@@ -15,9 +15,9 @@ from mace.modules import (
     compute_mean_rms_energy_forces,
     compute_statistics,
 )
-from mace.modules.symmetric_contraction import Contraction
-from mace.tools import AtomicNumberTable, scatter, to_numpy, torch_geometric
-from mace.tools.scripts_utils import dict_to_array
+from macefork.modules.symmetric_contraction import Contraction
+from macefork.tools import AtomicNumberTable, scatter, to_numpy, torch_geometric
+from macefork.tools.scripts_utils import dict_to_array
 
 
 @pytest.fixture(name="config")

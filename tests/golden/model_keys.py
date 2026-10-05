@@ -5,7 +5,7 @@ calculator is not the whole surface and never was: ``edge_forces`` and
 ``hessian`` are returned by every energy model and appear in no calculator's
 ``results`` at all, so a golden that wants either has to go through
 ``golden_outputs`` -- and then it meets the forward's full key set, not the
-calculator's subset. A schema derived from ``mace/calculators/mace.py`` alone
+calculator's subset. A schema derived from ``macefork/calculators/mace.py`` alone
 resolves every calculator key and leaves thirteen forward keys resolving to
 nothing, which is a golden that fails on the first model-route snapshot
 rather than a golden that pins less than it claims. The registry now covers
@@ -13,7 +13,7 @@ every surface, and ``tests/golden/surface_scan.py`` derives the expectation
 from the package so the next divergence fails in the guard instead.
 
 The key sets, read out of the ``forward`` return dicts on this tree
-(``mace/modules/models.py`` and ``mace/modules/extensions.py``):
+(``macefork/modules/models.py`` and ``macefork/modules/extensions.py``):
 
     MACE                     energy, node_energy, contributions, forces,
                              edge_forces, virials, stress, atomic_virials,
@@ -41,9 +41,9 @@ file's history. The guard read ``models.py`` and ``extensions.py`` and called
 that the model surface, but four files in ``mace/`` define a ``forward`` that
 returns an output dict:
 
-    mace/calculators/lammps_mace.py::LAMMPS_MACE
+    macefork/calculators/lammps_mace.py::LAMMPS_MACE
                              total_energy_local, node_energy, forces, virials
-    mace/calculators/mace_torchsim.py::MaceTorchSimModel
+    macefork/calculators/mace_torchsim.py::MaceTorchSimModel
                              energy, forces, stress (plus whatever the wrapped
                              model returned, forwarded verbatim)
 
@@ -69,7 +69,7 @@ from tests.golden import harness
 # `displacement` is not an observable. It is the symmetric strain handle the
 # stress is differentiated against: `get_symmetric_displacement` creates it as
 # `torch.zeros((num_graphs, 3, 3)) + positions.sum() * 0.0`
-# (mace/modules/utils.py:100-106) purely to attach it to the autograd graph,
+# (macefork/modules/utils.py:100-106) purely to attach it to the autograd graph,
 # and nothing ever writes to it, so the value a forward returns is identically
 # zero on every structure. Measured on the committed `tiny_scaleshift` anchor
 # over all six fixtures: max |displacement| = 0.0, and PolarMACE's is the same
@@ -84,7 +84,7 @@ from tests.golden import harness
 harness.ignore_key(
     "displacement",
     "the symmetric strain handle the stress is differentiated against, not an "
-    "output: mace/modules/utils.py:100-106 creates it as zeros and nothing "
+    "output: macefork/modules/utils.py:100-106 creates it as zeros and nothing "
     "writes to it, so its value is identically zero on every structure "
     "(measured 0.0 on all six fixtures with the tiny_scaleshift anchor). A "
     "change to the strain convention is caught by the stress channel it "
@@ -101,11 +101,11 @@ harness.ignore_key(
 # comparison looks wrong except the numbers.
 #
 #     model forward   node_energy = node_e0 + node_inter_es
-#                     (mace/modules/models.py:582, :399; the magnetic model
-#                     at mace/modules/extensions.py:1917) -- E0 *included*
+#                     (macefork/modules/models.py:582, :399; the magnetic model
+#                     at macefork/modules/extensions.py:1917) -- E0 *included*
 #     calculator      results["energies"] = a copy of the model's node_energy,
 #                     then results["node_energy"] -= node_e0
-#                     (mace/calculators/mace.py:792-795) -- E0 *removed*
+#                     (macefork/calculators/mace.py:792-795) -- E0 *removed*
 #
 # The channels already distinguish the two, and correctly: `energies` is the
 # ase-property meaning (per-atom energy including the isolated-atom
@@ -135,9 +135,9 @@ harness.register_alias(
     surface=harness.SURFACE_MODEL,
     note=(
         "the model's node_energy includes the isolated-atom reference "
-        "(mace/modules/models.py:582), which is the `energies` channel. The "
+        "(macefork/modules/models.py:582), which is the `energies` channel. The "
         "calculator uses the same word for the E0-subtracted quantity "
-        "(mace/calculators/mace.py:792-795), which is the `node_energy` "
+        "(macefork/calculators/mace.py:792-795), which is the `node_energy` "
         "channel. Same spelling, two quantities, differing by the E0 table."
     ),
 )
@@ -156,14 +156,14 @@ harness.register_alias(
 #    `compute_hessian=True`, `atomic_stresses` unless
 #    `compute_atomic_stresses=True`, and `electrostatic_potentials` always, on
 #    this tree, since `esps` is only ever assigned `None`
-#    (mace/modules/extensions.py:1154 is its single assignment). The harness
+#    (macefork/modules/extensions.py:1154 is its single assignment). The harness
 #    resolves the key and then skips the missing value, so an unknown key
 #    still raises while a known-but-absent one leaves the channel out; a
 #    reference that pins it then fails with "channel vanished".
 #
 # 3. `total_energy_local` is a channel and not an alias for `energy`. The
 #    LAMMPS wrapper masks the site energies by `local_or_ghost` before summing
-#    (mace/calculators/lammps_mace.py:71-74), so it is the part of the energy
+#    (macefork/calculators/lammps_mace.py:71-74), so it is the part of the energy
 #    this domain owns; the full energy is only recovered by adding the domains
 #    up. Aliasing the two would have made a single-domain golden pass and a
 #    decomposed one compare a part against a whole.
@@ -189,10 +189,10 @@ harness.register_alias(
 #     dmu_dr      (3, n_atoms, 3)   d(dipole)/dr, 3 dipole components
 #     dalpha_dr   (9, n_atoms, 3)   d(polarizability)/dr, the 3x3 flattened
 #                                   by `total_polarizability.flatten(-2)`
-#                                   (mace/modules/models.py:1160)
+#                                   (macefork/modules/models.py:1160)
 #
 # Neither appears in any calculator's `results`: `results_map`
-# (mace/calculators/mace.py:719-738) has no entry for them, so the model
+# (macefork/calculators/mace.py:719-738) has no entry for them, so the model
 # surface is the only door. That is why tests/golden/test_mdp_foundation.py
 # takes its reference through the forward and asserts the calculator's four
 # shared channels against the same file, rather than the other way round.
@@ -203,21 +203,21 @@ harness.register_alias(
 # One channel, two families, and they do not agree on its unit
 #
 # The `dipole` channel is declared "Debye", which is what MACECalculator's own
-# docstring promises (mace/calculators/mace.py:100). Both dipole families add
+# docstring promises (macefork/calculators/mace.py:100). Both dipole families add
 # a fixed-charge baseline to their readout sum, and the two baselines are not
 # in the same unit:
 #
 #     AtomicDipolesMACE      compute_fixed_charge_dipole       divides by
-#                            (mace/modules/utils.py:622)       1e-11 / c / e
+#                            (macefork/modules/utils.py:622)       1e-11 / c / e
 #                                                              -> Debye
 #     AtomicDielectricMACE   compute_fixed_charge_dipole_polar the same
-#                            (mace/modules/utils.py:634-636)   division, but
+#                            (macefork/modules/utils.py:634-636)   division, but
 #                                                              commented out
 #                                                              -> e*Ang
 #
 # The ratio is exactly the e*Ang -> Debye factor, 4.8032. PolarMACE is a third
 # case and sits with the second: its `dipole` is `compute_total_charge_dipole_
-# permuted` (mace/modules/utils.py:640-648), a bare sum of charge times
+# permuted` (macefork/modules/utils.py:640-648), a bare sum of charge times
 # position with no conversion at all.
 #
 # Which of these is right is a physics question for the electrostatics work,

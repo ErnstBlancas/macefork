@@ -5,7 +5,7 @@ import copy
 import pytest
 import torch
 
-from mace.calculators import MACECalculator
+from macefork.calculators import MACECalculator
 from tests.extensions.polar.test_polar_models import _build_minimal_model
 
 pytestmark = pytest.mark.polar

@@ -3,7 +3,7 @@ import importlib
 import numpy as np
 import torch
 
-from mace.tools.torch_geometric.dataloader import DataLoader as _TgDataLoader
+from macefork.tools.torch_geometric.dataloader import DataLoader as _TgDataLoader
 
 # --- Optional torch_geometric support ---
 if importlib.util.find_spec("torch_geometric") is not None:

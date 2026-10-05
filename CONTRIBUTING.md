@@ -97,11 +97,11 @@ over. A feature without them is not, and we would rather say so now.**
 Changes to core behaviour, or to files that everything else depends on, are not
 accepted against v0.3. Implement them in v1 instead. In the current tree the
 shared surface is, in practice: the model and block definitions
-(`mace/modules/models.py`, `blocks.py`, `symmetric_contraction.py`), the
-differentiable glue (`mace/modules/utils.py`), the backend dispatch
-(`mace/modules/wrapper_ops.py`), the data layer (`mace/data/atomic_data.py`),
-the argument parser (`mace/tools/arg_parser.py`), the training loop
-(`mace/tools/train.py`), and the ASE calculator (`mace/calculators/mace.py`).
+(`macefork/modules/models.py`, `blocks.py`, `symmetric_contraction.py`), the
+differentiable glue (`macefork/modules/utils.py`), the backend dispatch
+(`macefork/modules/wrapper_ops.py`), the data layer (`macefork/data/atomic_data.py`),
+the argument parser (`macefork/tools/arg_parser.py`), the training loop
+(`macefork/tools/train.py`), and the ASE calculator (`macefork/calculators/mace.py`).
 
 The reason is not that those files are precious. It is that a change there
 cannot be carried across as a unit: it has to be re-decided against the new

@@ -10,8 +10,8 @@ from ase import Atoms
 from ase.calculators.calculator import Calculator, all_changes
 from ase.io.cube import read_cube_data
 
-from mace.cli import polar_density_cube
-from mace.cli.polar_density_cube import (
+from macefork.cli import polar_density_cube
+from macefork.cli.polar_density_cube import (
     GRAPH_LONGRANGE_AVAILABLE,
     PotentialInterpolator,
     RealSpaceDensityInterpolator,

@@ -5,9 +5,9 @@ import pytest
 import torch
 from ase import build
 
-from mace.data import AtomicData
-from mace.data.padding_tools import build_fake_padding_graph
-from mace.tools import torch_geometric, utils
+from macefork.data import AtomicData
+from macefork.data.padding_tools import build_fake_padding_graph
+from macefork.tools import torch_geometric, utils
 
 
 @pytest.fixture(scope="module")
@@ -16,7 +16,7 @@ def water_graph():
     water.cell = [6.0] * 3
     water.pbc = True
     z_table = utils.AtomicNumberTable([1, 8])
-    from mace import data as mace_data
+    from macefork import data as mace_data
 
     keyspec = mace_data.KeySpecification(info_keys={}, arrays_keys={})
     config = mace_data.config_from_atoms(water, key_specification=keyspec)
@@ -121,14 +121,14 @@ class TestSliceRealOutputs:
         ],
     )
     def test_atom_level_keys_are_sliced(self, key):
-        from mace.calculators.mace import MACECalculator
+        from macefork.calculators.mace import MACECalculator
 
         sliced = MACECalculator._slice_real_outputs(self._out(), self.N_REAL)
         assert sliced[key].shape[0] == self.N_REAL
 
     def test_bec_forces_are_addable(self):
         """forces += forces_bec broadcasts only if BEC was sliced like forces."""
-        from mace.calculators.mace import MACECalculator
+        from macefork.calculators.mace import MACECalculator
 
         sliced = MACECalculator._slice_real_outputs(self._out(), self.N_REAL)
         forces = sliced["forces"].numpy()

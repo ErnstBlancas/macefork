@@ -561,7 +561,7 @@
   },
   "provenance": {
     "description": "MACE-MP-0 small (2023-12-10-mace-128-L0_energy_epoch-249), the pre-3.10 small tier, downloaded from the mace-mp release.",
-    "evaluated_with": "mace.calculators.MACECalculator, e3nn, CPU, float64",
+    "evaluated_with": "macefork.calculators.MACECalculator, e3nn, CPU, float64",
     "fixture_names": [
       "dimer_short",
       "isolated_atom",
@@ -571,7 +571,7 @@
       "water_cluster"
     ],
     "fixture_tags": [],
-    "recipe": "mace.calculators.foundations_models.mace_mp(model='small', default_dtype='float64', device='cpu')",
+    "recipe": "macefork.calculators.foundations_models.mace_mp(model='small', default_dtype='float64', device='cpu')",
     "sha256": "2ddb079cee0e131eaaf6912ba581b394551ead283e95c99cfe78c605d10b5736",
     "source": "https://github.com/ACEsuit/mace-mp/releases/download/mace_mp_0/2023-12-10-mace-128-L0_energy_epoch-249.model",
     "tolerance_row": "fp64_cpu_reference"

@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Optional, Sequence
 
 import torch.utils.data
 
-from mace.tools import (
+from macefork.tools import (
     AtomicNumberTable,
     atomic_numbers_to_indices,
     to_one_hot,

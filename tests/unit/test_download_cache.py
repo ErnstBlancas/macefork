@@ -13,7 +13,7 @@ import os
 
 import pytest
 
-from mace.calculators import foundations_models as fm
+from macefork.calculators import foundations_models as fm
 
 
 @pytest.fixture(name="html_download")

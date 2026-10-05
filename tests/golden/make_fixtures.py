@@ -6,7 +6,7 @@ output nobody can reproduce.
 
 The six evaluation structures are not a convenience sample. Each one exists
 to reach a distinct regime of the neighbour-list layer
-(``mace/data/neighborhood.py``), because that layer decides which cell a
+(``macefork/data/neighborhood.py``), because that layer decides which cell a
 downstream stress is divided by and its three returned-cell branches are the
 easiest thing in the stack to "simplify" back into a bug:
 
@@ -176,7 +176,7 @@ def slab_zero_vacuum() -> Atoms:
 # convenience, so each is stated:
 #
 # * **the moment is an input, and it is written where the model reads it.**
-#   ``REF_magmom`` (mace/tools/default_keys.py:18), an (n_atoms, 3) array --
+#   ``REF_magmom`` (macefork/tools/default_keys.py:18), an (n_atoms, 3) array --
 #   not ase's initial magnetic moments, which no forward on this tree looks
 #   at. The harness refuses a structure that carries the moments only in the
 #   ase attribute, so this is enforced rather than remembered.
@@ -184,7 +184,7 @@ def slab_zero_vacuum() -> Atoms:
 # * **the ligand's moment is small and not zero, and the reason is physics
 #   rather than arithmetic.** The obvious worry is that
 #   ``MagneticScaleShiftMACE.forward`` takes ``torch.norm(magmom)``
-#   (mace/modules/extensions.py:1813) and that the gradient of a norm at the
+#   (macefork/modules/extensions.py:1813) and that the gradient of a norm at the
 #   origin is 0/0. Measured, it is not a problem: the norm enters only
 #   *squared* (``1 - 2 * clamp(|m| / m_max)**2``), which is smooth at the
 #   origin, and torch's convention of a zero gradient for the norm there is

@@ -1,7 +1,7 @@
 """The published MACE-MDP model reproduces its committed reference.
 
 ``mace_mdp`` loads an ``AtomicDielectricMACE``, which is the **only** class in
-the tree that emits a ``polarizability`` (``mace/modules/models.py:1190``), so
+the tree that emits a ``polarizability`` (``macefork/modules/models.py:1190``), so
 this is the one place that quantity is pinned at all. FM-2 converts this
 checkpoint; the numbers below are what the conversion has to reproduce.
 
@@ -10,13 +10,13 @@ calculator, for a reason that is a property of the family and not a
 preference: ``dmu_dr`` and ``dalpha_dr`` -- the position derivatives of the
 dipole and the polarizability, which are what an infrared or Raman intensity
 is computed from -- appear in no calculator's ``results`` at all
-(``results_map``, ``mace/calculators/mace.py:719-738``). A calculator-route
+(``results_map``, ``macefork/calculators/mace.py:719-738``). A calculator-route
 reference would pin four channels and silently leave the two that only this
 family has. The calculator's own four are then asserted against the same file,
 which is the fourth deliverable of this ticket: one number, two doors.
 
 ``network``-marked and nothing else: ``AtomicDielectricMACE`` lives in
-``mace/modules/models.py`` and needs no optional dependency, so the only
+``macefork/modules/models.py`` and needs no optional dependency, so the only
 capability at stake is the download.
 """
 
@@ -60,7 +60,7 @@ def _projection(out):
 
 @pytest.fixture(name="mdp_model", scope="module")
 def fixture_mdp_model():
-    from mace.calculators.foundations_models import mace_mdp  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_mdp  # noqa: PLC0415
 
     # device and dtype spelled out even though mace_mdp already defaults to
     # float64: the default is one signature edit away from being float32, and
@@ -74,7 +74,7 @@ def fixture_mdp_model():
 
 @pytest.fixture(name="mdp_calc", scope="module")
 def fixture_mdp_calc():
-    from mace.calculators.foundations_models import mace_mdp  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_mdp  # noqa: PLC0415
 
     return mace_mdp(device="cpu", default_dtype="float64")
 
@@ -173,7 +173,7 @@ def test_the_calculator_surface_is_the_dipole_polarizability_one(mdp_calc, fixtu
 
     from ase.calculators.calculator import Calculator  # noqa: PLC0415
 
-    from mace.calculators.foundations_models import mace_mdp  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_mdp  # noqa: PLC0415
 
     assert mdp_calc.model_type == "DipolePolarizabilityMACE"
 
@@ -200,7 +200,7 @@ def test_implemented_properties_is_this_calculator_s_own(mdp_calc):
     """
     from ase.calculators.calculator import Calculator  # noqa: PLC0415
 
-    from mace.calculators.foundations_models import mace_mdp  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_mdp  # noqa: PLC0415
 
     assert mdp_calc.implemented_properties is not Calculator.implemented_properties
     assert Calculator.implemented_properties == [], (
@@ -215,7 +215,7 @@ def test_implemented_properties_is_this_calculator_s_own(mdp_calc):
 
 def test_mace_mdp_refuses_another_model_type():
     """``mace_mdp`` only answers for its own class, and says so up front."""
-    from mace.calculators.foundations_models import mace_mdp  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_mdp  # noqa: PLC0415
 
     with pytest.raises(ValueError, match="DipolePolarizabilityMACE"):
         mace_mdp(device="cpu", default_dtype="float64", model_type="MACE")
@@ -231,7 +231,7 @@ def test_mace_mdp_warns_that_it_is_not_an_energy_model(mdp_calc):
     """
     from ase.calculators.calculator import PropertyNotImplementedError  # noqa: PLC0415
 
-    from mace.calculators.foundations_models import mace_mdp  # noqa: PLC0415
+    from macefork.calculators.foundations_models import mace_mdp  # noqa: PLC0415
 
     with pytest.warns(UserWarning, match="not suitable for energies or forces"):
         mace_mdp(device="cpu", default_dtype="float64")

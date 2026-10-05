@@ -248,7 +248,7 @@ def test_every_latent_quantity_is_present_and_above_the_tolerance_floor(
 
 
 def _forward(model, atoms, **kwargs):
-    from mace.tools import torch_tools  # noqa: PLC0415
+    from macefork.tools import torch_tools  # noqa: PLC0415
 
     with torch_tools.default_dtype("float64"):
         return model(maceles_surfaces.graph_for(model, atoms), **kwargs)
@@ -270,7 +270,7 @@ def test_the_isotropic_polarizability_is_squared(model, fixtures):
         build_model,
         load_les_arguments,
     )
-    from mace.tools import torch_tools  # noqa: PLC0415
+    from macefork.tools import torch_tools  # noqa: PLC0415
 
     arguments = load_les_arguments()
     assert arguments["make_alpha_positive"] is True
@@ -308,7 +308,7 @@ def test_the_induced_charge_is_squared(model, fixtures):
         build_model,
         load_les_arguments,
     )
-    from mace.tools import torch_tools  # noqa: PLC0415
+    from macefork.tools import torch_tools  # noqa: PLC0415
 
     unsquared = dict(
         load_les_arguments(), make_alpha_positive=False, make_kappa_positive=False
@@ -519,12 +519,12 @@ def test_the_committed_les_arguments_are_what_the_cli_would_pass():
 
     `--les_arguments` is `type=read_yaml`, so argparse turns the path into the
     dict that is handed to `MACELES(les_arguments=...)` verbatim
-    (mace/tools/arg_parser.py:530-536, mace/tools/model_script_utils.py:431-436).
+    (macefork/tools/arg_parser.py:530-536, macefork/tools/model_script_utils.py:431-436).
     Asserting the round trip is what makes the committed yaml the anchor's
     recipe rather than a description of it -- and it covers the two inventory
     rows this ticket owns, the flag and the model choice.
     """
-    from mace.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415
+    from macefork.tools.arg_parser import build_default_arg_parser  # noqa: PLC0415
     from tests.golden.build_maceles_anchor import load_les_arguments  # noqa: PLC0415
 
     parser = build_default_arg_parser()
@@ -548,7 +548,7 @@ def test_the_committed_les_arguments_are_what_the_cli_would_pass():
 def test_the_eval_cli_lands_on_the_same_numbers_as_the_forward(model, tmp_path):
     """The third surface, cross-checked against the reference.
 
-    `mace_eval_configs` writes its results onto the structures rather than
+    `macefork_eval_configs` writes its results onto the structures rather than
     returning them, renames nothing in this family, and flattens three of them
     to fit an extxyz column block -- `BEC` to (n, 18), `latent_quads` to
     (n, 9), `latent_alphas` to (n, 1), which ase then squeezes back to (n,) on
@@ -561,8 +561,8 @@ def test_the_eval_cli_lands_on_the_same_numbers_as_the_forward(model, tmp_path):
     """
     import ase.io  # noqa: PLC0415
 
-    from mace.cli.eval_configs import run as eval_run  # noqa: PLC0415
-    from mace.tools import torch_tools  # noqa: PLC0415
+    from macefork.cli.eval_configs import run as eval_run  # noqa: PLC0415
+    from macefork.tools import torch_tools  # noqa: PLC0415
 
     fixtures = harness.load_fixtures(elements=ANCHOR_ELEMENTS)
     ase.io.write(tmp_path / "in.xyz", list(fixtures.values()), format="extxyz")
@@ -627,7 +627,7 @@ def test_the_anchor_is_a_maceles_built_from_the_committed_yaml(model):
     assert type(model).__name__ == "MACELES"
     # Forced by the class, not by the recipe: without it the last layer drops
     # its vector features and the dipole, quadrupole and polarizability
-    # readouts have nothing to read (mace/modules/extensions.py:144-146).
+    # readouts have nothing to read (macefork/modules/extensions.py:144-146).
     assert "1o" in str(model.readouts[0].linear.irreps_in)
     assert hasattr(model, "pair_repulsion"), "the anchor carries ZBL, as the others do"
     assert model.compute_bec is True

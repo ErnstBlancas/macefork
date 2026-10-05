@@ -8,11 +8,11 @@ shares no code with one:
 
 * the readouts are ``LinearDipoleReadoutBlock`` / ``NonLinearDipoleReadoutBlock``
   with ``dipole_only=True``, and only the *last* interaction is narrowed to
-  the ``l=1`` block of ``hidden_irreps`` (``mace/modules/models.py:723-731``),
+  the ``l=1`` block of ``hidden_irreps`` (``macefork/modules/models.py:723-731``),
   so the per-layer contributions this anchor sums are not all the same shape;
 * the graph dipole is the scatter-sum of the per-atom dipoles **plus** a
   fixed-charge baseline computed from ``data["charges"]``
-  (``compute_fixed_charge_dipole``, ``mace/modules/models.py:825-831``). The
+  (``compute_fixed_charge_dipole``, ``macefork/modules/models.py:825-831``). The
   baseline is the term a rewrite is most likely to drop or to re-origin, and
   it is invisible in any energy anchor.
 
@@ -25,7 +25,7 @@ rediscovered:
   ``pylint: disable=unused-argument`` parameters at ``:648``), so nothing is
   forwarded to ``EquivariantProductBasisBlock`` and its ``None`` default
   reaches ``SymmetricContractionWrapper``, where ``use_reduced_cg and
-  CUET_AVAILABLE`` is falsy either way (``mace/modules/wrapper_ops.py:428``).
+  CUET_AVAILABLE`` is falsy either way (``macefork/modules/wrapper_ops.py:428``).
   The plain-``MACE`` anchor has to pin the flag to ``False`` because its
   ``True`` default is silently degraded when cuequivariance is absent; here
   the reduced path is unreachable, so the weights do not depend on what
@@ -43,7 +43,7 @@ import numpy as np
 import torch
 from e3nn import o3
 
-from mace import modules
+from macefork import modules
 
 MODELS_DIR = Path(__file__).resolve().parent / "models"
 MODEL_PATH = MODELS_DIR / "tiny_dipoles.model"
@@ -67,7 +67,7 @@ ANCHOR_CONFIG: Dict[str, Any] = {
     "num_elements": len(ATOMIC_NUMBERS),
     # At least one l=1 block is mandatory: the class asserts
     # len(hidden_irreps) > 1 before narrowing the last layer to hidden_irreps[1]
-    # (mace/modules/models.py:723-728). A scalar-only anchor cannot exist.
+    # (macefork/modules/models.py:723-728). A scalar-only anchor cannot exist.
     "hidden_irreps": "16x0e + 16x1o",
     "MLP_irreps": "8x0e",
     "atomic_numbers": ATOMIC_NUMBERS,

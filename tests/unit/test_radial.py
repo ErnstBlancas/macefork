@@ -1,5 +1,5 @@
-"""Characterization of `mace/modules/radial.py` and the radial-embedding
-assembly in `mace/modules/blocks.py`.
+"""Characterization of `macefork/modules/radial.py` and the radial-embedding
+assembly in `macefork/modules/blocks.py`.
 
 Everything in this file is pure mathematics: a distance in, a number out, no
 learned parameters and no graph beyond the element pair an edge connects. It
@@ -20,7 +20,7 @@ Two conventions, both deliberate:
 Where the behaviour is exactly representable -- a cutoff that returns zero, a
 repulsion that switches off past the covalent radii -- the assertion is exact
 equality with no row at all. That is not pedantry: `build_fake_padding_graph`
-(`mace/data/padding_tools.py:81-106`) gives every padding edge a self-loop
+(`macefork/data/padding_tools.py:81-106`) gives every padding edge a self-loop
 with a shift of `2 * r_max` precisely so the envelope annihilates it, and
 "very small" would not do.
 """
@@ -30,8 +30,8 @@ import numpy as np
 import pytest
 import torch
 
-from mace.modules.blocks import RadialEmbeddingBlock
-from mace.modules.radial import (
+from macefork.modules.blocks import RadialEmbeddingBlock
+from macefork.modules.radial import (
     AgnesiTransform,
     BesselBasis,
     ChebychevBasis,

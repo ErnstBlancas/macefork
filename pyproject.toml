@@ -36,11 +36,11 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["mace"]
+source = ["macefork"]
 omit = [
     # vendored code, excluded from lint/mypy as well
-    "mace/tools/torch_geometric/*",
-    "mace/tools/scatter.py",
+    "macefork/tools/torch_geometric/*",
+    "macefork/tools/scatter.py",
 ]
 
 # Pylint
@@ -76,8 +76,8 @@ disable = [
 # run on (that job tracks the default, currently 3.12).
 py-version = "3.10"
 ignore-paths = [
-    "^mace/tools/torch_geometric/.*$",
-    "^mace/tools/scatter.py$",
+    "^macefork/tools/torch_geometric/.*$",
+    "^macefork/tools/scatter.py$",
 ]
 
 [tool.pylint.FORMAT]

@@ -12,7 +12,7 @@ import torch
 from ase.atoms import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
 
-from mace.calculators import MACECalculator, mace_mp
+from macefork.calculators import MACECalculator, mace_mp
 from tests.helpers import CUET_AVAILABLE, base_mace_params, run_mace_train
 
 # fitting_configs / pretraining_configs fixtures come from tests/conftest.py

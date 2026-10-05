@@ -37,7 +37,7 @@ from typing import Dict, Iterator, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-TRACKED_MPA0 = "mace/calculators/foundations_models/mace-mpa-0-medium.model"
+TRACKED_MPA0 = "macefork/calculators/foundations_models/mace-mpa-0-medium.model"
 _TRACKED_MPA0 = TRACKED_MPA0
 _MP_SMALL_URL = (
     "https://github.com/ACEsuit/mace-mp/releases/download/mace_mp_0/"
@@ -58,7 +58,7 @@ class FoundationArtifact:
     """One published checkpoint, its loader call, and its committed reference."""
 
     name: str
-    #: the ``mace.calculators.foundations_models`` entry point to call
+    #: the ``macefork.calculators.foundations_models`` entry point to call
     loader: str
     #: the exact keyword arguments the reference was generated with
     loader_kwargs: Dict[str, object]
@@ -217,7 +217,7 @@ ARTIFACTS: Dict[str, FoundationArtifact] = {
 #: The tracked ANI checkpoint is deliberately absent; see
 #: test_foundation_goldens.py::test_the_tracked_anicc_checkpoint_cannot_be
 #: _loaded_on_cpu for the measurement that says why.
-ANICC_TRACKED_PATH = "mace/calculators/foundations_models/ani500k_large_CC.model"
+ANICC_TRACKED_PATH = "macefork/calculators/foundations_models/ani500k_large_CC.model"
 
 
 def sha256_of(path: Path) -> str:
@@ -267,7 +267,7 @@ def no_network() -> Iterator[None]:
     """
     import urllib.request  # pylint: disable=import-outside-toplevel
 
-    from mace.calculators import (  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # pylint: disable=import-outside-toplevel
         foundations_models,
     )
 
@@ -292,7 +292,7 @@ def no_network() -> Iterator[None]:
 def tracked_checkpoint_in_place() -> Iterator[None]:
     """Make the tracked checkpoint reachable where the package looks for it.
 
-    The checkpoints under ``mace/calculators/foundations_models/`` are tracked
+    The checkpoints under ``macefork/calculators/foundations_models/`` are tracked
     in git but **not packaged**: ``setup.cfg`` declares no ``package_data``
     and ``MANIFEST.in`` carries only ``py.typed``, so the published wheel is
     ~300 KB and contains ``foundations_models.py`` without the directory of
@@ -308,7 +308,7 @@ def tracked_checkpoint_in_place() -> Iterator[None]:
     expects. This is a property of how MACE is packaged, not of this test: if
     the wheel ever ships the checkpoint, the branch below simply never fires.
     """
-    from mace.calculators import (  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # pylint: disable=import-outside-toplevel
         foundations_models,
     )
 
@@ -331,7 +331,7 @@ def load_calculator(spec: FoundationArtifact):
     loader's own ``torch.load`` call rather than recomputed, so the digest the
     caller then takes is of the bytes that produced the numbers.
     """
-    from mace.calculators import (  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # pylint: disable=import-outside-toplevel
         foundations_models,
     )
 
@@ -351,7 +351,7 @@ def load_calculator(spec: FoundationArtifact):
 
 def expected_origin_url(spec: FoundationArtifact) -> str:
     """The URL ``foundations_models.py`` currently holds for a network tier."""
-    from mace.calculators import (  # pylint: disable=import-outside-toplevel
+    from macefork.calculators import (  # pylint: disable=import-outside-toplevel
         foundations_models,
     )
 

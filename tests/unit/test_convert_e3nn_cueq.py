@@ -4,11 +4,11 @@ import inspect
 import pytest
 import torch
 
-from mace.calculators import mace_torchsim
-from mace.cli import convert_e3nn_cueq, run_train
-from mace.tools import model_script_utils
-from mace.tools.arg_parser import build_default_arg_parser
-from mace.tools.utils import AtomicNumberTable
+from macefork.calculators import mace_torchsim
+from macefork.cli import convert_e3nn_cueq, run_train
+from macefork.tools import model_script_utils
+from macefork.tools.arg_parser import build_default_arg_parser
+from macefork.tools.utils import AtomicNumberTable
 
 
 class _HiddenIrrepsStub:

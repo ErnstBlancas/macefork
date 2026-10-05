@@ -136,7 +136,7 @@ def label(atoms: Atoms) -> Atoms:
     """Attach energy, forces, stress, charges and dipole to a copy of ``atoms``.
 
     Every quantity is a derivative of the one energy expression, in the sign
-    conventions the package uses (``mace/modules/utils.py``): forces are
+    conventions the package uses (``macefork/modules/utils.py``): forces are
     ``-dE/dx``, and the stress is ``(1/V) dE/d(strain)``, so a positive radial
     derivative (attraction) gives a negative diagonal stress.
     """

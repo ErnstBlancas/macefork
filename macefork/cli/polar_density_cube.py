@@ -21,8 +21,8 @@ import numpy as np
 import torch
 from ase.io.cube import write_cube
 
-from mace.calculators.foundations_models import mace_polar
-from mace.tools import deprecation
+from macefork.calculators.foundations_models import mace_polar
+from macefork.tools import deprecation
 
 try:
     from graph_longrange.features import (

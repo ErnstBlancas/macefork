@@ -82,8 +82,8 @@ import pytest
 import torch
 from ase import build
 
-from mace import data as mace_data
-from mace.tools import AtomicNumberTable, torch_geometric, torch_tools
+from macefork import data as mace_data
+from macefork.tools import AtomicNumberTable, torch_geometric, torch_tools
 from tests.golden import harness
 
 # ---------------------------------------------------------------------------
@@ -170,7 +170,7 @@ def _load_model(name: str, dtype: str, device: str) -> torch.nn.Module:
     if name == "mp_small":
         # Imported here so a CPU-only collection never touches the download
         # machinery at import time.
-        from mace.calculators.foundations_models import mace_mp  # noqa: PLC0415
+        from macefork.calculators.foundations_models import mace_mp  # noqa: PLC0415
 
         calc = mace_mp(model="small", default_dtype=dtype, device=device)
         return calc.models[0].to(device)
@@ -181,11 +181,11 @@ def _apply_backend(model: torch.nn.Module, backend: str, device: str):
     if backend == "e3nn":
         return model
     if backend == "cueq":
-        from mace.cli.convert_e3nn_cueq import run as to_cueq  # noqa: PLC0415
+        from macefork.cli.convert_e3nn_cueq import run as to_cueq  # noqa: PLC0415
 
         return to_cueq(model, device=device, return_model=True).to(device)
     if backend == "oeq":
-        from mace.cli.convert_e3nn_oeq import run as to_oeq  # noqa: PLC0415
+        from macefork.cli.convert_e3nn_oeq import run as to_oeq  # noqa: PLC0415
 
         return to_oeq(model, device=device, return_model=True).to(device)
     raise AssertionError(f"unknown backend {backend!r}")

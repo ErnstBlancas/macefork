@@ -19,8 +19,8 @@ import pytest
 import torch
 from e3nn import o3
 
-from mace import modules
-from mace.modules.field_blocks import (
+from macefork import modules
+from macefork.modules.field_blocks import (
     AgnosticChargeBiasedLinearPotentialEmbedding,
     AgnosticEmbeddedOneBodyVariableUpdate,
     MLPNonLinearity,
@@ -28,9 +28,9 @@ from mace.modules.field_blocks import (
     field_readout_blocks,
     field_update_blocks,
 )
-from mace.tools import build_default_arg_parser
-from mace.tools.model_script_utils import _build_model, _parse_literal_or_none
-from mace.tools.torch_tools import default_dtype
+from macefork.tools import build_default_arg_parser
+from macefork.tools.model_script_utils import _build_model, _parse_literal_or_none
+from macefork.tools.torch_tools import default_dtype
 
 ATOMIC_NUMBERS = [1, 8]
 

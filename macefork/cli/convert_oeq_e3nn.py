@@ -4,16 +4,18 @@ import os
 
 import torch
 
-from mace.tools import deprecation
-from mace.tools.scripts_utils import extract_config_mace_model
-from mace.tools.torch_tools import restores_default_dtype
+from macefork.tools import deprecation, legacy_pickle
+from macefork.tools.scripts_utils import extract_config_mace_model
+from macefork.tools.torch_tools import restores_default_dtype
 
 
 @restores_default_dtype
 def run(input_model, output_model="_e3nn.model", device="cpu", return_model=True):
     # Load OEQ model
     if isinstance(input_model, str):
-        source_model = torch.load(input_model, map_location=device)
+        source_model = torch.load(
+            input_model, map_location=device, pickle_module=legacy_pickle
+        )
     else:
         source_model = input_model
     default_dtype = next(source_model.parameters()).dtype

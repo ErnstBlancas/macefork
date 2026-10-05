@@ -7,7 +7,7 @@
 import dataclasses
 import logging
 import time
-from collections import defaultdict
+from collections import defaultdict, deque
 from contextlib import contextmanager, nullcontext
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -22,7 +22,7 @@ from torch.utils.data.distributed import DistributedSampler
 from torch_ema import ExponentialMovingAverage
 from torchmetrics import Metric
 
-from mace.cli.visualise_train import TrainingPlotter
+from macefork.cli.visualise_train import TrainingPlotter
 
 from . import torch_geometric
 from .checkpoint import CheckpointHandler, CheckpointState
@@ -44,6 +44,85 @@ class SWAContainer:
     scheduler: SWALR
     start: int
     loss_fn: torch.nn.Module
+
+
+class ConvergenceMonitor:
+    """Track a validation metric over the last `window` evaluations and test its
+    mean and/or standard deviation against two pairs of thresholds: one to stop
+    training and one to start Stage Two. Within a pair, every threshold given must
+    be satisfied; a pair with no thresholds never triggers."""
+
+    def __init__(
+        self,
+        metric: str = "rmse_e_per_atom",
+        window: int = 10,
+        mean_threshold: Optional[float] = None,
+        std_threshold: Optional[float] = None,
+        stage_two_mean_threshold: Optional[float] = None,
+        stage_two_std_threshold: Optional[float] = None,
+        head: Optional[str] = None,
+    ):
+        if all(
+            t is None
+            for t in (
+                mean_threshold,
+                std_threshold,
+                stage_two_mean_threshold,
+                stage_two_std_threshold,
+            )
+        ):
+            raise ValueError("ConvergenceMonitor needs at least one threshold")
+        if window < 1:
+            raise ValueError(f"Convergence window must be >= 1, got {window}")
+        self.metric = metric
+        self.window = window
+        self.mean_threshold = mean_threshold
+        self.std_threshold = std_threshold
+        self.stage_two_mean_threshold = stage_two_mean_threshold
+        self.stage_two_std_threshold = stage_two_std_threshold
+        self.head = head
+        self.history: deque = deque(maxlen=window)
+
+    def reset(self) -> None:
+        self.history.clear()
+
+    def value(self, eval_metrics: Dict[str, Any]) -> float:
+        # eval_metrics is a defaultdict, so use .get to avoid inserting placeholders
+        value = eval_metrics.get(self.metric)
+        if not isinstance(value, (int, float, np.floating)):
+            raise ValueError(
+                f"Convergence metric '{self.metric}' is not available in the validation "
+                f"metrics (got {value!r}); check that the corresponding property is "
+                "being computed and trained on"
+            )
+        return float(value)
+
+    def update(self, eval_metrics: Dict[str, Any]) -> None:
+        self.history.append(self.value(eval_metrics))
+        if len(self.history) == self.window:
+            logging.info(
+                f"Convergence check: {self.metric} over last {self.window} evaluations: "
+                f"mean={np.mean(self.history):.6g}, std={np.std(self.history):.6g}"
+            )
+
+    def _below(
+        self, mean_threshold: Optional[float], std_threshold: Optional[float]
+    ) -> bool:
+        if mean_threshold is None and std_threshold is None:
+            return False
+        if len(self.history) < self.window:
+            return False
+        if mean_threshold is not None and np.mean(self.history) >= mean_threshold:
+            return False
+        if std_threshold is not None and np.std(self.history) >= std_threshold:
+            return False
+        return True
+
+    def converged(self) -> bool:
+        return self._below(self.mean_threshold, self.std_threshold)
+
+    def stage_two_ready(self) -> bool:
+        return self._below(self.stage_two_mean_threshold, self.stage_two_std_threshold)
 
 
 def valid_err_log(
@@ -181,12 +260,38 @@ def train(
     rank: Optional[int] = 0,
     data_aug_magmom: Optional[bool] = False,
     data_aug_magmom_mode: str = "non-soc",
+    convergence: Optional[ConvergenceMonitor] = None,
+    stage_two_epochs: Optional[int] = None,
 ):
     lowest_loss = np.inf
     valid_loss = np.inf
     patience_counter = 0
     swa_start = True
     keep_last = False
+    stop_training = False
+    stage_two_first_epoch = None
+    if convergence is not None:
+        if convergence.head is None:
+            # same convention as the checkpoint loss: track the last head
+            convergence.head = list(valid_loaders.keys())[-1]
+        elif convergence.head not in valid_loaders:
+            raise ValueError(
+                f"Convergence head '{convergence.head}' not among the validation heads "
+                f"{list(valid_loaders.keys())}"
+            )
+        logging.info(
+            f"Convergence monitored on {convergence.metric} (head: {convergence.head}) "
+            f"over the last {convergence.window} evaluations: stop training at "
+            f"mean < {convergence.mean_threshold}, std < {convergence.std_threshold}"
+            + (
+                f"; start Stage Two at mean < {convergence.stage_two_mean_threshold}, "
+                f"std < {convergence.stage_two_std_threshold}"
+                if swa is not None
+                else ""
+            )
+        )
+    if stage_two_epochs is not None and swa is not None:
+        logging.info(f"Stage Two will run for at most {stage_two_epochs} epochs")
     if log_wandb:
         import wandb
 
@@ -211,6 +316,8 @@ def train(
         valid_err_log(
             valid_loss_head, eval_metrics, logger, log_errors, None, valid_loader_name
         )
+        if convergence is not None and valid_loader_name == convergence.head:
+            convergence.value(eval_metrics)  # fail before training if unavailable
     valid_loss = valid_loss_head  # consider only the last head for the checkpoint
 
     # variable used for broadcast by rank == 0 if epoch loop is exited early, e.g. patience
@@ -218,7 +325,7 @@ def train(
 
     if data_aug_magmom:
         # pylint: disable=cyclic-import
-        from mace.data.augmentation import create_random_rotation_loader
+        from macefork.data.augmentation import create_random_rotation_loader
 
         train_loader = create_random_rotation_loader(
             train_loader, mode=data_aug_magmom_mode
@@ -237,6 +344,9 @@ def train(
                 lowest_loss = np.inf
                 swa_start = False
                 keep_last = True
+                stage_two_first_epoch = epoch
+                if convergence is not None:
+                    convergence.reset()
             loss_fn = swa.loss_fn
             swa.model.update_parameters(model)
             if epoch > start_epoch:
@@ -278,6 +388,7 @@ def train(
                 optimizer.eval()
             with param_context:
                 wandb_log_dict = {}
+                convergence_metrics = None
                 for valid_loader_name, valid_loader in valid_loaders.items():
                     valid_loss_head, eval_metrics = evaluate(
                         model=model_to_evaluate,
@@ -286,6 +397,11 @@ def train(
                         output_args=output_args,
                         device=device,
                     )
+                    if (
+                        convergence is not None
+                        and valid_loader_name == convergence.head
+                    ):
+                        convergence_metrics = eval_metrics
                     if rank == 0:
                         valid_err_log(
                             valid_loss_head,
@@ -354,12 +470,45 @@ def train(
                             keep_last=keep_last,
                         )
                         keep_last = False or save_all_checkpoints
+                if convergence is not None:
+                    convergence.update(convergence_metrics)
+                    if swa is not None and swa_start:
+                        # still on Stage One loss; skip if patience already jumped.
+                        # Meeting the final target here also moves on to Stage Two.
+                        if epoch < swa.start and (
+                            convergence.stage_two_ready() or convergence.converged()
+                        ):
+                            logging.info(
+                                f"{convergence.metric} converged, starting Stage Two"
+                            )
+                            epoch = swa.start
+                    elif convergence.converged():
+                        logging.info(
+                            f"Stopping optimization: {convergence.metric} converged"
+                        )
+                        stop_training = True
+        # stop only on an evaluation epoch, so that a Stage Two checkpoint exists
+        if (
+            rank == 0
+            and stage_two_epochs is not None
+            and stage_two_first_epoch is not None
+            and epoch - stage_two_first_epoch + 1 >= stage_two_epochs
+            and epoch % eval_interval == 0
+        ):
+            logging.info(
+                f"Stopping optimization after {stage_two_epochs} epochs of Stage Two"
+            )
+            stop_training = True
+        if stop_training and exit_now is not None:
+            exit_now.fill_(1)
         if distributed:
             torch.distributed.barrier()
         if exit_now is not None:
             torch.distributed.broadcast(exit_now, src=0)
             if exit_now == 1:
                 break
+        elif stop_training:
+            break
 
         epoch += 1
 

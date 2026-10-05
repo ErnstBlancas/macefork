@@ -13,7 +13,7 @@ import logging
 
 import pytest
 
-from mace.tools.utils import setup_logger
+from macefork.tools.utils import setup_logger
 
 
 @pytest.fixture(name="clean_root")

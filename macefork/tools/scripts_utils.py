@@ -19,9 +19,11 @@ import torch.distributed
 from e3nn import o3
 from torch.optim.swa_utils import SWALR, AveragedModel
 
-from mace import data, modules, tools
-from mace.data import KeySpecification
-from mace.tools.train import SWAContainer
+from macefork import data, modules, tools
+from macefork.data import KeySpecification
+from macefork.tools.train import SWAContainer
+
+from . import legacy_pickle
 
 
 @dataclasses.dataclass
@@ -391,7 +393,8 @@ def extract_config_mace_model(model: torch.nn.Module) -> Dict[str, Any]:
 
 def extract_load(f: str, map_location: str = "cpu") -> torch.nn.Module:
     return extract_model(
-        torch.load(f=f, map_location=map_location), map_location=map_location
+        torch.load(f=f, map_location=map_location, pickle_module=legacy_pickle),
+        map_location=map_location,
     )
 
 
@@ -545,26 +548,26 @@ def convert_from_json_format(dict_input):
     dict_output = dict_input.copy()
     if (
         dict_input["interaction_cls"]
-        == "<class 'mace.modules.blocks.RealAgnosticResidualInteractionBlock'>"
+        == "<class 'macefork.modules.blocks.RealAgnosticResidualInteractionBlock'>"
     ):
         dict_output["interaction_cls"] = (
             modules.blocks.RealAgnosticResidualInteractionBlock
         )
     if (
         dict_input["interaction_cls"]
-        == "<class 'mace.modules.blocks.RealAgnosticInteractionBlock'>"
+        == "<class 'macefork.modules.blocks.RealAgnosticInteractionBlock'>"
     ):
         dict_output["interaction_cls"] = modules.blocks.RealAgnosticInteractionBlock
     if (
         dict_input["interaction_cls_first"]
-        == "<class 'mace.modules.blocks.RealAgnosticResidualInteractionBlock'>"
+        == "<class 'macefork.modules.blocks.RealAgnosticResidualInteractionBlock'>"
     ):
         dict_output["interaction_cls_first"] = (
             modules.blocks.RealAgnosticResidualInteractionBlock
         )
     if (
         dict_input["interaction_cls_first"]
-        == "<class 'mace.modules.blocks.RealAgnosticInteractionBlock'>"
+        == "<class 'macefork.modules.blocks.RealAgnosticInteractionBlock'>"
     ):
         dict_output["interaction_cls_first"] = (
             modules.blocks.RealAgnosticInteractionBlock
@@ -1079,7 +1082,7 @@ def get_optimizer(
             from schedulefree import adamw_schedulefree
         except ImportError as exc:
             raise ImportError(
-                "`schedulefree` is not installed. Please install it via `pip install schedulefree` or `pip install mace-torch[schedulefree]`"
+                "`schedulefree` is not installed. Please install it via `pip install schedulefree` or `pip install macefork[schedulefree]`"
             ) from exc
         _param_options = {k: v for k, v in param_options.items() if k != "amsgrad"}
         _param_options.pop("betas", None)

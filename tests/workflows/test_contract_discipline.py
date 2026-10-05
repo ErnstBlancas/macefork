@@ -35,12 +35,12 @@ ALLOWED = {
     # The ase calculator is itself one of the contracts. There is no console
     # script for it, and the graph-padding arguments exist nowhere else, so
     # "drive it through a subprocess" is not available.
-    "mace.calculators": "the ase calculator is one of the contracts under test",
+    "macefork.calculators": "the ase calculator is one of the contracts under test",
 }
 
 #: Modules that are the implementation. Naming one of these in a contract
 #: test is what the rule forbids.
-FORBIDDEN_PREFIXES = ("mace.modules", "mace.data", "mace.tools", "mace.cli")
+FORBIDDEN_PREFIXES = ("macefork.modules", "macefork.data", "macefork.tools", "macefork.cli")
 
 
 def _imported_modules(path: Path):
@@ -62,7 +62,7 @@ def test_a_contract_test_does_not_import_the_implementation(relative):
 
     offending = []
     for module, lineno in _imported_modules(path):
-        if not (module == "mace" or module.startswith("mace.")):
+        if not (module == "macefork" or module.startswith("macefork.")):
             continue
         if any(module.startswith(allowed) for allowed in ALLOWED):
             continue
