@@ -133,8 +133,8 @@ def test_convergence_in_stage_one_jumps_to_stage_two(tmp_path):
 
     assert "rmse_f converged, starting Stage Two" in log
     assert "Stopping optimization: rmse_f converged" in log
-    # epochs 0,1 in Stage One, then a fresh window of 2 in Stage Two
-    assert trained_epochs(log) == [0, 1, 41, 42]
+    # epochs 0,1 in Stage One, then a fresh window of 2 in Stage Two, numbered on
+    assert trained_epochs(log) == [0, 1, 2, 3]
     assert (tmp_path / "model" / "conv_swa_stagetwo.model").exists()
 
 
@@ -152,9 +152,9 @@ def test_stage_two_threshold_then_fixed_stage_two_length(tmp_path):
         stage_two_epochs=3,
     )
 
-    assert "rmse_e_per_atom converged, starting Stage Two" in log
+    assert "rmse_e_per_atom Stage Two criterion met, starting Stage Two" in log
     assert "Stopping optimization after 3 epochs of Stage Two" in log
-    assert trained_epochs(log) == [0, 1, 41, 42, 43]
+    assert trained_epochs(log) == [0, 1, 2, 3, 4]
     assert (tmp_path / "model" / "conv_s2_stagetwo.model").exists()
 
 

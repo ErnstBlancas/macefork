@@ -144,7 +144,7 @@ instead of a hand-written runtime raise.
 | `choice.EnergyDipolesMACE` | `--model EnergyDipolesMACE` | `macefork/tools/arg_parser.py:146` | MERGE — idem, energy + dipole observables | `tests/unit/test_models.py::test_energy_dipole_mace` |
 | `choice.MagneticScaleShiftMACE` | `--model MagneticScaleShiftMACE` | `macefork/tools/arg_parser.py:147` | MERGE — idem; the only magnetic entry in the choices | `tests/extensions/magnetic` + `tests/golden/test_tiny_magnetic.py::test_anchor_reproduces_its_reference` |
 
-## 3. `macefork_run_train` flags — 184 dests
+## 3. `macefork_run_train` flags — 193 dests
 
 One row per **dest** of `build_default_arg_parser` (`macefork/tools/arg_parser.py`), which is what a
 knob is; the option strings that spell it are in the feature cell. 184 dests carry 194 option
@@ -341,7 +341,7 @@ Group default: MERGE into composable per-stage losses; the numerics are pinned b
 | `train.swa_magforces_weight` | `--swa_magforces_weight` `--stage_two_magforces_weight` | `macefork/tools/arg_parser.py:816` | MERGE — idem | `tests/unit/test_stage_two_weights.py::test_the_magforces_weight_reaches_the_universal_loss` |
 | `train.huber_delta` | `--huber_delta` | `macefork/tools/arg_parser.py:888` | KEEP | `tests/unit/test_loss.py::test_conditional_huber_forces` + `tests/unit/test_loss.py::test_weighted_huber_energy_forces_stress_loss` |
 
-### 3.8 Optimizer, scheduler and training control (26)
+### 3.8 Optimizer, scheduler and training control (34)
 
 Group default: KEEP as the `optimizer` / `schedule` config sections. `--swa`, `--start_swa` and `--swa_lr` carry the `--stage_two*` spellings on the same dest, so they are one row each.
 
@@ -370,6 +370,14 @@ Group default: KEEP as the `optimizer` / `schedule` config sections. `--swa`, `-
 | `train.ema_decay` | `--ema_decay` | `macefork/tools/arg_parser.py:1004` | KEEP | `tests/unit/test_optimizer_flags.py::test_the_configured_decay_barely_matters_at_the_start` (the cold-start cap) + `tests/unit/test_optimizer_flags.py::test_a_higher_decay_lags_further_once_the_warmup_is_past` |
 | `train.max_num_epochs` | `--max_num_epochs` | `macefork/tools/arg_parser.py:1010` | KEEP | `tests/workflows/test_cli_contracts.py::test_training_reduces_the_validation_loss_and_writes_a_model` |
 | `train.patience` | `--patience` | `macefork/tools/arg_parser.py:1013` | KEEP | `tests/workflows/test_multifiles.py::test_multifile_training` |
+| `train.convergence_metric` | `--convergence_metric` | `macefork/tools/arg_parser.py:1012` | KEEP — any validation metric key; an unavailable one fails before training | `tests/workflows/test_convergence_stopping.py::test_convergence_in_stage_one_jumps_to_stage_two` |
+| `train.convergence_window` | `--convergence_window` | `macefork/tools/arg_parser.py:1020` | KEEP | `tests/workflows/test_convergence_stopping.py::test_run_stops_on_convergence_and_writes_outputs` |
+| `train.convergence_mean_threshold` | `--convergence_mean_threshold` | `macefork/tools/arg_parser.py:1027` | KEEP | `tests/workflows/test_convergence_stopping.py::test_run_stops_on_convergence_and_writes_outputs` |
+| `train.convergence_std_threshold` | `--convergence_std_threshold` | `macefork/tools/arg_parser.py:1033` | KEEP | `tests/workflows/test_convergence_stopping.py::test_convergence_in_stage_one_jumps_to_stage_two` |
+| `train.stage_two_convergence_mean_threshold` | `--stage_two_convergence_mean_threshold` | `macefork/tools/arg_parser.py:1040` | MERGE — the switch condition of the preset second stage | `tests/workflows/test_convergence_stopping.py::test_monitor_stage_two_thresholds_are_independent` |
+| `train.stage_two_convergence_std_threshold` | `--stage_two_convergence_std_threshold` | `macefork/tools/arg_parser.py:1047` | MERGE — idem | `tests/workflows/test_convergence_stopping.py::test_stage_two_threshold_then_fixed_stage_two_length` |
+| `train.stage_two_epochs` | `--stage_two_epochs` | `macefork/tools/arg_parser.py:1054` | MERGE — the length of the preset second stage | `tests/workflows/test_convergence_stopping.py::test_stage_two_epochs_waits_for_an_evaluation` |
+| `train.convergence_head` | `--convergence_head` | `macefork/tools/arg_parser.py:1061` | KEEP | ⚠️ gap (needs a multihead run in `tests/workflows/test_convergence_stopping.py`) |
 | `train.eval_interval` | `--eval_interval` | `macefork/tools/arg_parser.py:1043` | KEEP | `tests/workflows/test_cli_contracts.py::test_training_reduces_the_validation_loss_and_writes_a_model` |
 | `train.clip_grad` | `--clip_grad` | `macefork/tools/arg_parser.py:1070` | KEEP | `tests/unit/test_checkpoint_retention_and_clipping.py::test_clipping_shortens_a_gradient_that_is_too_long` |
 | `train.dry_run` | `--dry_run` | `macefork/tools/arg_parser.py:1076` | KEEP — cheap and useful | `tests/workflows/test_run_train.py::test_run_train_real_pt_data_ratio` |

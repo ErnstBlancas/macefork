@@ -125,6 +125,15 @@ class ConvergenceMonitor:
         return self._below(self.stage_two_mean_threshold, self.stage_two_std_threshold)
 
 
+def start_stage_two_next_epoch(swa, epoch, checkpoint_handler, plotter):
+    """Start Stage Two at the next epoch by moving its start back, so that epoch
+    numbers stay continuous. Checkpoints and plots read the start to label stages."""
+    swa.start = epoch + 1
+    checkpoint_handler.io.swa_start = swa.start
+    if plotter is not None:
+        plotter.swa_start = swa.start
+
+
 def valid_err_log(
     valid_loss,
     eval_metrics,
@@ -438,7 +447,9 @@ def train(
                             logging.info(
                                 f"Stopping optimization after {patience_counter} epochs without improvement and starting Stage Two"
                             )
-                            epoch = swa.start
+                            start_stage_two_next_epoch(
+                                swa, epoch, checkpoint_handler, plotter
+                            )
                         else:
                             logging.info(
                                 f"Stopping optimization after {patience_counter} epochs without improvement"
@@ -473,15 +484,20 @@ def train(
                 if convergence is not None:
                     convergence.update(convergence_metrics)
                     if swa is not None and swa_start:
-                        # still on Stage One loss; skip if patience already jumped.
-                        # Meeting the final target here also moves on to Stage Two.
-                        if epoch < swa.start and (
-                            convergence.stage_two_ready() or convergence.converged()
-                        ):
-                            logging.info(
-                                f"{convergence.metric} converged, starting Stage Two"
+                        # still on Stage One loss; meeting the final target here
+                        # also moves on to Stage Two
+                        if convergence.stage_two_ready() or convergence.converged():
+                            criterion = (
+                                "Stage Two criterion met"
+                                if convergence.stage_two_ready()
+                                else "converged"
                             )
-                            epoch = swa.start
+                            logging.info(
+                                f"{convergence.metric} {criterion}, starting Stage Two"
+                            )
+                            start_stage_two_next_epoch(
+                                swa, epoch, checkpoint_handler, plotter
+                            )
                     elif convergence.converged():
                         logging.info(
                             f"Stopping optimization: {convergence.metric} converged"
