@@ -315,7 +315,7 @@ class MACELES(ScaleShiftMACE):
         lammps_natoms = interaction_kwargs.lammps_natoms
         lammps_class = interaction_kwargs.lammps_class
 
-        e_ext = data.get("external_field", None)
+        e_ext = data.get("external_field")
         # external_field may default to zeros(1,3) from atomic_data.py; treat as None
         if e_ext is not None and not e_ext.any():
             e_ext = None
@@ -336,7 +336,7 @@ class MACELES(ScaleShiftMACE):
         no_pbc_mask_cfg = ~pbc_tensor.any(dim=-1)
         no_pbc_mask_rows = no_pbc_mask_cfg.repeat_interleave(3)
         cell_les[no_pbc_mask_rows] = torch.zeros(
-            (no_pbc_mask_rows.sum(), 3), dtype=cell_les.dtype, device=cell_les.device
+            (int(no_pbc_mask_rows.sum()), 3), dtype=cell_les.dtype, device=cell_les.device
         )
         if displacement is not None:
             symmetric_displacement = 0.5 * (
