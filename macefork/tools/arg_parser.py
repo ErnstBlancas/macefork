@@ -1053,7 +1053,7 @@ def build_default_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--stage_two_epochs",
         help="Stop training after this many epochs of Stage Two (rounded up to the next "
-        "evaluation epoch)",
+        "evaluation epoch). Default: 3 * start_stage_two",
         type=int,
         default=None,
     )

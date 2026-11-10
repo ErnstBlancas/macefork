@@ -145,6 +145,22 @@ def check_args(args):
             )
         )
 
+    if (
+        args.swa
+        and args.stage_two_epochs is not None
+        and args.stage_two_epochs < args.start_swa
+    ):
+        log_messages.append(
+            (
+                f"stage_two_epochs = {args.stage_two_epochs} is smaller than "
+                f"start_stage_two = {args.start_swa}",
+                logging.WARNING,
+            )
+        )
+
+    if args.swa and args.stage_two_epochs is None:
+        args.stage_two_epochs = 3 * args.start_swa
+
     if args.embedding_specs:
         args.embedding_specs = ast.literal_eval(args.embedding_specs)
 
