@@ -692,7 +692,7 @@ class PolarMACE(ScaleShiftMACE):
         if not GRAPH_LONGRANGE_AVAILABLE:
             raise ImportError(
                 "Cannot import 'graph_longrange'. Install it with "
-                "`pip install mace-torch[polar]`."
+                "`pip install macefork[polar]`."
             )
         try:
             hidden_irreps: o3.Irreps = kwargs["hidden_irreps"]
@@ -995,7 +995,7 @@ class PolarMACE(ScaleShiftMACE):
         if not GRAPH_LONGRANGE_AVAILABLE:
             raise ImportError(
                 "Cannot import 'graph_longrange'. Install it with "
-                "`pip install mace-torch[polar]`."
+                "`pip install macefork[polar]`."
             )
         ctx = prepare_graph(
             data,
